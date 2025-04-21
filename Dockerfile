@@ -20,9 +20,3 @@ CMD ["serve", "-s", "out"]
 # If you're using Next.js, you may use "next start" instead
 EXPOSE 3000
 
-
-# 890742562318
-
-# docker build -t dev-irl-frontend .
-# docker tag dev-irl-frontend:latest 890742562318.dkr.ecr.eu-west-2.amazonaws.com/dev-irl-frontend:latest
-# docker push 890742562318.dkr.ecr.eu-west-2.amazonaws.com/dev-irl-frontend:latest
