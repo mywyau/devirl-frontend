@@ -16,12 +16,14 @@ WORKDIR /app
 COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./package.json
 
-# Optional: install runtime-only deps (if needed)
+# Install only production dependencies
 RUN npm install --omit=dev
 
-# Set environment for Nitro
+# Set environment for Nitro & expose host/port
 ENV NODE_ENV=production
 ENV NITRO_PRESET=node
+ENV HOST=0.0.0.0
+ENV PORT=3000
 
 EXPOSE 3000
 
