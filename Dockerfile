@@ -1,4 +1,4 @@
-# Use official Node.js image
+# Build stage
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -7,16 +7,18 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-# Serve with a lightweight HTTP server
+# Run stage
 FROM node:20-alpine AS runner
-WORKDIR /app
 
-# Install only prod deps
+WORKDIR /app
 COPY --from=builder /app ./
 
-RUN npm install -g serve
-CMD ["serve", "-s", "out"]
+ENV NODE_ENV=production
 
-# If you're using Next.js, you may use "next start" instead
+# Install only prod deps (optional but good)
+RUN npm install --omit=dev
+
 EXPOSE 3000
 
+# Start Next.js app in server mode
+CMD ["npm", "run", "start"]
