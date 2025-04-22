@@ -1,27 +1,28 @@
-# Build stage
+# Stage 1: Build
 FROM node:20-alpine AS builder
+
 WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN npm install
-
 COPY . .
+
+RUN npm install
 RUN npm run build
 
-# Production stage
+# Stage 2: Runtime
 FROM node:20-alpine AS runner
+
 WORKDIR /app
 
-# Set for Nitro
-ENV NODE_ENV=production
-ENV NITRO_PRESET=node
-
-# Only copy necessary runtime files
+# Copy only the necessary files for production
 COPY --from=builder /app/.output ./.output
 COPY --from=builder /app/package.json ./package.json
 
-# Optional: if you need runtime dependencies (e.g. Prisma, etc.)
-# RUN npm install --omit=dev
+# Optional: install runtime-only deps (if needed)
+RUN npm install --omit=dev
+
+# Set environment for Nitro
+ENV NODE_ENV=production
+ENV NITRO_PRESET=node
 
 EXPOSE 3000
+
 CMD ["node", ".output/server/index.mjs"]
