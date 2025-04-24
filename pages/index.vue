@@ -10,7 +10,7 @@
           Discover quests, earn rewards, and connect with developers and clients.
         </p>
         <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <NuxtLink to="/quests" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-lg text-white font-semibold transition">Explore Quests</NuxtLink>
+          <NuxtLink to="/quests" class="bg-cyan-500 hover:bg-cyan-400 px-6 py-3 rounded-lg text-white font-semibold transition">Explore Quests</NuxtLink>
           <NuxtLink to="/quests/new" class="bg-white text-gray-900 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition">Post a Quest</NuxtLink>
         </div>
       </div>

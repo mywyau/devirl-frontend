@@ -9,11 +9,12 @@
         <nav class="space-x-6">
           <NuxtLink to="/quests" class="hover:text-gray-300">Quests</NuxtLink>
           <NuxtLink to="/quests/new" class="hover:text-gray-300">Post Quest</NuxtLink>
+          <NuxtLink to="/account" class="hover:text-gray-300">Account</NuxtLink>
           <NuxtLink to="/login" class="hover:text-gray-300">Login</NuxtLink>
         </nav>
       </header>
   
-      <main class="p-6">
+      <main class="p-4">
         <slot />
       </main>
     </div>
