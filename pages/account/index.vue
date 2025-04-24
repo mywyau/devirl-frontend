@@ -29,7 +29,15 @@
               Bounty: {{ quest.bounty }} ETH
             </p>
             <NuxtLink
+              v-if="quest.id === '1' || quest.id === '2'"
               :to="`/quest/${quest.id}`"
+              class="inline-block mt-3 text-sm text-cyan-400 hover:underline"
+            >
+              View Details
+            </NuxtLink>
+            <NuxtLink
+              v-else
+              :to="`/error`"
               class="inline-block mt-3 text-sm text-cyan-400 hover:underline"
             >
               View Details
