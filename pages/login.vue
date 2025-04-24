@@ -1,4 +1,9 @@
-<!-- components/AuthButtons.vue -->
+
+
+<script setup>
+const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
+</script>
+
 <template>
   <NuxtLayout>
     <div v-if="!isAuthenticated">
@@ -12,7 +17,3 @@
     </div>
   </NuxtLayout>
 </template>
-
-<script setup>
-const { loginWithRedirect, logout, user, isAuthenticated } = useAuth0();
-</script>
