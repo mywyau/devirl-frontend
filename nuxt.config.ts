@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
-  css: ["@/assets/css/tailwind.css"],
+  modules: ['@nuxtjs/tailwindcss'],
+  css: ['@/assets/css/tailwind.css'],
   devServer: {
     // host: "0.0.0.0", // 👈 bind inside container
     port: 3000,
@@ -10,6 +11,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.API_URL || "http://localhost:8080",
+      auth0Domain: process.env.AUTH0_DOMAIN,
+      auth0ClientId: process.env.AUTH0_CLIENT_ID,
+      auth0Audience: process.env.AUTH0_AUDIENCE,
     },
   },
 });
