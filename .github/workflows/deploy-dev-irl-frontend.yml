@@ -35,7 +35,7 @@ jobs:
       - name: Force ECS service redeploy
         run: |
           aws ecs update-service \
-            --cluster dev-irl-cluster \
+            --cluster dev-quest-cluster \
             --service dev-irl-frontend-fargate-service \
             --force-new-deployment \
             --region eu-west-2
