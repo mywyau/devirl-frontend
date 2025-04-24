@@ -4,7 +4,7 @@
       <header class="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
         
         <NuxtLink to="/" class="text-xl font-bold text-white hover:text-gray-300">
-          Dev Quest
+          Dev Irl
         </NuxtLink>
         <nav class="space-x-6">
           <NuxtLink to="/quests" class="hover:text-gray-300">Quests</NuxtLink>
