@@ -19,7 +19,7 @@ defineProps<{
 
       <NuxtLink
         to="/"
-        class="bg-cyan-500 hover:bg-cyan-400 text-white px-6 py-2 rounded"
+        class="bg-cyan-500 hover:bg-blue-400 text-white px-6 py-2 rounded"
       >
         Back to Home
       </NuxtLink>

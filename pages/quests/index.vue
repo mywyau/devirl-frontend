@@ -46,7 +46,7 @@ const quests = [
               >
               <NuxtLink
                 :to="`/quest/${quest.id}`"
-                class="text-cyan-300 hover:underline hover:text-cyan-200"
+                class="text-blue-500 hover:underline hover:text-blue-400"
               >
                 View Quest →
               </NuxtLink>

@@ -13,7 +13,7 @@
 
         <button
           @click="login"
-          class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 px-6 rounded-lg transition"
+          class="w-full bg-cyan-500 hover:bg-cyan-400 text-white font-medium py-3 px-6 rounded-lg transition"
         >
           Sign in with Auth0
         </button>
