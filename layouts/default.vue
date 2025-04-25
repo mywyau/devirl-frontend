@@ -20,13 +20,13 @@
 
     <main class="p-4">
       <slot />
-      <ConsentPopup />
+      <!-- <ConsentPopup /> -->
     </main>
   </div>
 </template>
 
 <script setup>
-import ConsentPopup from "~/components/ConsentPopup.vue";
+// import ConsentPopup from "~/components/ConsentPopup.vue";
 </script>
 
 <style scoped></style>
