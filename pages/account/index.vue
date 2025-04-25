@@ -56,7 +56,7 @@
 <script setup lang="ts">
 const statusColorMap: Record<string, string> = {
   "in progress": "text-yellow-300",
-  submitted: "text-blue-300",
+  submitted: "text-blue-400",
   completed: "text-green-300",
   failed: "text-red-300",
 };
