@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from "~/components/ui/button/variants";
+
 const quests = [
   {
     id: 1,
@@ -46,9 +48,14 @@ const quests = [
               >
               <NuxtLink
                 :to="`/quest/${quest.id}`"
-                class="text-blue-500 hover:underline hover:text-blue-400"
+                class="text-blue-400 hover:underline hover:text-blue-300"
               >
-                View Quest →
+                <Button
+                  variant="default"
+                  class="bg-blue-500 text-white rounded hover:bg-blue-400"
+                >
+                  View Quest →
+                </Button>
               </NuxtLink>
             </div>
           </div>

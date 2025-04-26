@@ -1,23 +1,52 @@
+<script setup lang="ts">
+import { Button } from "~/components/ui/button/variants";
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+const route = useRoute()
+
+const statuses = [
+  { key: "in-progress", label: "In Progress", icon: "⏳" },
+  { key: "submitted", label: "Submitted", icon: "📤" },
+  { key: "completed", label: "Completed", icon: "✅" },
+  { key: "failed", label: "Failed", icon: "❌" },
+]
+
+const isActive = (status: string) => route.path.includes(status)
+
+
+</script>
+
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto text-white">
-      <h1 class="text-3xl font-bold mb-8 capitalize">
-        Dashboard
-      </h1>
+      <Card class="bg-white/5 border-white/10 text-white">
+        <CardContent class="p-6 space-y-6">
+          <div>
+            <h1 class="text-4xl font-extrabold tracking-tight mb-1">Your Quest Dashboard</h1>
+            <p class="text-gray-400 text-base">
+              Track your progress and dive into each category below.
+            </p>
+          </div>
+          
+          <Separator />
 
-      <!-- Navigation Links -->
-      <div class="mb-6 space-x-4">
-        <NuxtLink to="/quest-dashboard/in-progress" class="text-blue-400 hover:underline">In Progress</NuxtLink>
-        <NuxtLink to="/quest-dashboard/submitted" class="text-blue-400 hover:underline">Submitted</NuxtLink>
-        <NuxtLink to="/quest-dashboard/completed" class="text-blue-400 hover:underline">Completed</NuxtLink>
-        <NuxtLink to="/quest-dashboard/failed" class="text-blue-400 hover:underline">Failed</NuxtLink>
-      </div>
+          <div class="flex flex-wrap gap-3">
+            <NuxtLink
+              v-for="status in statuses"
+              :key="status.key"
+              :to="`/quest-dashboard/${status.key}`"
+            >
+              <Button
+                :variant="isActive(status.key) ? 'default' : 'secondary'"
+                class="capitalize"
+              >
+                <!-- {{ status.icon }}  -->
+                {{ status.label }}
+              </Button>
+            </NuxtLink>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   </NuxtLayout>
 </template>
-
-
-<script setup lang="ts">
-const route = useRoute();
-
-</script>

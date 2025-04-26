@@ -1,5 +1,8 @@
 <script setup lang="ts">
 definePageMeta({ layout: "default" }); // ✅ if you want to be explicit
+
+import { Button } from "~/components/ui/button/variants";
+
 import { ref } from "vue";
 
 const title = ref("");
@@ -61,12 +64,13 @@ function submitQuest() {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
-            class="bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-400"
+            variant="default"
+            class="bg-cyan-500 text-white rounded hover:bg-cyan-400"
           >
             Create Quest
-          </button>
+          </Button>
         </form>
       </div>
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Button } from '~/components/ui/button/variants'
 </script>
 
 <template>
@@ -9,9 +10,19 @@
         <p class="text-gray-300 text-lg">
           Discover quests, earn rewards, and connect with developers and clients.
         </p>
+
         <div class="flex flex-col sm:flex-row justify-center gap-4">
-          <NuxtLink to="/quests" class="bg-cyan-500 hover:bg-cyan-400 px-6 py-3 rounded-lg text-white font-semibold transition">Explore Quests</NuxtLink>
-          <NuxtLink to="/quests/new" class="bg-white text-gray-900 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition">Post a Quest</NuxtLink>
+          <NuxtLink to="/quests">
+            <Button class="w-full sm:w-auto bg-cyan-500 hover:bg-cyan-400 text-white">
+              Explore Quests
+            </Button>
+          </NuxtLink>
+
+          <NuxtLink to="/quests/new">
+            <Button variant="secondary" class="w-full sm:w-auto">
+              Post a Quest
+            </Button>
+          </NuxtLink>
         </div>
       </div>
     </div>
