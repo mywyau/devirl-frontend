@@ -13,7 +13,7 @@
         <NuxtLink to="/quests/new" class="hover:text-gray-300"
           >Post Quest</NuxtLink
         >
-        <NuxtLink to="/account" class="hover:text-gray-300">Account</NuxtLink>
+        <NuxtLink to="/quest-dashboard" class="hover:text-gray-300">Quest Dashboard</NuxtLink>
         <NuxtLink to="/login" class="hover:text-gray-300">Login</NuxtLink>
       </nav>
     </header>
