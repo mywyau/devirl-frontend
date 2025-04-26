@@ -23,17 +23,17 @@
 
         <div>
           <span class="font-semibold">Status: </span>
-          <span class="text-yellow-300 capitalize">{{
-            quest?.status
-          }}</span>
+          <span class="text-yellow-300 capitalize">{{ quest?.status }}</span>
         </div>
 
         <div class="mt-6 flex gap-4">
-          <NuxtLink
-            :to="`/quest/${quest?.id}/submit`"
-            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500"
-          >
-            Take on quest
+          <NuxtLink :to="`/quest/${quest?.id}/submit`" class="">
+            <Button
+              variant="secondary"
+              class="bg-green-600 text-white rounded hover:bg-green-500"
+            >
+              Take on quest
+            </Button>
           </NuxtLink>
         </div>
       </div>
@@ -43,6 +43,7 @@
 
 <script setup lang="ts">
 import { createError, useAsyncData, useRoute } from "#imports";
+import { Button } from "~/components/ui/button/variants";
 
 const route = useRoute();
 
