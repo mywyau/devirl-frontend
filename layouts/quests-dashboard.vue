@@ -1,3 +1,28 @@
+<script setup lang="ts">
+// import ConsentPopup from "~/components/ConsentPopup.vue";
+
+definePageMeta({
+  middleware: "auth",
+});
+
+import { useAuth } from "@/composables/useAuth";
+
+import type { User } from "@auth0/auth0-spa-js";
+import { onMounted, ref } from "vue";
+
+const auth = useAuth();
+const user = ref<User | null>(null);
+const isLoggedIn = ref(false);
+
+onMounted(async () => {
+  isLoggedIn.value = await auth.isAuthenticated();
+  if (isLoggedIn.value) {
+    user.value = await auth.getUser();
+    console.log("Logged in user:", user.value);
+  }
+});
+</script>
+
 <template>
   <div
     class="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen text-gray-100 font-sans"
@@ -44,30 +69,5 @@
     </main>
   </div>
 </template>
-
-<script setup lang="ts">
-// import ConsentPopup from "~/components/ConsentPopup.vue";
-
-definePageMeta({
-  middleware: "auth",
-});
-
-import { useAuth } from "@/composables/useAuth";
-
-import type { User } from "@auth0/auth0-spa-js";
-import { onMounted, ref } from "vue";
-
-const auth = useAuth();
-const user = ref<User | null>(null);
-const isLoggedIn = ref(false);
-
-onMounted(async () => {
-  isLoggedIn.value = await auth.isAuthenticated();
-  if (isLoggedIn.value) {
-    user.value = await auth.getUser();
-    console.log("Logged in user:", user.value);
-  }
-});
-</script>
 
 <style scoped></style>
