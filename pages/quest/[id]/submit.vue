@@ -27,7 +27,7 @@
               v-model="submission.link"
               type="url"
               required
-              placeholder="https://github.com/your-pr"
+              placeholder="e.g. https://github.com/your-pr"
               class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>

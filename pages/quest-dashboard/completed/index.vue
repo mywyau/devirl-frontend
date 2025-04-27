@@ -53,6 +53,13 @@
 
 <script setup lang="ts">
 
+definePageMeta({
+  middleware: "auth",
+  // layout: "quest-dashboard",
+});
+
+const { isLoggedIn } = useUser();
+
 import { Button } from "~/components/ui/button/variants";
 
 const statusColorMap: Record<string, string> = {

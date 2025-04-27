@@ -38,6 +38,12 @@
 
 
 <script setup lang="ts">
+
+definePageMeta({
+  middleware: "auth",
+  // layout: "quest-dashboard",
+});
+
 const statusColorMap: Record<string, string> = {
   "in progress": "text-yellow-300",
   submitted: "text-blue-400",
