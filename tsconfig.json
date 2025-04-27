@@ -4,13 +4,14 @@
     "types",
     "composables",
     "plugins",
+    "runtimeConfig.d.ts",
     "nuxt.config.ts",
     ".nuxt", // ← Add this line
     "utils/authUtils.ts"
-  ],
-//   "paths": {
-//   "~/*": ["./*"],
-//   "@/*": ["./*"],
-//   "@utils/*": ["./utils/*"]
-// }
+  ]
+  //   "paths": {
+  //   "~/*": ["./*"],
+  //   "@/*": ["./*"],
+  //   "@utils/*": ["./utils/*"]
+  // }
 }
