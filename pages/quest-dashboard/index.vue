@@ -1,33 +1,47 @@
 <script setup lang="ts">
+
+definePageMeta({
+  middleware: "auth",
+  // layout: "quest-dashboard",
+});
+
+import { useUser } from "~/composables/useUser";
+import { computed } from "vue";
+import { useRoute } from "nuxt/app";
+
 import { Button } from "~/components/ui/button/variants";
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-const route = useRoute()
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
+// Route + status tab helpers
+const route = useRoute();
 
 const statuses = [
   { key: "in-progress", label: "In Progress", icon: "⏳" },
   { key: "submitted", label: "Submitted", icon: "📤" },
   { key: "completed", label: "Completed", icon: "✅" },
   { key: "failed", label: "Failed", icon: "❌" },
-]
+];
 
-const isActive = (status: string) => route.path.includes(status)
+const isActive = (status: string) => route.path.includes(status);
 
-
+// Auth check (just for display, no gating)
+const { isLoggedIn } = useUser();
 </script>
-
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto text-white">
       <Card class="bg-white/5 border-white/10 text-white">
         <CardContent class="p-6 space-y-6">
           <div>
-            <h1 class="text-4xl font-extrabold tracking-tight mb-1">Your Quest Dashboard</h1>
+            <h1 class="text-4xl font-extrabold tracking-tight mb-1">
+              Your Quest Dashboard
+            </h1>
             <p class="text-gray-400 text-base">
               Track your progress and dive into each category below.
             </p>
           </div>
-          
+
           <Separator />
 
           <div class="flex flex-wrap gap-3">
@@ -40,7 +54,6 @@ const isActive = (status: string) => route.path.includes(status)
                 :variant="isActive(status.key) ? 'default' : 'secondary'"
                 class="capitalize"
               >
-                <!-- {{ status.icon }}  -->
                 {{ status.label }}
               </Button>
             </NuxtLink>

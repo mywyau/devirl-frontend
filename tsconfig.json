@@ -1,4 +1,16 @@
 {
-  // https://nuxt.com/docs/guide/concepts/typescript
-  "extends": "./.nuxt/tsconfig.json"
+  "extends": "./.nuxt/tsconfig.json",
+  "include": [
+    "types",
+    "composables",
+    "plugins",
+    "nuxt.config.ts",
+    ".nuxt", // ← Add this line
+    "utils/authUtils.ts"
+  ],
+//   "paths": {
+//   "~/*": ["./*"],
+//   "@/*": ["./*"],
+//   "@utils/*": ["./utils/*"]
+// }
 }
