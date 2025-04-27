@@ -4,6 +4,10 @@ import { createAuth0Client } from "@auth0/auth0-spa-js";
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   const config = useRuntimeConfig();
+  
+  console.log("🔐 AUTH0 DOMAIN:", config.public.auth0Domain)
+  console.log("🔐 AUTH0 CLIENT ID:", config.public.auth0ClientId)
+
   const router = useRouter();
 
   const auth0 = await createAuth0Client({
