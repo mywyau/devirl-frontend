@@ -47,8 +47,6 @@ const { data: user } = await useFetch('/api/auth/session', {
 
 const callbackUrl = config.auth0CallbackUrl
 const loginUrl = `https://${config.auth0Domain}/authorize?response_type=code&client_id=${config.auth0ClientId}&redirect_uri=${config.auth0CallbackUrl}&scope=openid profile email`
-// const loginUrl = `https://dev-3cz1mwtxetvjzpjg.uk.auth0.com/authorize?response_type=code&client_id=fv24N4KfQC7bFpGrI50Ax9dVdaDwOtuN&redirect_uri=http://localhost:3000/api/auth/callback&scope=openid profile email`
-
 
 console.log('[Auth] Callback URL:', callbackUrl)
 console.log('[Auth] Login URL:', loginUrl)
