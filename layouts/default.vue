@@ -48,8 +48,8 @@ const { data: user } = await useFetch('/api/auth/session', {
 const callbackUrl = config.auth0CallbackUrl
 const loginUrl = `https://${config.auth0Domain}/authorize?response_type=code&client_id=${config.auth0ClientId}&redirect_uri=${config.auth0CallbackUrl}&scope=openid profile email`
 
-console.log('[Auth] Callback URL:', callbackUrl)
-console.log('[Auth] Login URL:', loginUrl)
+// console.log('[Auth] Callback URL:', callbackUrl)
+// console.log('[Auth] Login URL:', loginUrl)
 
 const logout = async () => {
   await fetch('/api/auth/logout', { credentials: 'include' })
