@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
 
   // Get user info using access token
   const user = await getUserInfo(access_token)
-
+  console.log(user)
   // Create session
   const session = await getIronSession(event.node.req, event.node.res, sessionOptions)
   session.user = user
