@@ -8,7 +8,10 @@
     "nuxt.config.ts",
     ".nuxt", // ← Add this line
     "utils/authUtils.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "types": ["@types/node", "./types/session"]
+  }
   //   "paths": {
   //   "~/*": ["./*"],
   //   "@/*": ["./*"],
