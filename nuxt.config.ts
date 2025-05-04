@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  nitro: {
+    preset: "node", 
+  },
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
   modules: ["@nuxtjs/tailwindcss"],
@@ -16,7 +19,7 @@ export default defineNuxtConfig({
       auth0Domain: process.env.NUXT_PUBLIC_AUTH0_DOMAIN,
       auth0ClientId: process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID,
       auth0Audience: process.env.NUXT_PUBLIC_AUTH0_AUDIENCE,
-      auth0CallbackUrl: process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL, // ← Add this
+      auth0CallbackUrl: process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL,
     },
     auth0ClientSecret: process.env.AUTH0_CLIENT_SECRET, // private by default
   },

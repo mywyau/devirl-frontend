@@ -51,6 +51,9 @@ const loginUrl = `https://${config.auth0Domain}/authorize?response_type=code&cli
 // console.log('[Auth] Callback URL:', callbackUrl)
 // console.log('[Auth] Login URL:', loginUrl)
 
+// console.log('AUTH0_CLIENT_SECRET:', process.env.AUTH0_CLIENT_SECRET);
+// console.log('NUXT_PUBLIC_AUTH0_CALLBACK_URL:', process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL);
+
 const logout = async () => {
   await fetch('/api/auth/logout', { credentials: 'include' })
   window.location.href = '/'

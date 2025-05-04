@@ -12,9 +12,9 @@ const sessionOptions = {
 export default defineEventHandler(async (event) => {
   const { code } = getQuery(event)
 
-  if (!code || typeof code !== 'string') {
-    return sendRedirect(event, '/login?error=missing_code')
-  }
+  // if (!code || typeof code !== 'string') {
+  //   return sendRedirect(event, '/login?error=missing_code')
+  // }
 
   // Exchange code for tokens
   const redirectUri = `${process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL}`
