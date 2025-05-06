@@ -11,7 +11,7 @@
     "utils/authUtils.ts"
   ],
   "compilerOptions": {
-    "types": ["nuxt"],
+    "types": ["vitest/globals", "nuxt"],
     "typeRoots": ["./types", "./node_modules/@types"],
     "paths": {
       "@/*": ["./*"],
