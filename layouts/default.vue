@@ -15,14 +15,17 @@
         </template>
 
         <NuxtLink to="/quests" class="hover:text-gray-300">Quests</NuxtLink>
-        <NuxtLink to="/quests/new" class="hover:text-gray-300"
-          >Post Quest</NuxtLink
-        >
+
+        <template v-if="user">
+          <NuxtLink to="/quests/new" class="hover:text-gray-300"
+            >Post Quest</NuxtLink
+          >
+        </template>
 
         <template v-if="user">
           <NuxtLink to="/quest-dashboard" class="hover:text-gray-300"
-            >Quest Dashboard</NuxtLink
-          >
+            >Quest Dashboard
+          </NuxtLink>
           <button @click="logout" class="hover:text-red-400 text-base">
             Logout
           </button>
