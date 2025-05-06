@@ -44,8 +44,8 @@
 </template>
 
 <script setup lang="ts">
-import { Configuration } from "@/utils/configuration";
 import { useFetch } from "nuxt/app";
+import { ConfigLoader } from "~/configuration/ConfigLoader";
 
 type SessionUser = {
   name: string;
@@ -57,8 +57,7 @@ const { data: user } = await useFetch<SessionUser | null>("/api/auth/session", {
   credentials: "include",
 });
 
-const config = Configuration.getInstance();
-const loginUrl = config.loginUrl;
+const loginUrl = `${ConfigLoader.devIrlFrontend.baseUrl}/api/auth/login`;
 
 const logout = async () => {
   await fetch("/api/auth/logout", { credentials: "include" });
