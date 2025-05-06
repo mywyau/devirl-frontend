@@ -1,41 +1,38 @@
-# Nuxt Minimal Starter
+# devirl-frontend
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This is the repo for the dev-irl-frontend. On merge/push to main it will create/update AWS ECR image.
+
+It is using Nuxt3 which is a Vue based fullstack framework. Some aspects of the app utilises it's built in server/backend capabilities such as auth calls and health routes.
+
+### In dev-quest-cdk repo to deploy
+
+To manually deploy the service to the cluster and run on AWS ECS Fargate, you can run:
+
+```
+cdk deploy --all
+```
 
 ## Setup
 
 Make sure to install dependencies:
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+## Run tests
+
+```
+npm run test
+
+```
+
+## Local Dev
 
 Start the development server on `http://localhost:3000`:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
 ## Production
@@ -43,38 +40,38 @@ bun run dev
 Build the application for production:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
 Locally preview production build:
 
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Auth
 
+Auth is handled via Auth0, Redis, Cookie sessions and Scala backend (dev-quest-service)
 
-```
-npx shadcn-vue@latest add button
-```
+## Backend
+
+### dev-quest-service
+
+- Scala
+- Typelevel
+- FP heavy
+- Weaver tests
+- Auth
+- CRUD Quests
+
+This service in the future needs splitting out into auth and quests but for now leave for now.
+
+The auth components could be split out to store the cookie session in Redis. Whilst the backend still calles Redis cache to allow access/use of authenticated backend routes such as CRUD quests.
+
+## DB
+
+Postgres via doobie for now
+
+## CI/CD
+
+Github actions

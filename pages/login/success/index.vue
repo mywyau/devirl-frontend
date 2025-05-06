@@ -20,7 +20,7 @@
 
       <NuxtLink
         to="/"
-        class="block w-full text-center mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
+        class="block w-full text-center mt-4 bg-cyan-500 hover:bg-cyan-600 text-white py-2 rounded-md"
       >
         Go to Dashboard
       </NuxtLink>
