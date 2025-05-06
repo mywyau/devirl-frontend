@@ -44,18 +44,8 @@
 </template>
 
 <script setup lang="ts">
-// import { useFetch } from "#app";
-// import { useRuntimeConfig } from "#imports";
-import { useAppConfig, useFetch, useRuntimeConfig } from "nuxt/app";
-
-const appConfig = useAppConfig();
-const envConfig = useRuntimeConfig().public;
-
-console.log(appConfig.siteName);
-
-if (appConfig.featuresSwitches.payments) {
-  console.log("Payments enabled");
-}
+import { Configuration } from "@/utils/configuration";
+import { useFetch } from "nuxt/app";
 
 type SessionUser = {
   name: string;
@@ -67,16 +57,8 @@ const { data: user } = await useFetch<SessionUser | null>("/api/auth/session", {
   credentials: "include",
 });
 
-// const hasSynced = ref(false);
-
-const callbackUrl = envConfig.auth0CallbackUrl;
-const loginUrl = `https://${envConfig.auth0Domain}/authorize?response_type=code&client_id=${envConfig.auth0ClientId}&redirect_uri=${envConfig.auth0CallbackUrl}&scope=openid profile email`;
-
-// console.log('[Auth] Callback URL:', callbackUrl)
-// console.log('[Auth] Login URL:', loginUrl)
-
-// console.log('AUTH0_CLIENT_SECRET:', process.env.AUTH0_CLIENT_SECRET);
-// console.log('NUXT_PUBLIC_AUTH0_CALLBACK_URL:', process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL);
+const config = Configuration.getInstance();
+const loginUrl = config.loginUrl;
 
 const logout = async () => {
   await fetch("/api/auth/logout", { credentials: "include" });

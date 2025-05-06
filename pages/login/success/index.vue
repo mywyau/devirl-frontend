@@ -41,4 +41,5 @@ await useFetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
   method: "POST",
   credentials: "include",
 });
+
 </script>

@@ -1,17 +1,20 @@
 {
   "extends": "./.nuxt/tsconfig.json",
   "include": [
+    "nuxt.config.ts",
     "nuxt.d.ts",
+    "runtimeConfig.d.ts",
     "types",
     "composables",
     "plugins",
-    "runtimeConfig.d.ts",
-    "nuxt.config.ts",
-    ".nuxt",
-    "utils/authUtils.ts"
+    "utils",
+    "controllers",
+    "configuration",
+    ".nuxt"
   ],
   "compilerOptions": {
-    "types": ["vitest/globals", "nuxt"],
+    "baseUrl": ".",
+    "types": ["nuxt", "vitest/globals"],
     "typeRoots": ["./types", "./node_modules/@types"],
     "paths": {
       "@/*": ["./*"],
