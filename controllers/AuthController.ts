@@ -1,7 +1,14 @@
-// controllers/FrontendApiController.ts
+// controllers/AuthController.ts
 import { ConfigLoader } from "@/configuration/ConfigLoader";
+import { useFetch } from "nuxt/app";
 
-export class FrontendApiController {
+type SessionUser = {
+  name: string;
+  email: string;
+  sub: string;
+};
+
+export class AuthController {
   constructor(
     private readonly config = ConfigLoader,
     private readonly apiBasePath = "/"
@@ -27,13 +34,21 @@ export class FrontendApiController {
     return `${this.baseUrl}api/auth/callback`;
   }
 
+  async sessionRequest() {
+    return await useFetch<SessionUser | null>("/api/auth/session", {
+      credentials: "include",
+    });
+  }
+
   async logoutRequest() {
-    await fetch(this.logoutUrl(), { credentials: "include" });
-    window.location.href = "/";
+    return await useFetch(this.logoutUrl(), { credentials: "include" });
   }
 
   async loginRequest() {
-    await fetch("/api/auth/logout", { credentials: "include" });
-    window.location.href = "/";
+    fetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
+      method: "POST",
+      credentials: "include",
+    });
+    // window.location.href = "/";
   }
 }

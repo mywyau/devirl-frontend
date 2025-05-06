@@ -46,21 +46,22 @@
 <script setup lang="ts">
 import { useFetch } from "nuxt/app";
 import { ConfigLoader } from "~/configuration/ConfigLoader";
+import { AuthController } from "~/controllers/AuthController";
 
-type SessionUser = {
-  name: string;
-  email: string;
-  sub: string;
-};
+const auth = new AuthController();
 
-const { data: user } = await useFetch<SessionUser | null>("/api/auth/session", {
+// const { data: user } = await auth.sessionRequest();
+
+const { data: user } = await useFetch("/api/auth/session", {
   credentials: "include",
 });
 
 const loginUrl = `${ConfigLoader.devIrlFrontend.baseUrl}/api/auth/login`;
 
+// await auth.loginRequest()
+
 const logout = async () => {
-  await fetch("/api/auth/logout", { credentials: "include" });
+  await auth.logoutRequest();
   window.location.href = "/";
 };
 </script>

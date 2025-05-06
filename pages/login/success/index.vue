@@ -29,15 +29,16 @@
 </template>
 
 <script setup lang="ts">
-import { useFetch } from "nuxt/app";
 
 definePageMeta({ ssr: false });
 
-const { data: user } = await useFetch("/api/auth/session", {
-  credentials: "include",
-});
+import { AuthController } from "~/controllers/AuthController";
 
-await useFetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
+const auth = new AuthController();
+
+const { data: user } = await auth.sessionRequest();
+
+fetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
   method: "POST",
   credentials: "include",
 });
