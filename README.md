@@ -2,7 +2,7 @@
 
 This is the repo for the dev-irl-frontend. On merge/push to main it will create/update AWS ECR image.
 
-It is using Nuxt3 which is a Vue based fullstack framework. Some aspects of the app utilises it's built in server/backend capabilities such as auth calls and health routes. 
+It is using Nuxt3 which is a Vue based fullstack framework. Some aspects of the app utilises it's built in server/backend capabilities such as auth calls and health routes.
 
 ### In dev-quest-cdk repo to deploy
 
@@ -18,6 +18,13 @@ Make sure to install dependencies:
 
 ```bash
 npm install
+```
+
+## Run tests
+
+```
+npm run test
+
 ```
 
 ## Local Dev
@@ -65,3 +72,6 @@ The auth components could be split out to store the cookie session in Redis. Whi
 
 Postgres via doobie for now
 
+## CI/CD
+
+Github actions
