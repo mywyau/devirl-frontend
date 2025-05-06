@@ -39,3 +39,24 @@ Locally preview production build:
 ```bash
 npm run preview
 ```
+
+## Auth
+
+Auth is handled via Auth0, Redis, Cookie sessions and Scala backend (dev-quest-service)
+
+## Backend
+
+### dev-quest-service
+
+- Scala
+- Typelevel
+- FP heavy
+- Weaver tests
+- Auth
+- CRUD Quests
+
+This service in the future needs splitting out into auth and quests but for now leave for now.
+
+The auth components could be split out to store the cookie session in Redis. Whilst the backend still calles Redis cache to allow access/use of authenticated backend routes such as CRUD quests.
+
+
