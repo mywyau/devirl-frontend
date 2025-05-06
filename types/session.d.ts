@@ -4,9 +4,11 @@ import type { IronSessionData } from "iron-session";
 declare module "iron-session" {
   interface IronSessionData {
     user?: {
-      name: string;
-      email: string;
       sub: string;
+      name?: string;
+      email?: string;
+      picture?: string;
+      [key: string]: any;
     };
   }
 }

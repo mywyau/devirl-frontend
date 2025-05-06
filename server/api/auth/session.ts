@@ -13,9 +13,19 @@ const sessionOptions = {
 };
 
 export default eventHandler(async (event) => {
+
   const absoluteUrl = `http://${event.node.req.headers.host}${event.node.req.url}`;
+
+  const rawHeaders = getRequestHeaders(event);
+
+  const filteredHeaders = Object.entries(rawHeaders).filter(
+    ([, value]) => typeof value === "string"
+  ) as [string, string][];
+  
+
+
   const req = new Request(absoluteUrl, {
-    headers: getRequestHeaders(event),
+    headers: filteredHeaders,
     method: event.node.req.method,
   });
 
@@ -25,7 +35,7 @@ export default eventHandler(async (event) => {
     setHeader: (name: string, value: string) => res.headers.set(name, value),
   };
 
-  const session = await getIronSession(req, res, sessionOptions);
+  const session = await getIronSession(event.node.req, event.node.res, sessionOptions);
 
   if (!session.user) return null;
 

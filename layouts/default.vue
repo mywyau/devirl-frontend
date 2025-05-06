@@ -1,6 +1,10 @@
 <template>
-  <div class="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen text-gray-100 font-sans">
-    <header class="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
+  <div
+    class="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen text-gray-100 font-sans"
+  >
+    <header
+      class="px-6 py-4 border-b border-gray-700 flex justify-between items-center"
+    >
       <NuxtLink to="/" class="text-xl font-bold text-white hover:text-gray-300">
         Dev Irl
       </NuxtLink>
@@ -11,20 +15,21 @@
         </template>
 
         <NuxtLink to="/quests" class="hover:text-gray-300">Quests</NuxtLink>
-        <NuxtLink to="/quests/new" class="hover:text-gray-300">Post Quest</NuxtLink>
+        <NuxtLink to="/quests/new" class="hover:text-gray-300"
+          >Post Quest</NuxtLink
+        >
 
         <template v-if="user">
-          <NuxtLink to="/quest-dashboard" class="hover:text-gray-300">Quest Dashboard</NuxtLink>
-          <button @click="logout" class="hover:text-red-400 text-base">Logout</button>
+          <NuxtLink to="/quest-dashboard" class="hover:text-gray-300"
+            >Quest Dashboard</NuxtLink
+          >
+          <button @click="logout" class="hover:text-red-400 text-base">
+            Logout
+          </button>
         </template>
 
         <template v-else>
-          <a
-            :href="loginUrl"
-            class="hover:text-cyan-400 text-base"
-          >
-            Login
-          </a>
+          <a :href="loginUrl" class="hover:text-cyan-400 text-base"> Login </a>
         </template>
       </nav>
     </header>
@@ -36,17 +41,29 @@
 </template>
 
 <script setup lang="ts">
-import { useFetch } from '#app'
-import { useRuntimeConfig } from '#imports'
+import { useFetch } from "#app";
+import { useRuntimeConfig } from "#imports";
+import { onMounted, ref } from "vue";
+import { useAuth0 } from '@auth0/auth0-vue'
+// import { useSessionSync } from "~/composables/useSessionSync";
 
-const config = useRuntimeConfig().public 
+const config = useRuntimeConfig().public;
 
-const { data: user } = await useFetch('/api/auth/session', {
-  credentials: 'include',
-})
+type SessionUser = {
+  name: string;
+  email: string;
+  sub: string;
+};
 
-const callbackUrl = config.auth0CallbackUrl
-const loginUrl = `https://${config.auth0Domain}/authorize?response_type=code&client_id=${config.auth0ClientId}&redirect_uri=${config.auth0CallbackUrl}&scope=openid profile email`
+const { data: user } = await useFetch<SessionUser | null>("/api/auth/session", {
+  credentials: "include",
+});
+
+// const hasSynced = ref(false);
+
+
+const callbackUrl = config.auth0CallbackUrl;
+const loginUrl = `https://${config.auth0Domain}/authorize?response_type=code&client_id=${config.auth0ClientId}&redirect_uri=${config.auth0CallbackUrl}&scope=openid profile email`;
 
 // console.log('[Auth] Callback URL:', callbackUrl)
 // console.log('[Auth] Login URL:', loginUrl)
@@ -55,7 +72,7 @@ const loginUrl = `https://${config.auth0Domain}/authorize?response_type=code&cli
 // console.log('NUXT_PUBLIC_AUTH0_CALLBACK_URL:', process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL);
 
 const logout = async () => {
-  await fetch('/api/auth/logout', { credentials: 'include' })
-  window.location.href = '/'
-}
+  await fetch("/api/auth/logout", { credentials: "include" });
+  window.location.href = "/";
+};
 </script>

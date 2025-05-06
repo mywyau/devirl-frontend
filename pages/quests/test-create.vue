@@ -74,6 +74,24 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
+
+// import { useAuth0 } from '@auth0/auth0-vue';
+
+// const { getAccessTokenSilently, user } = useAuth0();
+
+// const accessToken = await getAccessTokenSilently();
+// const userId = user.value?.sub; // e.g., "auth0|abc123"
+
+// await fetch(`https://api.devirl.com/auth/session/${userId}`, {
+//   method: 'POST',
+//   headers: {
+//     'Content-Type': 'text/plain',
+//   },
+//   body: accessToken, // or a signed session token if you generate one
+//   credentials: 'include', // send cookies if needed
+// });
+
+
 const { data: user } = await useFetch("/api/auth/session", {
   credentials: "include",
 });

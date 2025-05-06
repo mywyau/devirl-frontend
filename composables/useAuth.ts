@@ -9,5 +9,6 @@ export const useAuth = () => {
       auth0.logout({ logoutParams: { returnTo: window.location.origin } }),
     getUser: () => auth0.getUser(),
     isAuthenticated: () => auth0.isAuthenticated(),
+    getToken: () => auth0.getTokenSilently()  // ✅ added for silent token fetch
   };
 };
