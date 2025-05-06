@@ -1,9 +1,4 @@
 <script setup lang="ts">
-// import ConsentPopup from "~/components/ConsentPopup.vue";
-
-definePageMeta({
-  middleware: "auth",
-});
 
 import { useAuth } from "@/composables/useAuth";
 
@@ -14,13 +9,9 @@ const auth = useAuth();
 const user = ref<User | null>(null);
 const isLoggedIn = ref(false);
 
-onMounted(async () => {
-  isLoggedIn.value = await auth.isAuthenticated();
-  if (isLoggedIn.value) {
-    user.value = await auth.getUser();
-    console.log("Logged in user:", user.value);
-  }
-});
+console.log(auth.getUser().value?.sub)
+console.log(auth.getToken())
+
 </script>
 
 <template>
@@ -65,7 +56,6 @@ onMounted(async () => {
 
     <main class="p-4">
       <slot />
-      <!-- <ConsentPopup /> -->
     </main>
   </div>
 </template>

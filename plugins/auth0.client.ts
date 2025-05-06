@@ -1,45 +1,18 @@
-import { defineNuxtPlugin } from "#app";
-import { useRuntimeConfig, useRouter } from "#imports";
-import { createAuth0Client } from "@auth0/auth0-spa-js";
+// plugins/auth0.client.ts
+import { defineNuxtPlugin, useRuntimeConfig } from '#imports'
+import { createAuth0 } from '@auth0/auth0-vue'
 
-export default defineNuxtPlugin(async (nuxtApp) => {
-  const config = useRuntimeConfig();
-  
-  // console.log("🔐 AUTH0 DOMAIN:", config.public.auth0Domain)
-  // console.log("🔐 AUTH0 CLIENT ID:", config.public.auth0ClientId)
+export default defineNuxtPlugin((nuxtApp) => {
+  const config = useRuntimeConfig().public
 
-  const router = useRouter();
-
-  const auth0 = await createAuth0Client({
-    domain: config.public.auth0Domain,
-    clientId: config.public.auth0ClientId,
+  nuxtApp.vueApp.use(createAuth0, {
+    domain: config.auth0Domain,
+    clientId: config.auth0ClientId,
     authorizationParams: {
-      redirect_uri: window.location.origin,
-      scope: "openid profile email",
+      redirect_uri: config.auth0CallbackUrl,
+      scope: 'openid profile email',
     },
-  });
-
-  // Handle redirect from Auth0 login
-  const isRedirect = window.location.search.includes("code=") &&
-                     window.location.search.includes("state=");
-
-  if (isRedirect) {
-    try {
-      const result = await auth0.handleRedirectCallback();
-      const redirectTo = result.appState?.target || "/";
-
-      // ONLY navigate if current path is not already the target
-      if (window.location.pathname !== redirectTo) {
-        router.replace(redirectTo);
-      } else {
-        // Clean up the URL (remove code= and state=)
-        window.history.replaceState({}, document.title, redirectTo);
-      }
-    } catch (err) {
-      console.error("Error during Auth0 redirect handling:", err);
-      router.replace("/500");
-    }
-  }
-
-  nuxtApp.provide("auth0", auth0);
-});
+    cacheLocation: 'memory', // Or 'localstorage' if needed
+    useRefreshTokens: true,
+  })
+})

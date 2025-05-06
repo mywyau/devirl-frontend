@@ -1,20 +1,21 @@
 {
   "extends": "./.nuxt/tsconfig.json",
   "include": [
+    "nuxt.d.ts",
     "types",
     "composables",
     "plugins",
     "runtimeConfig.d.ts",
     "nuxt.config.ts",
-    ".nuxt", // ← Add this line
+    ".nuxt",
     "utils/authUtils.ts"
   ],
   "compilerOptions": {
-    "types": ["@types/node", "./types/session"]
+    "types": ["vitest/globals", "nuxt"],
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "paths": {
+      "@/*": ["./*"],
+      "~/*": ["./*"]
+    }
   }
-  //   "paths": {
-  //   "~/*": ["./*"],
-  //   "@/*": ["./*"],
-  //   "@utils/*": ["./utils/*"]
-  // }
 }
