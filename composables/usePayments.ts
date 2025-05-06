@@ -1,4 +1,6 @@
-import { useFetch } from '#app'
+// import { useFetch } from '#app'
+
+import { useFetch } from "nuxt/app";
 
 const API_BASE = 'https://payments.devirl.com'; // 👈 replace with your Payment Service ALB DNS or domain
 

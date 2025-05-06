@@ -1,20 +1,21 @@
 {
   "extends": "./.nuxt/tsconfig.json",
   "include": [
+    "nuxt.d.ts",
     "types",
     "composables",
     "plugins",
     "runtimeConfig.d.ts",
     "nuxt.config.ts",
-    ".nuxt", // ← Add this line
+    ".nuxt",
     "utils/authUtils.ts"
   ],
   "compilerOptions": {
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "types": ["nuxt"],
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "paths": {
+      "@/*": ["./*"],
+      "~/*": ["./*"]
+    }
   }
-  //   "paths": {
-  //   "~/*": ["./*"],
-  //   "@/*": ["./*"],
-  //   "@utils/*": ["./utils/*"]
-  // }
 }

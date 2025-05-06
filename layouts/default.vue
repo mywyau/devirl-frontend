@@ -41,13 +41,18 @@
 </template>
 
 <script setup lang="ts">
-import { useFetch } from "#app";
-import { useRuntimeConfig } from "#imports";
-import { onMounted, ref } from "vue";
-import { useAuth0 } from '@auth0/auth0-vue'
-// import { useSessionSync } from "~/composables/useSessionSync";
+// import { useFetch } from "#app";
+// import { useRuntimeConfig } from "#imports";
+import { useAppConfig, useFetch, useRuntimeConfig } from "nuxt/app";
 
-const config = useRuntimeConfig().public;
+const appConfig = useAppConfig();
+const envConfig = useRuntimeConfig().public;
+
+console.log(appConfig.siteName);
+
+if (appConfig.featuresSwitches.payments) {
+  console.log("Payments enabled");
+}
 
 type SessionUser = {
   name: string;
@@ -61,9 +66,8 @@ const { data: user } = await useFetch<SessionUser | null>("/api/auth/session", {
 
 // const hasSynced = ref(false);
 
-
-const callbackUrl = config.auth0CallbackUrl;
-const loginUrl = `https://${config.auth0Domain}/authorize?response_type=code&client_id=${config.auth0ClientId}&redirect_uri=${config.auth0CallbackUrl}&scope=openid profile email`;
+const callbackUrl = envConfig.auth0CallbackUrl;
+const loginUrl = `https://${envConfig.auth0Domain}/authorize?response_type=code&client_id=${envConfig.auth0ClientId}&redirect_uri=${envConfig.auth0CallbackUrl}&scope=openid profile email`;
 
 // console.log('[Auth] Callback URL:', callbackUrl)
 // console.log('[Auth] Login URL:', loginUrl)

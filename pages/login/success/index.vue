@@ -29,9 +29,9 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ ssr: false });
+import { useFetch } from "nuxt/app";
 
-import { useFetch } from "#app";
+definePageMeta({ ssr: false });
 
 const { data: user } = await useFetch("/api/auth/session", {
   credentials: "include",
@@ -41,5 +41,4 @@ await useFetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
   method: "POST",
   credentials: "include",
 });
-
 </script>
