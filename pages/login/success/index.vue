@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import { useFetch } from "nuxt/app";
 
 definePageMeta({ ssr: false });
 
@@ -36,11 +37,25 @@ import { AuthController } from "~/controllers/AuthController";
 
 const auth = new AuthController();
 
-const { data: user } = await auth.sessionRequest();
+const { data: user, error: sessionError } = await auth.sessionRequest()
 
-fetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
-  method: "POST",
-  credentials: "include",
-});
+if (user.value?.sub) {
+  const { data, error } = await useFetch("/api/proxy/session", {
+    method: "POST",
+    credentials: "include",
+    body: {
+      sub: user.value.sub,
+    },
+  })
+}
 
+// const { data, error } = await useFetch("/api/proxy/session", {
+//   method: "POST",
+//   credentials: "include",
+// });
+
+// fetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
+//   method: "POST",
+//   credentials: "include",
+// });
 </script>

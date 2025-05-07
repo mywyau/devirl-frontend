@@ -50,15 +50,13 @@ import { AuthController } from "~/controllers/AuthController";
 
 const auth = new AuthController();
 
-// const { data: user } = await auth.sessionRequest();
+const { data: user } = await auth.sessionRequest();
 
-const { data: user } = await useFetch("/api/auth/session", {
-  credentials: "include",
-});
+// const { data: user } = await useFetch("/api/auth/session", {
+//   credentials: "include",
+// });
 
 const loginUrl = `${ConfigLoader.devIrlFrontend.baseUrl}/api/auth/login`;
-
-// await auth.loginRequest()
 
 const logout = async () => {
   await auth.logoutRequest();
