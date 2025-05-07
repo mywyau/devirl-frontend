@@ -1,4 +1,4 @@
-// config/static-config.ts
+// configuration/ProdAppConfig.ts
 import { z } from 'zod'
 
 const ProdAppConfigSchema = z.object({
@@ -7,14 +7,14 @@ const ProdAppConfigSchema = z.object({
     auth: z.boolean(),
   }),
   devIrlFrontend: z.object({
-    host: z.string(), // or .nullable().optional() if unset
+    host: z.string(),
     port: z.string(),
-    baseUrl: z.string().url(),
+    baseUrl: z.string(),
   }),
   devQuestBackend: z.object({
     host: z.string(),
     port: z.string(),
-    baseUrl: z.string().url(),
+    baseUrl: z.string(),
   }),
 })
 
@@ -31,7 +31,7 @@ export const ProdAppConfig = ProdAppConfigSchema.parse({
   devQuestBackend: {
     host: '',
     port: '',
-    baseUrl: 'https://api.devirl.com/',
+    baseUrl: 'https://api.devirl.com',
   },
 })
 

@@ -1,4 +1,4 @@
-// config/runtime-schema.ts
+// configuration/RuntimeConfig.ts
 import { z } from "zod";
 
 export const RuntimeConfigSchema = z.object({

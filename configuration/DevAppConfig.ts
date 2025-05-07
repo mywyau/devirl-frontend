@@ -1,4 +1,4 @@
-// config/static-config.ts
+// configuration/DevAppConfig.ts
 import { z } from 'zod'
 
 const DevAppConfigSchema = z.object({
@@ -7,14 +7,14 @@ const DevAppConfigSchema = z.object({
     auth: z.boolean(),
   }),
   devIrlFrontend: z.object({
-    host: z.string(), // or .nullable().optional() if unset
+    host: z.string(),
     port: z.string(),
-    baseUrl: z.string().url(),
+    baseUrl: z.string(),
   }),
   devQuestBackend: z.object({
     host: z.string(),
     port: z.string(),
-    baseUrl: z.string().url(),
+    baseUrl: z.string(),
   }),
 })
 
