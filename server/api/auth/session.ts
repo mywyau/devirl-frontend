@@ -22,8 +22,6 @@ export default eventHandler(async (event) => {
     ([, value]) => typeof value === "string"
   ) as [string, string][];
   
-
-
   const req = new Request(absoluteUrl, {
     headers: filteredHeaders,
     method: event.node.req.method,

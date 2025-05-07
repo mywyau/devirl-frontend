@@ -33,12 +33,29 @@ import { useFetch } from "nuxt/app";
 
 definePageMeta({ ssr: false });
 
-const { data: user } = await useFetch("/api/auth/session", {
-  credentials: "include",
-});
+import { AuthController } from "~/controllers/AuthController";
 
-await useFetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
-  method: "POST",
-  credentials: "include",
-});
+const auth = new AuthController();
+
+const { data: user, error: sessionError } = await auth.sessionRequest()
+
+if (user.value?.sub) {
+  const { data, error } = await useFetch("/api/proxy/session", {
+    method: "POST",
+    credentials: "include",
+    body: {
+      sub: user.value.sub,
+    },
+  })
+}
+
+// const { data, error } = await useFetch("/api/proxy/session", {
+//   method: "POST",
+//   credentials: "include",
+// });
+
+// fetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
+//   method: "POST",
+//   credentials: "include",
+// });
 </script>
