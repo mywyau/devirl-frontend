@@ -6,7 +6,9 @@ export default defineEventHandler(async (event) => {
   const headers = getRequestHeaders(event);
 
   const sub = body.sub;
-  const scalaUrl = `http://localhost:8080/auth/session/${encodeURIComponent(body.sub)}`
+  const scalaUrl = `http://localhost:8080/auth/session/${encodeURIComponent(
+    body.sub
+  )}`;
 
   console.log("[Proxy] Posting to Scala backend:", scalaUrl);
 
