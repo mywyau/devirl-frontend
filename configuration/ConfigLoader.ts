@@ -1,7 +1,8 @@
 // configuration/ConfigLoader.ts
-import { DevAppConfig } from './DevAppConfig'
-import { ProdAppConfig } from './ProdAppConfig'
+import { DevAppConfig } from '@/configuration/DevAppConfig'
+import { ProdAppConfig } from '@/configuration/ProdAppConfig'
 
-const isProd = process.env.NODE_ENV === 'production'
-
-export const ConfigLoader = isProd ? ProdAppConfig : DevAppConfig
+export function loadConfig() {
+  const isProd = process.env.NODE_ENV === 'production'
+  return isProd ? ProdAppConfig : DevAppConfig
+}

@@ -1,5 +1,4 @@
-// config/useValidatedRuntimeConfig.ts
-// import { useRuntimeConfig } from '#imports'
+// configuration/useValidatedRuntimeConfig.ts
 import { useRuntimeConfig } from "nuxt/app";
 import { RuntimeConfigSchema } from "./RuntimeConfig";
 

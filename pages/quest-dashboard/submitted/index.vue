@@ -39,6 +39,8 @@
 
 <script setup lang="ts">
 
+import { computed } from 'vue';
+
 definePageMeta({
   middleware: "auth",
   // layout: "quest-dashboard",

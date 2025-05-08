@@ -42,7 +42,8 @@
 </template>
 
 <script setup lang="ts">
-import { createError, useAsyncData, useRoute } from "#imports";
+
+import { useAsyncData, useRoute } from "nuxt/app";
 import { Button } from "~/components/ui/button/variants";
 
 const route = useRoute();

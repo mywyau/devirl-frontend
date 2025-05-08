@@ -1,24 +1,19 @@
 {
   "extends": "./.nuxt/tsconfig.json",
-  "include": [
-    "nuxt.config.ts",
-    "nuxt.d.ts",
-    "runtimeConfig.d.ts",
-    "types",
-    "composables",
-    "plugins",
-    "utils",
-    "controllers",
-    "configuration",
-    ".nuxt"
-  ],
   "compilerOptions": {
     "baseUrl": ".",
-    "types": ["nuxt", "vitest/globals"],
-    "typeRoots": ["./types", "./node_modules/@types"],
     "paths": {
-      "@/*": ["./*"],
-      "~/*": ["./*"]
+      "@/*": ["./*"]
     }
-  }
+  },
+  "include": [
+    ".nuxt",
+    "configuration",
+    "controllers",
+    "composables",
+    "nuxt.config.ts",
+    "plugins",
+    "types",
+    "utils"
+  ]
 }

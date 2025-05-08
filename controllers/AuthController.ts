@@ -1,5 +1,5 @@
 // controllers/AuthController.ts
-import { ConfigLoader } from "@/configuration/ConfigLoader";
+import { loadConfig } from "@/configuration/ConfigLoader";
 import { useFetch } from "nuxt/app";
 
 type SessionUser = {
@@ -10,7 +10,7 @@ type SessionUser = {
 
 export class AuthController {
   constructor(
-    private readonly config = ConfigLoader,
+    private readonly config = loadConfig(),
     private readonly apiBasePath = "/"
   ) {}
 
@@ -23,6 +23,7 @@ export class AuthController {
   }
 
   logoutUrl(): string {
+    // console.log(`${this.baseUrl}api/auth/logout`);
     return `${this.baseUrl}api/auth/logout`;
   }
 
@@ -45,10 +46,10 @@ export class AuthController {
   }
 
   async loginRequest() {
-    fetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
+    // console.log(`${this.baseUrl}auth/session/${user.value.sub}`);
+    await fetch(`${this.baseUrl}auth/session/${user.value.sub}`, {
       method: "POST",
       credentials: "include",
     });
-    // window.location.href = "/";
   }
 }

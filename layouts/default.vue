@@ -1,3 +1,20 @@
+<script setup lang="ts">
+import { loadConfig } from "@/configuration/ConfigLoader";
+import { AuthController } from "@/controllers/AuthController";
+
+const auth = new AuthController();
+
+const { data: user } = await auth.sessionRequest();
+
+const loginUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/login`;
+
+const logout = async () => {
+  await auth.logoutRequest();
+  window.location.href = "/";
+};
+</script>
+
+
 <template>
   <div
     class="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen text-gray-100 font-sans"
@@ -42,24 +59,3 @@
     </main>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useFetch } from "nuxt/app";
-import { ConfigLoader } from "~/configuration/ConfigLoader";
-import { AuthController } from "~/controllers/AuthController";
-
-const auth = new AuthController();
-
-const { data: user } = await auth.sessionRequest();
-
-// const { data: user } = await useFetch("/api/auth/session", {
-//   credentials: "include",
-// });
-
-const loginUrl = `${ConfigLoader.devIrlFrontend.baseUrl}/api/auth/login`;
-
-const logout = async () => {
-  await auth.logoutRequest();
-  window.location.href = "/";
-};
-</script>

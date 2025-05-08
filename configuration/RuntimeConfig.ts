@@ -1,10 +1,12 @@
-// config/runtime-schema.ts
+// configuration/RuntimeConfig.ts
 import { z } from "zod";
 
 export const RuntimeConfigSchema = z.object({
-  auth0Domain: z.string().url(),
-  auth0ClientId: z.string().min(1),
-  auth0CallbackUrl: z.string().url(),
+  apiBase: z.string(),
+  auth0Domain: z.string(),
+  auth0ClientId: z.string(),
+  auth0Audience: z.string(),
+  auth0CallbackUrl: z.string()
 });
 
 export type RuntimeConfig = z.infer<typeof RuntimeConfigSchema>;
