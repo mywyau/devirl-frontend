@@ -1,6 +1,5 @@
 // middleware/auth.global.ts
 
-// middleware/auth.global.ts
 export default defineNuxtRouteMiddleware(async (to) => {
   // Only run this middleware on the server
   if (process.server) {

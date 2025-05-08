@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-const config = useRuntimeConfig();
+
 const status = ref<string | null>(null);
 
 onMounted(async () => {

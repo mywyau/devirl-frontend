@@ -1,12 +1,13 @@
-// controllers/QuestBackendController.ts
 import { useFetch } from 'nuxt/app'
-import { ConfigLoader } from '@/configuration/ConfigLoader'
-import type { CreatedResponse } from '@/types/apiResponses'
+import { loadConfig } from '@/configuration/ConfigLoader'
+import type { CreatedResponse } from '@/types/ApiResponses'
 import type { CreateQuestPayload, QuestPartial } from '@/types/quests'
 
 export class QuestBackendController {
+
+  
   constructor(
-    private readonly config = ConfigLoader, // ← use default
+    private readonly config = loadConfig(),
     private readonly apiBasePath = '/dev-quest-service'
   ) {}
 
@@ -43,4 +44,4 @@ export class QuestBackendController {
     return data.value
   }
 }
-``
+

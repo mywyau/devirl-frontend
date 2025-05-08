@@ -23,7 +23,7 @@ export class AuthController {
   }
 
   logoutUrl(): string {
-    console.log(`${this.baseUrl}api/auth/logout`);
+    // console.log(`${this.baseUrl}api/auth/logout`);
     return `${this.baseUrl}api/auth/logout`;
   }
 
@@ -46,7 +46,7 @@ export class AuthController {
   }
 
   async loginRequest() {
-    console.log(`${this.baseUrl}auth/session/${user.value.sub}`);
+    // console.log(`${this.baseUrl}auth/session/${user.value.sub}`);
     await fetch(`${this.baseUrl}auth/session/${user.value.sub}`, {
       method: "POST",
       credentials: "include",

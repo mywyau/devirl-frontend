@@ -2,8 +2,6 @@
 import { useAppConfig } from "nuxt/app";
 import { Button } from "~/components/ui/button/variants";
 
-const config = useAppConfig();
-console.log(config.siteName); // → Dev Quest
 </script>
 
 <template>
