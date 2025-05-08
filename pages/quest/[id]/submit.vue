@@ -66,7 +66,6 @@
 import type { CreateQuestPayload } from '@/types/quests'
 import { QuestBackendController } from '@/controllers/QuestBackendController'
 
-
 import { ref } from "vue"
 import { useRoute } from "vue-router"
 
