@@ -61,7 +61,7 @@ async function handleSubmit() {
             type="text"
             required
             placeholder="Write a short, punchy title like 'Fix the broken login page'"
-            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
           <p class="mt-1 text-sm text-gray-400">
             Max 100 characters
@@ -80,7 +80,7 @@ async function handleSubmit() {
             v-model="questCreatePayload.description"
             rows="4"
             placeholder="What needs to be done? Be as clear and helpful as possible."
-            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           ></textarea>
         </div>
 

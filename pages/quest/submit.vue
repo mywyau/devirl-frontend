@@ -32,7 +32,7 @@
             type="url"
             required
             placeholder="e.g. https://github.com/your-pr"
-            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
         </div>
 
@@ -44,7 +44,7 @@
             v-model="submission.comment"
             rows="4"
             placeholder="Tell us anything important about your submission..."
-            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           ></textarea>
         </div>
 
