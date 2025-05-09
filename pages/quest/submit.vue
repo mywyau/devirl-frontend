@@ -32,7 +32,7 @@
             type="url"
             required
             placeholder="e.g. https://github.com/your-pr"
-            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
         </div>
 
@@ -44,7 +44,7 @@
             v-model="submission.comment"
             rows="4"
             placeholder="Tell us anything important about your submission..."
-            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           ></textarea>
         </div>
 
@@ -67,13 +67,14 @@ import type { CreateQuestPayload } from '@/types/quests'
 import { QuestBackendController } from '@/controllers/QuestBackendController'
 
 import { ref } from "vue"
-import { useRoute } from "vue-router"
 
-const route = useRoute()
+// import { useRoute } from "vue-router"
+// const route = useRoute()
+
 const questController = new QuestBackendController()
 
 const questCreatePayload = ref<CreateQuestPayload>({
-  userId: String(route.params.id),
+  userId: "",
   questId: "quest-123",
   title: "Fix the TypeScript Types in API Client",
   description: "We need help cleaning up and strongly typing our API client for better DX.",

@@ -34,7 +34,7 @@ const logout = async () => {
         <NuxtLink to="/quests" class="hover:text-gray-300">Quests</NuxtLink>
 
         <template v-if="user">
-          <NuxtLink to="/quests/new" class="hover:text-gray-300"
+          <NuxtLink to="/quest/create" class="hover:text-gray-300"
             >Post Quest</NuxtLink
           >
         </template>
