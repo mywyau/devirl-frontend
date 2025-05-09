@@ -27,7 +27,7 @@ import { Button } from "~/components/ui/button/variants";
             </Button>
           </NuxtLink>
 
-          <NuxtLink to="/quests/create">
+          <NuxtLink to="/quest/create">
             <Button variant="secondary" class="w-full sm:w-auto">
               Post a Quest
             </Button>
