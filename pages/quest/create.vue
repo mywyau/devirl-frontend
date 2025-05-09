@@ -9,8 +9,11 @@ const questCreatePayload = ref<CreateQuestPayload>({
   description: ""
 });
 
+const userId = "google-oauth2|115481780172182428557";
+
 // Create the controller
 const questController = new QuestBackendController();
+
 
 const isSubmitting = ref(false);
 const submissionSuccess = ref(false);
@@ -18,19 +21,20 @@ const submissionError = ref<string | null>(null);
 
 // Submission handler
 async function handleSubmit() {
-
   isSubmitting.value = true;
   submissionSuccess.value = false;
   submissionError.value = null;
 
   try {
-    // Only send link and comment to backend
-    const result = await questController.createQuestSubmission({
-      ...questCreatePayload
-    });
+    // Use .value to access the reactive data from the ref
+    const result = await questController.createQuest({
+      ...questCreatePayload.value
+    }, encodeURIComponent(userId));
 
     if (result) {
       submissionSuccess.value = true;
+      // Clear the form after submission
+      questCreatePayload.value = { title: "", description: "" };
     } else {
       submissionError.value = "Submission failed. Please try again.";
     }
@@ -42,6 +46,7 @@ async function handleSubmit() {
   }
 }
 </script>
+
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-4xl mx-auto text-white">
@@ -88,6 +93,7 @@ async function handleSubmit() {
           <button
             type="submit"
             class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded"
+            :disabled="isSubmitting"
           >
             Create Quest
           </button>
