@@ -67,13 +67,14 @@ import type { CreateQuestPayload } from '@/types/quests'
 import { QuestBackendController } from '@/controllers/QuestBackendController'
 
 import { ref } from "vue"
-import { useRoute } from "vue-router"
 
-const route = useRoute()
+// import { useRoute } from "vue-router"
+// const route = useRoute()
+
 const questController = new QuestBackendController()
 
 const questCreatePayload = ref<CreateQuestPayload>({
-  userId: String(route.params.id),
+  userId: "",
   questId: "quest-123",
   title: "Fix the TypeScript Types in API Client",
   description: "We need help cleaning up and strongly typing our API client for better DX.",

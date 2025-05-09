@@ -33,10 +33,10 @@
 
 <script setup lang="ts">
 import { QuestBackendController } from "@/controllers/QuestBackendController";
-import { QuestPartial } from "@/types/quests/QuestPartial";
+import { QuestPartial } from "@/types/quests";
 import { Button } from "~/components/ui/button/variants";
 
-// const route = useRoute();
+const route = useRoute();
 
 const questController = new QuestBackendController();
 
