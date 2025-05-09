@@ -31,7 +31,7 @@ export const ProdAppConfig = ProdAppConfigSchema.parse({
   devQuestBackend: {
     host: '',
     port: '',
-    baseUrl: 'https://devirl.com',
+    baseUrl: 'https://api.devirl.com',
   },
 })
 
