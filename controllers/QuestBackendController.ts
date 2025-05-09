@@ -1,6 +1,5 @@
 import { loadConfig } from "@/configuration/ConfigLoader";
 import type { CreateQuestPayload, QuestPartial } from "@/types/quests";
-import { useFetch } from "nuxt/app";
 
 export class QuestBackendController {
   constructor(
@@ -12,6 +11,10 @@ export class QuestBackendController {
     return `${this.config.devQuestBackend.baseUrl}${this.apiBasePath}`;
   }
 
+  getAllQuestUrl(userId: string): string {
+    return `${this.baseUrl}/quest/stream/${encodeURIComponent(userId)}`;
+  }
+
   getQuestUrl(questId: string): string {
     return `${this.baseUrl}/quest/${questId}`;
   }
@@ -20,16 +23,41 @@ export class QuestBackendController {
     return `${this.baseUrl}/quest/create/${userId}`;
   }
 
-  async getQuest(questId: string): Promise<QuestPartial | null> {
-    const { data, error } = await useFetch<QuestPartial>(
-      this.getQuestUrl(questId),
-      {
-        credentials: "include",
-      }
-    );
+  async getQuest(questId: string): Promise<QuestPartial> {
+    return await $fetch<QuestPartial>(this.getQuestUrl(questId), {
+      credentials: "include",
+    });
+  }
 
-    if (error.value) throw error.value;
-    return data.value;
+  /** Iterate over the ND-JSON stream coming from /quest/stream/… */
+  async *streamAllQuests(userId: string): AsyncGenerator<QuestPartial> {
+    const res = await fetch(this.getAllQuestUrl(userId), {
+      credentials: "include",
+    });
+
+    if (!res.ok || !res.body)
+      throw new Error(
+        `Streaming request failed: ${res.status} ${res.statusText}`
+      );
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (value) {
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const l of lines) yield JSON.parse(l) as QuestPartial;
+      }
+      if (done) {
+        if (buffer.trim() !== "") yield JSON.parse(buffer) as QuestPartial;
+        return;
+      }
+    }
   }
 
   async createQuest(payload: CreateQuestPayload, userId: string) {
