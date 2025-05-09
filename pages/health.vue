@@ -16,7 +16,6 @@ const status = ref<string | null>(null);
 
 onMounted(async () => {
   try {
-    //   const res = await $fetch(`${config.public.API_URL}/health`)
     const res = await $fetch(`https://api.devirl.com/health`);
     status.value = res;
   } catch (err) {

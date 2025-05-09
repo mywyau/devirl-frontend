@@ -12,7 +12,18 @@ vi.mock("nuxt/app", () => ({
 import { useFetch } from "nuxt/app";
 
 const mockConfig = {
+  featuresSwitches: {
+    auth: true,
+    payments: true,
+  },
+  devIrlFrontend: {
+    host: "",
+    port: "",
+    baseUrl: "https://api.devirl.com",
+  },
   devQuestBackend: {
+    host: "",
+    port: "",
     baseUrl: "https://api.devirl.com",
   },
 };
@@ -23,6 +34,8 @@ describe("QuestBackendController", () => {
 
   beforeEach(() => {
     controller = new QuestBackendController({
+      featuresSwitches: mockConfig.featuresSwitches,
+      devIrlFrontend: mockConfig.devIrlFrontend,
       devQuestBackend: mockConfig.devQuestBackend,
     });
     vi.resetAllMocks();
@@ -37,10 +50,10 @@ describe("QuestBackendController", () => {
       status: "NotStarted",
     };
 
-    (useFetch as vi.Mock).mockResolvedValue({
-      data: { value: mockQuest },
-      error: { value: null },
-    });
+    // (useFetch as vi.Mock).mockResolvedValue({
+    //   data: { value: mockQuest },
+    //   error: { value: null },
+    // });
 
     const result = await controller.getQuest("q123");
     expect(result).toEqual(mockQuest);
@@ -54,10 +67,10 @@ describe("QuestBackendController", () => {
 
   it("throws if getQuest() returns an error", async () => {
     const mockError = new Error("Not Found");
-    (useFetch as vi.Mock).mockResolvedValue({
-      data: { value: null },
-      error: { value: mockError },
-    });
+    // (useFetch as vi.Mock).mockResolvedValue({
+    //   data: { value: null },
+    //   error: { value: mockError },
+    // });
 
     await expect(controller.getQuest("bad-id")).rejects.toThrow("Not Found");
   });
@@ -73,18 +86,18 @@ describe("QuestBackendController", () => {
 
     const mockResponse: CreatedResponse = {
       code: "q1",
-      message: true,
+      message: "something",
     };
-    
-    (useFetch as vi.Mock).mockResolvedValue({
+
+    (fetch as vi.Mock).mockResolvedValue({
       data: { value: mockResponse },
       error: { value: null },
     });
 
-    const result = await controller.createQuest(payload);
+    const result = await controller.createQuest(payload, "USER001");
     expect(result).toEqual(mockResponse);
-    expect(useFetch).toHaveBeenCalledWith(
-      "https://api.devirl.com/dev-quest-service/quest/create",
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.devirl.com/dev-quest-service/quest/create/USER001",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -104,12 +117,12 @@ describe("QuestBackendController", () => {
     };
 
     const mockError = new Error("Server Error");
-    (useFetch as vi.Mock).mockResolvedValue({
-      data: { value: null },
-      error: { value: mockError },
-    });
+    // (fetch as vi.Mock).mockResolvedValue({
+    //   data: { value: null },
+    //   error: { value: mockError },
+    // });
 
-    await expect(controller.createQuest(payload)).rejects.toThrow(
+    await expect(controller.createQuest(payload, "")).rejects.toThrow(
       "Server Error"
     );
   });

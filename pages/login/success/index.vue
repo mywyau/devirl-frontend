@@ -28,34 +28,38 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
-import { useFetch } from "nuxt/app";
 
-definePageMeta({ ssr: false });
+definePageMeta({ ssr: false })
 
-import { AuthController } from "~/controllers/AuthController";
+import { useFetch } from 'nuxt/app'
+import { AuthController } from '~/controllers/AuthController'
 
-const auth = new AuthController();
+const auth = new AuthController()
 
+// 1️⃣ Grab the user’s sub from your AuthController
 const { data: user, error: sessionError } = await auth.sessionRequest()
-
-if (user.value?.sub) {
-  const { data, error } = await useFetch("/api/proxy/session", {
-    method: "POST",
-    credentials: "include",
-    body: {
-      sub: user.value.sub,
-    },
-  })
+if (sessionError.value) {
+  console.error('Failed to fetch session from AuthController:', sessionError.value)
 }
 
-// const { data, error } = await useFetch("/api/proxy/session", {
-//   method: "POST",
-//   credentials: "include",
-// });
+// 2️⃣ If we have a sub, POST it to your proxy
+if (user.value?.sub) {
+  const { data: proxyData, error: proxyError } = await useFetch('/api/proxy/session', {
+    method:      'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: { sub: user.value.sub }
+  })
 
-// fetch(`http://localhost:8080/auth/session/${user.value.sub}`, {
-//   method: "POST",
-//   credentials: "include",
-// });
+  if (proxyError.value) {
+    console.error('Proxy session request failed:', proxyError.value)
+  } else {
+    // proxyData.value now contains whatever your /api/proxy/session returned
+    console.log('Session write result:', proxyData.value)
+  }
+}
 </script>

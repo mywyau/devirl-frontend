@@ -23,8 +23,8 @@ export class QuestBackendController {
     return `${this.baseUrl}/quest/create/${userId}`;
   }
 
-  async getQuest(questId: string): Promise<QuestPartial> {
-    return await $fetch<QuestPartial>(this.getQuestUrl(questId), {
+  async getQuest(questId: string): Promise<Response> {
+    return await fetch(this.getQuestUrl(questId), {
       credentials: "include",
     });
   }
