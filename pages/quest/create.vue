@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { QuestBackendController } from "@/controllers/QuestBackendController";
+import { AuthController } from "@/controllers/AuthController";
 import type { CreateQuestPayload } from "@/types/quests";
 import { ref } from "vue";
 
@@ -9,11 +10,12 @@ const questCreatePayload = ref<CreateQuestPayload>({
   description: ""
 });
 
-const userId = "google-oauth2|115481780172182428557";
+const auth = new AuthController();
+
+const { data: user } = await auth.sessionRequest();
 
 // Create the controller
 const questController = new QuestBackendController();
-
 
 const isSubmitting = ref(false);
 const submissionSuccess = ref(false);
@@ -25,11 +27,13 @@ async function handleSubmit() {
   submissionSuccess.value = false;
   submissionError.value = null;
 
+  console.log(encodeURIComponent(user.value?.sub || "No user id"))
+
   try {
     // Use .value to access the reactive data from the ref
     const result = await questController.createQuest({
       ...questCreatePayload.value
-    }, encodeURIComponent(userId));
+    },  encodeURIComponent(user.value?.sub || "No user id") || "No user id");
 
     if (result) {
       submissionSuccess.value = true;
@@ -68,9 +72,7 @@ async function handleSubmit() {
             placeholder="Write a short, punchy title like 'Fix the broken login page'"
             class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
-          <p class="mt-1 text-sm text-gray-400">
-            Max 100 characters
-          </p>
+          <p class="mt-1 text-sm text-gray-400">Max 100 characters</p>
         </div>
 
         <div>
@@ -99,7 +101,9 @@ async function handleSubmit() {
           </button>
         </div>
 
-        <p v-if="submissionSuccess" class="text-green-400">Quest created successfully!</p>
+        <p v-if="submissionSuccess" class="text-green-400">
+          Quest created successfully!
+        </p>
         <p v-if="submissionError" class="text-red-400">{{ submissionError }}</p>
       </form>
     </div>

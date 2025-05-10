@@ -38,13 +38,13 @@ import { AuthController } from '~/controllers/AuthController'
 
 const auth = new AuthController()
 
-// 1️⃣ Grab the user’s sub from your AuthController
+// Grab the user’s sub from your AuthController
 const { data: user, error: sessionError } = await auth.sessionRequest()
 if (sessionError.value) {
   console.error('Failed to fetch session from AuthController:', sessionError.value)
 }
 
-// 2️⃣ If we have a sub, POST it to your proxy
+// If we have a sub, POST it to your proxy
 if (user.value?.sub) {
   const { data: proxyData, error: proxyError } = await useFetch('/api/proxy/session', {
     method:      'POST',

@@ -20,6 +20,7 @@ export class QuestBackendController {
   }
 
   createQuestUrl(userId: string): string {
+    console.log("createQuestUrl",`${this.baseUrl}/quest/create/${userId}`)
     return `${this.baseUrl}/quest/create/${userId}`;
   }
 
@@ -60,7 +61,7 @@ export class QuestBackendController {
     }
   }
 
-  async createQuest(payload: CreateQuestPayload, userId: string) {
+    async createQuest(payload: CreateQuestPayload, userId: string) {
     try {
       const res = await fetch(this.createQuestUrl(userId), {
         method: "POST",

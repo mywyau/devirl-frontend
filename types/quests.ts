@@ -9,9 +9,6 @@ export interface QuestPartial {
 }
 
 export interface CreateQuestPayload {
-  userId: string;
-  questId: string;
   title: string;
   description?: string;
-  status?: QuestStatus;
 }
