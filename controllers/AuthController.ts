@@ -11,7 +11,7 @@ type SessionUser = {
 export class AuthController {
   constructor(
     private readonly config = loadConfig(),
-    private readonly apiBasePath = "/"
+    private readonly apiBasePath = ""
   ) {}
 
   private get baseUrl(): string {

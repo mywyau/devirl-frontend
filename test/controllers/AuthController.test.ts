@@ -1,82 +1,87 @@
-// test/controllers/AuthController.test.ts
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { AuthController } from '@/controllers/AuthController'
 
-// Mock useFetch
-vi.mock('nuxt/app', () => ({
-  useFetch: vi.fn(),
+// Mock loadConfig
+vi.mock('@/configuration/ConfigLoader', () => ({
+  loadConfig: () => ({
+    devIrlFrontend: { baseUrl: 'https://devirl.com/' }
+  })
 }))
-
-import { useFetch } from 'nuxt/app'
-
-// Mock config
-const mockConfig = {
-  devIrlFrontend: {
-    baseUrl: 'http://localhost:3000',
-  },
-}
 
 describe('AuthController', () => {
   let controller: AuthController
 
   beforeEach(() => {
-    controller = new AuthController(mockConfig, '/')
+    controller = new AuthController()
+  })
+
+  it('should return correct login URL', () => {
+    expect(controller.loginUrl()).toBe('https://devirl.com/api/auth/login')
+  })
+
+  it('should return correct logout URL', () => {
+    expect(controller.logoutUrl()).toBe('https://devirl.com/api/auth/logout')
+  })
+
+  it('should return correct session URL', () => {
+    expect(controller.sessionUrl()).toBe('https://devirl.com/api/auth/session')
+  })
+
+  it('should return correct callback URL', () => {
+    expect(controller.callbackUrl()).toBe('https://devirl.com/api/auth/callback')
+  })
+})
+
+
+import { useFetch } from 'nuxt/app'
+
+// Mock useFetch
+vi.mock('nuxt/app', async () => {
+  return {
+    useFetch: vi.fn()
+  }
+})
+
+describe('AuthController - async methods', () => {
+  let controller: AuthController
+
+  beforeEach(() => {
     vi.clearAllMocks()
+    controller = new AuthController()
   })
 
-  it('returns correct login URL', () => {
-    expect(controller.loginUrl()).toBe('http://localhost:3000/api/auth/login')
-  })
-
-  it('returns correct logout URL', () => {
-    expect(controller.logoutUrl()).toBe('http://localhost:3000/api/auth/logout')
-  })
-
-  it('returns correct session URL', () => {
-    expect(controller.sessionUrl()).toBe('http://localhost:3000/api/auth/session')
-  })
-
-  it('returns correct callback URL', () => {
-    expect(controller.callbackUrl()).toBe('http://localhost:3000/api/auth/callback')
-  })
-
-  it('calls useFetch with correct params for sessionRequest', async () => {
-    const mockResponse = { data: { value: { name: 'John', email: 'a@a.com', sub: '123' } } }
-    ;(useFetch as any).mockResolvedValue(mockResponse)
+  it('calls useFetch for sessionRequest()', async () => {
+    const mockData = { data: { value: { name: 'Test', email: 'test@example.com', sub: '123' } }, error: null }
+    ;(useFetch as any).mockResolvedValueOnce(mockData)
 
     const result = await controller.sessionRequest()
     expect(useFetch).toHaveBeenCalledWith('/api/auth/session', {
-      credentials: 'include',
+      credentials: 'include'
     })
-    expect(result).toEqual(mockResponse)
+    expect(result).toEqual(mockData)
   })
 
-  it('calls useFetch with correct params for logoutRequest', async () => {
-    const mockResponse = { status: 200 }
-    ;(useFetch as any).mockResolvedValue(mockResponse)
+  it('calls useFetch for logoutRequest()', async () => {
+    const mockResult = { data: { value: null }, error: null }
+    ;(useFetch as any).mockResolvedValueOnce(mockResult)
 
     const result = await controller.logoutRequest()
-    expect(useFetch).toHaveBeenCalledWith('http://localhost:3000/api/auth/logout', {
-      credentials: 'include',
+    expect(useFetch).toHaveBeenCalledWith('https://devirl.com/api/auth/logout', {
+      credentials: 'include'
     })
-    expect(result).toEqual(mockResponse)
+    expect(result).toEqual(mockResult)
   })
 
-  it('calls fetch with correct login URL in loginRequest', async () => {
-    global.fetch = vi.fn()
+  it('calls fetch for loginRequest()', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true })
 
-    // Create a fake `user` since loginRequest uses `user.value.sub`, which is undefined in the current code.
-    const user = { value: { sub: '12345' } }
     // @ts-ignore
-    global.user = user
+    globalThis.user = { value: { sub: 'abc123' } }
 
     await controller.loginRequest()
-    expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:3000/auth/session/12345',
-      {
-        method: 'POST',
-        credentials: 'include',
-      }
-    )
+    expect(globalThis.fetch).toHaveBeenCalledWith('https://devirl.com/auth/session/abc123', {
+      method: 'POST',
+      credentials: 'include'
+    })
   })
 })
