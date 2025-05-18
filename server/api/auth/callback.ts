@@ -2,11 +2,17 @@ import { defineEventHandler, getQuery, sendRedirect } from "h3";
 import { getIronSession } from "iron-session";
 import { exchangeCodeForToken, getUserInfo } from "~/server/utils/auth0";
 
+const isProd = process.env.NODE_ENV === "production";
+
 // Session options
 const sessionOptions = {
   password: process.env.SESSION_SECRET!,
   cookieName: "auth_session",
   ttl: 60 * 60 * 8, // 8 hours
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "none", // ✅ cross-site cookie needed
+  path: "/",
+  ...(isProd && { domain: ".devirl.com", sameSite: "none" }), // only set for prod
 };
 
 export default defineEventHandler(async (event) => {

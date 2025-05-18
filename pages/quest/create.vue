@@ -1,18 +1,24 @@
 <script setup lang="ts">
 import { QuestBackendController } from "@/controllers/QuestBackendController";
-import { AuthController } from "@/controllers/AuthController";
 import type { CreateQuestPayload } from "@/types/quests";
 import { ref } from "vue";
+import { useAuthUser } from "~/composables/useAuthUser";
 
 // Form data
 const questCreatePayload = ref<CreateQuestPayload>({
   title: "",
-  description: ""
+  description: "",
 });
 
-const auth = new AuthController();
+// const auth = new AuthController();
 
-const { data: user } = await auth.sessionRequest();
+// const { data: user } = await auth.sessionRequest();
+
+const { user, error } = await useAuthUser();
+
+if (error.value) {
+  console.error("Failed to load auth session:", error.value);
+}
 
 // Create the controller
 const questController = new QuestBackendController();
@@ -27,13 +33,16 @@ async function handleSubmit() {
   submissionSuccess.value = false;
   submissionError.value = null;
 
-  console.log(encodeURIComponent(user.value?.sub || "No user id"))
+  console.log(encodeURIComponent(user.value?.sub || "No user id"));
 
   try {
     // Use .value to access the reactive data from the ref
-    const result = await questController.createQuest({
-      ...questCreatePayload.value
-    },  encodeURIComponent(user.value?.sub || "No user id") || "No user id");
+    const result = await questController.createQuest(
+      {
+        ...questCreatePayload.value,
+      },
+      encodeURIComponent(user.value?.sub || "No user id") || "No user id"
+    );
 
     if (result) {
       submissionSuccess.value = true;

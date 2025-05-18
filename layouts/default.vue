@@ -4,7 +4,13 @@ import { AuthController } from "@/controllers/AuthController";
 
 const auth = new AuthController();
 
-const { data: user } = await auth.sessionRequest();
+import { useAuthUser } from '~/composables/useAuthUser';
+
+const { user, error } = await useAuthUser();
+
+if (error.value) {
+  console.error('Failed to load auth session:', error.value);
+}
 
 const loginUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/login`;
 

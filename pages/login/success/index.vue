@@ -28,39 +28,51 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
+// definePageMeta({ ssr: false });
 
-definePageMeta({ ssr: false })
+import { useRuntimeConfig } from "nuxt/app";
+import { useAuthUser } from "~/composables/useAuthUser";
 
-import { useFetch } from 'nuxt/app'
-import { AuthController } from '~/controllers/AuthController'
+console.log("[Welcome Page] Setup running...");
 
-const auth = new AuthController()
+const config = useRuntimeConfig();
 
-// Grab the user’s sub from your AuthController
-const { data: user, error: sessionError } = await auth.sessionRequest()
-if (sessionError.value) {
-  console.error('Failed to fetch session from AuthController:', sessionError.value)
+const { user, error } = await useAuthUser();
+
+if (error.value) {
+  console.error("Failed to load auth session:", error.value);
 }
 
-// If we have a sub, POST it to your proxy
-if (user.value?.sub) {
-  const { data: proxyData, error: proxyError } = await useFetch('/api/proxy/session', {
-    method:      'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: { sub: user.value.sub }
-  })
+// 2. Call Scala backend directly
+import { onMounted } from "vue";
 
-  if (proxyError.value) {
-    console.error('Proxy session request failed:', proxyError.value)
-  } else {
-    // proxyData.value now contains whatever your /api/proxy/session returned
-    console.log('Session write result:', proxyData.value)
+onMounted(async () => {
+  if (user.value?.sub) {
+    const backendBase = config.public.apiBase || "https://api.devirl.com";
+
+    try {
+      const response = await fetch(
+        `${backendBase}/auth/session/${encodeURIComponent(user.value.sub)}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Backend session request failed:", errorText);
+      } else {
+        const result = await response.json();
+        console.log("Backend session write result:", result);
+      }
+    } catch (err) {
+      console.error("Network or fetch error:", err);
+    }
   }
-}
+});
 </script>
-
