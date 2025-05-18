@@ -4,12 +4,12 @@ import { AuthController } from "@/controllers/AuthController";
 
 const auth = new AuthController();
 
-import { useAuthUser } from '~/composables/useAuthUser';
+import { useAuthUser } from "~/composables/useAuthUser";
 
 const { user, error } = await useAuthUser();
 
 if (error.value) {
-  console.error('Failed to load auth session:', error.value);
+  console.error("Failed to load auth session:", error.value);
 }
 
 const loginUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/login`;
@@ -19,7 +19,6 @@ const logout = async () => {
   window.location.href = "/";
 };
 </script>
-
 
 <template>
   <div
@@ -47,11 +46,17 @@ const logout = async () => {
 
         <template v-if="user">
           <NuxtLink to="/quest-dashboard" class="hover:text-gray-300"
-            >Quest Dashboard
+            >Freelancer Quest Dashboard
           </NuxtLink>
+
+          <NuxtLink to="/client/quest-dashboard" class="hover:text-gray-300"
+            >Client Quests Dashboard
+          </NuxtLink>
+
           <button @click="logout" class="hover:text-red-400 text-base">
             Logout
           </button>
+
         </template>
 
         <template v-else>
