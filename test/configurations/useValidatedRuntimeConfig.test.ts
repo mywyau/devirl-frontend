@@ -1,6 +1,6 @@
 // test/configuration/useValidatedRuntimeConfig.test.ts
 import { describe, it, expect, vi } from 'vitest'
-import { useValidatedRuntimeConfig } from '@/configuration/useValidatedRuntimeConfig'
+import { useValidatedRuntimeConfig } from '../../configuration/useValidatedRuntimeConfig'
 import { useRuntimeConfig } from 'nuxt/app'
 
 vi.mock('nuxt/app', () => ({

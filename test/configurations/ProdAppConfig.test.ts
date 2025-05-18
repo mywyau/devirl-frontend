@@ -1,7 +1,7 @@
 // test/config/static-config.test.ts
-import { describe, it, expect } from 'vitest' // or 'jest'
-import { ProdAppConfig } from '@/configuration/ProdAppConfig'
-import { z } from 'zod'
+import { describe, expect, it } from "vitest"; // or 'jest'
+import { z } from "zod";
+import { ProdAppConfig } from "../../configuration/ProdAppConfig";
 
 const ProdAppConfigSchema = z.object({
   featuresSwitches: z.object({
@@ -18,46 +18,46 @@ const ProdAppConfigSchema = z.object({
     port: z.string(),
     baseUrl: z.string(),
   }),
-})
+});
 
-describe('ProdAppConfig', () => {
-  it('should have valid structure', () => {
+describe("ProdAppConfig", () => {
+  it("should have valid structure", () => {
     expect(ProdAppConfig).toMatchObject({
       featuresSwitches: {
         payments: true,
         auth: true,
       },
       devIrlFrontend: {
-        host: '',
-        port: '',
-        baseUrl: 'https://devirl.com',
+        host: "",
+        port: "",
+        baseUrl: "https://devirl.com",
       },
       devQuestBackend: {
-        host: '',
-        port: '',
-        baseUrl: 'https://devirl.com/dev-quest',
+        host: "",
+        port: "",
+        baseUrl: "https://devirl.com/dev-quest",
       },
-    })
-  })
+    });
+  });
 
-  it('should reject invalid config shape', () => {
+  it("should reject invalid config shape", () => {
     const invalidConfig = {
       featuresSwitches: {
-        payments: 'yes', // should be boolean
+        payments: "yes", // should be boolean
         auth: true,
       },
       devIrlFrontend: {
-        host: '',
-        port: '',
-        baseUrl: 'https://devirl.com',
+        host: "",
+        port: "",
+        baseUrl: "https://devirl.com",
       },
       devQuestBackend: {
-        host: '',
-        port: '',
-        baseUrl: 'https://devirl.com/dev-quest/',
+        host: "",
+        port: "",
+        baseUrl: "https://devirl.com/dev-quest/",
       },
-    }
+    };
 
-    expect(() => ProdAppConfigSchema.parse(invalidConfig)).toThrow()
-  })
-})
+    expect(() => ProdAppConfigSchema.parse(invalidConfig)).toThrow();
+  });
+});

@@ -1,6 +1,6 @@
 // test/configuration/RuntimeConfig.test.ts
 import { describe, it, expect } from 'vitest'
-import { RuntimeConfigSchema } from '@/configuration/RuntimeConfig'
+import { RuntimeConfigSchema } from '../../configuration/RuntimeConfig'
 
 describe('RuntimeConfigSchema', () => {
   const validConfig = {
