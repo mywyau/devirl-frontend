@@ -4,12 +4,12 @@ import { AuthController } from "@/controllers/AuthController";
 
 const auth = new AuthController();
 
-import { useAuthUser } from '~/composables/useAuthUser';
+import { useAuthUser } from "~/composables/useAuthUser";
 
 const { user, error } = await useAuthUser();
 
 if (error.value) {
-  console.error('Failed to load auth session:', error.value);
+  console.error("Failed to load auth session:", error.value);
 }
 
 const loginUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/login`;
@@ -19,7 +19,6 @@ const logout = async () => {
   window.location.href = "/";
 };
 </script>
-
 
 <template>
   <div
@@ -33,25 +32,38 @@ const logout = async () => {
       </NuxtLink>
 
       <nav class="space-x-6 flex items-center">
-        <template v-if="user">
-          <span class="text-sm text-white/70">Hi, {{ user.name }}</span>
-        </template>
-
-        <NuxtLink to="/quests" class="hover:text-gray-300">Quests</NuxtLink>
+        <NuxtLink to="/quests" class="hover:text-gray-300"
+          >View all quests</NuxtLink
+        >
 
         <template v-if="user">
-          <NuxtLink to="/quest/create" class="hover:text-gray-300"
-            >Post Quest</NuxtLink
-          >
-        </template>
-
-        <template v-if="user">
-          <NuxtLink to="/quest-dashboard" class="hover:text-gray-300"
-            >Quest Dashboard
+          <NuxtLink to="/client/quest/create" class="hover:text-gray-300"
+            >Create a quest
           </NuxtLink>
+
+          <NuxtLink to="/client/quest/edit" class="hover:text-gray-300"
+            >Edit a quest
+          </NuxtLink>
+
+          <NuxtLink to="/dev/quest/submit" class="hover:text-gray-300"
+            >Submit a quest
+          </NuxtLink>
+
+          <NuxtLink to="/quest-dashboard" class="hover:text-gray-300"
+            >Freelancer Quest Dashboard
+          </NuxtLink>
+
+          <NuxtLink to="/client/quest-dashboard" class="hover:text-gray-300"
+            >Client Quests Dashboard
+          </NuxtLink>
+
           <button @click="logout" class="hover:text-red-400 text-base">
             Logout
           </button>
+        </template>
+
+        <template v-if="user">
+          <span class="text-sm text-white/70">Hi, {{ user.name }}</span>
         </template>
 
         <template v-else>
