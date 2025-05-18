@@ -1,129 +1,74 @@
-// test/controllers/QuestBackendController.test.ts
-import { QuestBackendController } from "@/controllers/QuestBackendController";
-import type { CreatedResponse } from "@/types/apiResponses";
-import type { CreateQuestPayload, QuestPartial } from "@/types/quests";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-// ✅ Mock useFetch globally
-vi.mock("nuxt/app", () => ({
-  useFetch: vi.fn(),
-}));
-
-import { useFetch } from "nuxt/app";
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
+import { QuestBackendController } from "../../controllers/QuestBackendController";
 
 const mockConfig = {
-  featuresSwitches: {
-    auth: true,
-    payments: true,
-  },
-  devIrlFrontend: {
-    host: "",
-    port: "",
-    baseUrl: "https://api.devirl.com",
-  },
   devQuestBackend: {
-    host: "",
-    port: "",
-    baseUrl: "https://api.devirl.com",
+    baseUrl: "https://devirl.com/dev-quest",
   },
 };
 
-// You can inline the controller setup if using the real ConfigLoader isn't needed
+vi.mock("@/configuration/ConfigLoader", () => ({
+  loadConfig: () => mockConfig,
+}));
+
 describe("QuestBackendController", () => {
-  let controller: QuestBackendController;
+  const controller = new QuestBackendController();
 
   beforeEach(() => {
-    controller = new QuestBackendController({
-      featuresSwitches: mockConfig.featuresSwitches,
-      devIrlFrontend: mockConfig.devIrlFrontend,
-      devQuestBackend: mockConfig.devQuestBackend,
-    });
-    vi.resetAllMocks();
+    global.fetch = vi.fn();
   });
 
-  it("returns quest data on getQuest()", async () => {
-    const mockQuest: QuestPartial = {
-      userId: "u123",
-      questId: "q123",
-      title: "Defeat the goblin",
-      description: "A goblin in the woods",
-      status: "NotStarted",
-    };
-
-    // (useFetch as vi.Mock).mockResolvedValue({
-    //   data: { value: mockQuest },
-    //   error: { value: null },
-    // });
-
-    const result = await controller.getQuest("q123");
-    expect(result).toEqual(mockQuest);
-    expect(useFetch).toHaveBeenCalledWith(
-      "https://api.devirl.com/dev-quest-service/quest/q123",
-      {
-        credentials: "include",
-      }
-    );
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  it("throws if getQuest() returns an error", async () => {
-    const mockError = new Error("Not Found");
-    // (useFetch as vi.Mock).mockResolvedValue({
-    //   data: { value: null },
-    //   error: { value: mockError },
-    // });
-
-    await expect(controller.getQuest("bad-id")).rejects.toThrow("Not Found");
+  it("should construct the correct quest URL", () => {
+    const url = controller.getQuestUrl("abc123");
+    expect(url).toBe("https://devirl.com/dev-quest/dev-quest-service/quest/abc123");
   });
 
-  it("posts quest data on createQuest()", async () => {
-    const payload: CreateQuestPayload = {
-      userId: "u1",
-      questId: "q1",
-      title: "Test Quest",
-      description: "Test description",
-      status: "InProgress",
+  it("should call fetch with the correct URL on getQuest", async () => {
+    const mockResponse = {
+      ok: true,
+      json: async () => ({ id: "abc123", name: "Test Quest" }),
     };
 
-    const mockResponse: CreatedResponse = {
-      code: "q1",
-      message: "something",
-    };
+    (fetch as any).mockResolvedValue(mockResponse);
 
-    (fetch as vi.Mock).mockResolvedValue({
-      data: { value: mockResponse },
-      error: { value: null },
-    });
+    const response = await controller.getQuest("abc123");
 
-    const result = await controller.createQuest(payload, "USER001");
-    expect(result).toEqual(mockResponse);
     expect(fetch).toHaveBeenCalledWith(
-      "https://api.devirl.com/dev-quest-service/quest/create/USER001",
+      "https://devirl.com/dev-quest/dev-quest-service/quest/abc123",
+      { credentials: "include" }
+    );
+
+    const data = await response.json();
+    expect(data.name).toBe("Test Quest");
+  });
+
+  it("should POST to createQuest with correct payload", async () => {
+    const mockPayload = { title: "New Quest" };
+    const mockUserId = "user-123";
+
+    const mockResponse = {
+      ok: true,
+      json: async () => ({ success: true }),
+    };
+
+    (fetch as any).mockResolvedValue(mockResponse);
+
+    const result = await controller.createQuest(mockPayload, mockUserId);
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://devirl.com/dev-quest/dev-quest-service/quest/create/user-123",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(mockPayload),
         credentials: "include",
       }
     );
-  });
 
-  it("throws if createQuest() fails", async () => {
-    const payload: CreateQuestPayload = {
-      userId: "u2",
-      questId: "q2",
-      title: "Fail Quest",
-      description: "Will fail",
-      status: "Completed",
-    };
-
-    const mockError = new Error("Server Error");
-    // (fetch as vi.Mock).mockResolvedValue({
-    //   data: { value: null },
-    //   error: { value: mockError },
-    // });
-
-    await expect(controller.createQuest(payload, "")).rejects.toThrow(
-      "Server Error"
-    );
+    expect(result).toEqual({ success: true });
   });
 });

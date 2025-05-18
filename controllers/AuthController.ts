@@ -23,13 +23,8 @@ export class AuthController {
   }
 
   logoutUrl(): string {
-    // console.log(`${this.baseUrl}api/auth/logout`);
     return `${this.baseUrl}api/auth/logout`;
   }
-
-  // sessionUrl(): string {
-  //   return `${this.baseUrl}api/auth/session`;
-  // }
 
   callbackUrl(): string {
     return `${this.baseUrl}api/auth/callback`;
@@ -44,12 +39,4 @@ export class AuthController {
   async logoutRequest() {
     return await useFetch(this.logoutUrl(), { credentials: "include" });
   }
-
-  // async loginRequest() {
-  //   // console.log(`${this.baseUrl}auth/session/${user.value.sub}`);
-  //   await fetch(`${this.baseUrl}auth/session/${user.value.sub}`, {
-  //     method: "POST",
-  //     credentials: "include",
-  //   });
-  // }
 }
