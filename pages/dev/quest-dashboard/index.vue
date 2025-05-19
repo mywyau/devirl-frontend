@@ -45,7 +45,7 @@ const isActive = (status: string) => route.path.includes(status);
             <NuxtLink
               v-for="status in statuses"
               :key="status.key"
-              :to="`/quest-dashboard/${status.key}`"
+              :to="`/dev/quest-dashboard/${status.key}`"
             >
               <Button
                 :variant="isActive(status.key) ? 'default' : 'secondary'"

@@ -4,11 +4,8 @@ definePageMeta({
   // layout: "quest-dashboard",
 });
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
@@ -65,27 +62,67 @@ function updateQuest() {
 
           <form @submit.prevent="updateQuest" class="space-y-4">
             <div>
-              <label class="block mb-1 text-sm">Title</label>
-              <Input v-model="title" required />
+              <label
+                for="quest-title"
+                class="block mb-1 text-sm font-medium text-white"
+              >
+                Quest Title
+              </label>
+              <input
+                id="quest-title"
+                v-model="title"
+                type="text"
+                required
+                class="w-full px-4 py-2 rounded bg-white/10 text-white/80 border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              />
+              <p class="mt-1 text-sm text-gray-400">Max 100 characters</p>
             </div>
 
             <div>
-              <label class="block mb-1 text-sm">Description</label>
-              <Textarea v-model="description" rows="5" required />
+              <label
+                for="quest-description"
+                class="block mb-1 text-sm font-medium text-white"
+              >
+                Description
+              </label>
+              <textarea
+                id="quest-description"
+                v-model="description"
+                rows="4"
+                class="w-full px-4 py-2 rounded bg-white/10 text-white/80 border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              >
+              </textarea>
             </div>
 
-            <div>
-              <label class="block mb-1 text-sm">(£) Budget</label>
-              <Input type="number" v-model="budget" required min="0" />
+            <div class="pb-4">
+              <label
+                for="quest-title"
+                class="block mb-2 text-sm font-medium text-white"
+              >
+                (£) Budget
+              </label>
+              <input
+                id="quest-title"
+                v-model="budget"
+                type="number"
+                required
+                min="0"
+                class="w-full px-4 py-2 rounded bg-white/10 text-white/80 border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              />
             </div>
 
-            <Button type="submit" :disabled="loading">
+            <button
+              type="submit"
+              class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded"
+              :disabled="loading"
+            >
               {{ loading ? "Saving..." : "Update Quest" }}
-            </Button>
+            </button>
+            
           </form>
 
           <p v-if="success" class="text-green-500 text-sm">
-            ✅ Quest updated successfully!
+            Quest updated successfully!
           </p>
         </CardContent>
       </Card>

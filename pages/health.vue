@@ -16,7 +16,7 @@ const status = ref<string | null>(null);
 
 onMounted(async () => {
   try {
-    const res = await $fetch(`https://api.devirl.com/health`);
+    const res = await $fetch(`https://devirl.com/dev-quest/health`);
     status.value = res;
   } catch (err) {
     console.error("Health check failed:", err);
