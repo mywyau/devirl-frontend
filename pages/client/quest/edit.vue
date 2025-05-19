@@ -96,7 +96,7 @@ function updateQuest() {
 
             <div class="pb-4">
               <label
-                for="quest-title"
+                for="quest-budget"
                 class="block mb-2 text-sm font-medium text-white"
               >
                 (£) Budget
@@ -118,7 +118,7 @@ function updateQuest() {
             >
               {{ loading ? "Saving..." : "Update Quest" }}
             </button>
-            
+
           </form>
 
           <p v-if="success" class="text-green-500 text-sm">
