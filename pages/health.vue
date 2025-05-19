@@ -24,3 +24,5 @@ onMounted(async () => {
   }
 });
 </script>
+
+aws ecs describe-task-definition --task-definition arn:aws:ecs:us-east-1:890742562318:task/dev-quest-cluster/b6f10651b1da4a96ba22189444d03313
