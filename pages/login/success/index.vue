@@ -49,7 +49,10 @@ import { onMounted } from "vue";
 
 onMounted(async () => {
   if (user.value?.sub) {
-    const backendBase = config.public.apiBase || "https://api.devirl.com";
+    const backendBase = config.public.apiBase || "https://devirl.com/dev-quest";
+
+    console.log(`url base attempted: ${backendBase}`)
+    console.log(`url attempted: ${backendBase}/auth/session/${encodeURIComponent(user.value.sub)}`)
 
     try {
       const response = await fetch(
