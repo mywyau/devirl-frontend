@@ -20,7 +20,7 @@ export class QuestBackendController {
   }
 
   createQuestUrl(userId: string): string {
-    console.log("createQuestUrl",`${this.baseUrl}/quest/create/${userId}`)
+    console.log("createQuestUrl",`${this.baseUrl}quest/create/${userId}`)
     return `${this.baseUrl}quest/create/${userId}`;
   }
 
