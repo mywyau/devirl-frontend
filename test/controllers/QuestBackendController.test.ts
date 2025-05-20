@@ -3,7 +3,7 @@ import { QuestBackendController } from "../../controllers/QuestBackendController
 
 const mockConfig = {
   devQuestBackend: {
-    baseUrl: "https://devirl.com/dev-quest",
+    baseUrl: "https://devirl.com/dev-quest-service",
   },
 };
 
@@ -24,7 +24,7 @@ describe("QuestBackendController", () => {
 
   it("should construct the correct quest URL", () => {
     const url = controller.getQuestUrl("abc123");
-    expect(url).toBe("https://devirl.com/dev-quest/dev-quest-service/quest/abc123");
+    expect(url).toBe("https://devirl.com/dev-quest-service/quest/abc123");
   });
 
   it("should call fetch with the correct URL on getQuest", async () => {
@@ -38,7 +38,7 @@ describe("QuestBackendController", () => {
     const response = await controller.getQuest("abc123");
 
     expect(fetch).toHaveBeenCalledWith(
-      "https://devirl.com/dev-quest/dev-quest-service/quest/abc123",
+      "https://devirl.com/dev-quest-service/quest/abc123",
       { credentials: "include" }
     );
 
@@ -60,7 +60,7 @@ describe("QuestBackendController", () => {
     const result = await controller.createQuest(mockPayload, mockUserId);
 
     expect(fetch).toHaveBeenCalledWith(
-      "https://devirl.com/dev-quest/dev-quest-service/quest/create/user-123",
+      "https://devirl.com/dev-quest-service/quest/create/user-123",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

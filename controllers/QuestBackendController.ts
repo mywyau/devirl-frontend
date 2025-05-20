@@ -4,7 +4,7 @@ import type { CreateQuestPayload, QuestPartial } from "@/types/quests";
 export class QuestBackendController {
   constructor(
     private readonly config = loadConfig(),
-    private readonly apiBasePath = "/dev-quest-service"
+    private readonly apiBasePath = "/"
   ) {}
 
   private get baseUrl(): string {
@@ -12,16 +12,16 @@ export class QuestBackendController {
   }
 
   getAllQuestUrl(userId: string): string {
-    return `${this.baseUrl}/quest/stream/${encodeURIComponent(userId)}`;
+    return `${this.baseUrl}quest/stream/${encodeURIComponent(userId)}`;
   }
 
   getQuestUrl(questId: string): string {
-    return `${this.baseUrl}/quest/${questId}`;
+    return `${this.baseUrl}quest/${questId}`;
   }
 
   createQuestUrl(userId: string): string {
     console.log("createQuestUrl",`${this.baseUrl}/quest/create/${userId}`)
-    return `${this.baseUrl}/quest/create/${userId}`;
+    return `${this.baseUrl}quest/create/${userId}`;
   }
 
   async getQuest(questId: string): Promise<Response> {
