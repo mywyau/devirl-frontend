@@ -41,9 +41,9 @@ const logout = async () => {
             >Create a quest
           </NuxtLink>
 
-          <NuxtLink to="/client/quest/edit" class="hover:text-cyan-300"
+          <!-- <NuxtLink to="/client/quest/edit" class="hover:text-cyan-300"
             >Edit a quest
-          </NuxtLink>
+          </NuxtLink> -->
 
           <NuxtLink to="/dev/quest/submit" class="hover:text-cyan-300"
             >Submit a quest

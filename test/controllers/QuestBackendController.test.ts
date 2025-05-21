@@ -1,74 +1,114 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
-import { QuestBackendController } from "../../controllers/QuestBackendController";
-
-const mockConfig = {
-  devQuestBackend: {
-    baseUrl: "https://devirl.com/dev-quest-service",
-  },
-};
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { QuestBackendController } from "@/controllers/QuestBackendController";
+import { QuestPartialSchema } from "@/types/schema/QuestStatusSchema";
 
 vi.mock("@/configuration/ConfigLoader", () => ({
-  loadConfig: () => mockConfig,
+  loadConfig: () => ({
+    devQuestBackend: { baseUrl: "https://mock-backend.com" },
+  }),
 }));
 
-describe("QuestBackendController", () => {
+const mockQuestPartial = {
+  userId: "user123",
+  questId: "quest123",
+  title: "Test Quest",
+  description: "Some test description",
+  status: "InProgress",
+};
+
+
+describe("QuestBackendController URL methods", () => {
+  const controller = new QuestBackendController();
+
+  it("generates correct getQuestUrl", () => {
+    const url = controller.getQuestUrl("user1", "quest1");
+    expect(url).toBe("https://mock-backend.com/quest/user1/quest1");
+  });
+
+  it("generates correct deleteQuestUrl", () => {
+    const url = controller.deleteQuestUrl("user1", "quest1");
+    expect(url).toBe("https://mock-backend.com/quest/user1/quest1");
+  });
+
+  it("generates correct createQuestUrl", () => {
+    const url = controller.createQuestUrl("user1");
+    expect(url).toBe("https://mock-backend.com/quest/create/user1");
+  });
+
+  it("generates correct updateQuestUrl", () => {
+    const url = controller.updateQuestUrl("user1", "quest1");
+    expect(url).toBe("https://mock-backend.com/quest/update/user1/quest1");
+  });
+});
+
+describe("QuestBackendController getQuest", () => {
   const controller = new QuestBackendController();
 
   beforeEach(() => {
-    global.fetch = vi.fn();
+    vi.resetAllMocks();
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("should construct the correct quest URL", () => {
-    const url = controller.getQuestUrl("abc123");
-    expect(url).toBe("https://devirl.com/dev-quest-service/quest/abc123");
-  });
-
-  it("should call fetch with the correct URL on getQuest", async () => {
-    const mockResponse = {
+  it("returns parsed quest if valid", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      json: () => mockQuestPartial,
       ok: true,
-      json: async () => ({ id: "abc123", name: "Test Quest" }),
-    };
+    });
 
-    (fetch as any).mockResolvedValue(mockResponse);
-
-    const response = await controller.getQuest("abc123");
-
-    expect(fetch).toHaveBeenCalledWith(
-      "https://devirl.com/dev-quest-service/quest/abc123",
-      { credentials: "include" }
-    );
-
-    const data = await response.json();
-    expect(data.name).toBe("Test Quest");
+    const result = await controller.getQuest("user1", "quest123");
+    expect(result).toEqual(expect.objectContaining(mockQuestPartial));
   });
 
-  it("should POST to createQuest with correct payload", async () => {
-    const mockPayload = { title: "New Quest" };
-    const mockUserId = "user-123";
-
-    const mockResponse = {
+  it("throws error if response is invalid", async () => {
+    global.fetch = vi.fn().mockResolvedValue({
+      json: () => ({}),
       ok: true,
-      json: async () => ({ success: true }),
-    };
+    });
 
-    (fetch as any).mockResolvedValue(mockResponse);
-
-    const result = await controller.createQuest(mockPayload, mockUserId);
-
-    expect(fetch).toHaveBeenCalledWith(
-      "https://devirl.com/dev-quest-service/quest/create/user-123",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(mockPayload),
-        credentials: "include",
-      }
+    await expect(controller.getQuest("user1", "badid")).rejects.toThrow(
+      "Invalid quest data received from backend"
     );
-
-    expect(result).toEqual({ success: true });
   });
 });
+
+describe("QuestBackendController createQuest", () => {
+  const controller = new QuestBackendController();
+
+  it("POSTs the quest and returns response", async () => {
+    const mockResponse = { success: true };
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => mockResponse,
+    });
+
+    const result = await controller.createQuest({ title: "New" }, "user1");
+    expect(result).toEqual(mockResponse);
+  });
+
+  it("throws on failed request", async () => {
+    global.fetch = vi.fn().mockResolvedValue({ ok: false, statusText: "Bad" });
+
+    await expect(
+      controller.createQuest({ title: "New" }, "user1")
+    ).rejects.toThrow("Error: Bad");
+  });
+});
+
+describe("QuestBackendController deleteQuest", () => {
+  const controller = new QuestBackendController();
+
+  it("succeeds if status is ok", async () => {
+    global.fetch = vi.fn().mockResolvedValue({ ok: true });
+
+    await expect(controller.deleteQuest("user1", "q1")).resolves.toBeUndefined();
+  });
+
+  it("throws on failure", async () => {
+    global.fetch = vi.fn().mockResolvedValue({ ok: false, status: 403 });
+
+    await expect(controller.deleteQuest("user1", "q1")).rejects.toThrow(
+      "[deleteQuest] Failed with status 403"
+    );
+  });
+});
+
+

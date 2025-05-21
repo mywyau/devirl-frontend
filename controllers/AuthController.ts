@@ -30,12 +30,6 @@ export class AuthController {
     return `${this.baseUrl}api/auth/callback`;
   }
 
-  async sessionRequest() {
-    return await useFetch<SessionUser | null>("/api/auth/session", {
-      credentials: "include",
-    });
-  }
-
   async logoutRequest() {
     return await useFetch(this.logoutUrl(), { credentials: "include" });
   }

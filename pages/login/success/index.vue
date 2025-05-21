@@ -33,11 +33,13 @@
 
 import { useRuntimeConfig } from "nuxt/app";
 import { useAuthUser } from "~/composables/useAuthUser";
+import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
 
 console.log("[Welcome Page] Setup running...");
 
 const config = useRuntimeConfig();
 
+// 1. Call Nuxt3 backend server and fetch user session
 const { user, error } = await useAuthUser();
 
 if (error.value) {
@@ -49,33 +51,12 @@ import { onMounted } from "vue";
 
 onMounted(async () => {
   if (user.value?.sub) {
-    const backendBase = config.public.apiBase || "https://devirl.com/dev-quest-service";
+    const devQuestBackendAuthController = new DevQuestBackendAuthController();
 
-    console.log(`url base attempted: ${backendBase}`)
-    console.log(`url attempted: ${backendBase}/auth/session/${encodeURIComponent(user.value.sub)}`)
-
-    try {
-      const response = await fetch(
-        `${backendBase}/auth/session/${encodeURIComponent(user.value.sub)}`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+    const result =
+      await devQuestBackendAuthController.storeCookieSessionInRedis(
+        user.value?.sub || "No user id"
       );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Backend session request failed:", errorText);
-      } else {
-        const result = await response.json();
-        console.log("Backend session write result:", result);
-      }
-    } catch (err) {
-      console.error("Network or fetch error:", err);
-    }
   }
 });
 </script>

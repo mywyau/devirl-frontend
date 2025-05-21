@@ -10,10 +10,6 @@ const questCreatePayload = ref<CreateQuestPayload>({
   description: "",
 });
 
-// const auth = new AuthController();
-
-// const { data: user } = await auth.sessionRequest();
-
 const { user, error } = await useAuthUser();
 
 if (error.value) {
@@ -41,7 +37,7 @@ async function handleSubmit() {
       {
         ...questCreatePayload.value,
       },
-      encodeURIComponent(user.value?.sub || "No user id") || "No user id"
+      user.value?.sub || "No user id"
     );
 
     if (result) {
