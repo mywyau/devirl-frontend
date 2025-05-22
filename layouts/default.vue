@@ -32,26 +32,10 @@ const logout = async () => {
       </NuxtLink>
 
       <nav class="space-x-6 flex items-center">
-        <NuxtLink to="/quests" class="hover:text-cyan-300"
-          >View all quests</NuxtLink
-        >
-
         <template v-if="user">
-          <NuxtLink to="/client/quest/create" class="hover:text-cyan-300"
-            >Create a quest
-          </NuxtLink>
-
-          <!-- <NuxtLink to="/client/quest/edit" class="hover:text-cyan-300"
-            >Edit a quest
-          </NuxtLink> -->
-
-          <NuxtLink to="/dev/quest/submit" class="hover:text-cyan-300"
-            >Submit a quest
-          </NuxtLink>
-
-          <NuxtLink to="/dev/quest-dashboard" class="hover:text-cyan-300"
-            >Freelancer Quest Dashboard
-          </NuxtLink>
+          <NuxtLink to="/view-all/quests" class="hover:text-cyan-300"
+            >View all quests</NuxtLink
+          >
 
           <NuxtLink to="/client/quest-dashboard" class="hover:text-cyan-300"
             >Client Quests Dashboard

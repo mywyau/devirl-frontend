@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { QuestBackendController } from "@/controllers/QuestBackendController";
 import { onMounted, ref } from "vue";
 import { Button } from "~/components/ui/button/variants";
 import type { QuestPartial } from "@/types/quests";
+import { streamAllQuests } from "@/controllers/QuestBackendController"; // <- updated import
+import { useAuthUser } from "~/composables/useAuthUser";
 
 const quests = ref<QuestPartial[]>([]);
 const isLoading = ref(false);
@@ -13,32 +14,31 @@ const { user, userError } = await useAuthUser();
 console.log(encodeURIComponent(user.value?.sub || "No user id"));
 const safeUserId = user.value?.sub || "No user id";
 
-const controller = new QuestBackendController();
-
 async function loadAllQuests() {
   isLoading.value = true;
   try {
-    // iterate the ND-JSON stream
-    for await (const quest of controller.streamAllQuestsNew(safeUserId)) {
-      quests.value.push(quest); // every object arrives here
+    for await (const quest of streamAllQuests(safeUserId)) {
+      quests.value.push(quest);
     }
   } catch (e) {
-    console.error(e);
-    error.value = "Failed to load quests.";
+    if (e.name !== "AbortError") {
+      console.error(e);
+      error.value = "Failed to load quests.";
+    }
   } finally {
     isLoading.value = false;
   }
 }
 
 onMounted(() => {
-  loadAllQuests(); // Initial load when component is mounted
+  loadAllQuests();
 });
 </script>
 
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold mb-6 text-white">Available Quests</h1>
+      <h1 class="text-3xl font-bold mb-6 text-white">All Available Quests</h1>
 
       <div v-if="error" class="text-red-500">{{ error }}</div>
       <div v-else>
