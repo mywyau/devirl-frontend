@@ -31,7 +31,7 @@ export const DevAppConfig = DevAppConfigSchema.parse({
   devQuestBackend: {
     host: 'localhost',
     port: '8080',
-    baseUrl: 'http://localhost:8080',
+    baseUrl: 'http://localhost:8080/dev-quest-service',
   },
 })
 

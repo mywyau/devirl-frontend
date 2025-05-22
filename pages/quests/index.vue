@@ -2,28 +2,24 @@
 import { QuestBackendController } from "@/controllers/QuestBackendController";
 import { onMounted, ref } from "vue";
 import { Button } from "~/components/ui/button/variants";
+import type { QuestPartial } from "@/types/quests";
 
-// const quests = ref<any[]>([]); // Store the quests
-// const isLoading = ref(false); // Flag for loading status
-// const error = ref<string | null>(null); // Store any error messages
-
-// const userId = "google-oauth2|115481780172182428557"; // User ID
-
-// async function loadAllQuests() {
-// isLoading.value = true; // Set loading flag
-
-const quests = ref<any[]>([]);
+const quests = ref<QuestPartial[]>([]);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
-const userId = "google-oauth2|115481780172182428557";
+const { user, userError } = await useAuthUser();
+
+console.log(encodeURIComponent(user.value?.sub || "No user id"));
+const safeUserId = user.value?.sub || "No user id";
+
 const controller = new QuestBackendController();
 
 async function loadAllQuests() {
   isLoading.value = true;
   try {
     // iterate the ND-JSON stream
-    for await (const quest of controller.streamAllQuests(userId)) {
+    for await (const quest of controller.streamAllQuestsNew(safeUserId)) {
       quests.value.push(quest); // every object arrives here
     }
   } catch (e) {
@@ -60,7 +56,10 @@ onMounted(() => {
             class="border p-4 rounded-xl shadow hover:shadow-md transition bg-white/5 text-white border border-white/10"
           >
             <h2 class="text-xl font-semibold">{{ quest.title }}</h2>
-            <p class="text-gray-400 mt-2">{{ quest.description }}</p>
+            <!-- <p class="text-gray-400 mt-2">{{ quest.description }}</p> -->
+            <div class="mt-2 text-sm text-yellow-400">
+              Status: {{ quest.status }}
+            </div>
             <div class="mt-4 flex justify-between items-center">
               <span class="font-mono text-sm text-green-400">
                 💰 {{ quest.bounty || 0.0 }} ETH

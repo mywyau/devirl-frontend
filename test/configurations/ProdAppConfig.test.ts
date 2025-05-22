@@ -35,7 +35,7 @@ describe("ProdAppConfig", () => {
       devQuestBackend: {
         host: "",
         port: "",
-        baseUrl: "https://devirl.com/dev-quest",
+        baseUrl: "https://devirl.com/dev-quest-service",
       },
     });
   });
@@ -54,7 +54,7 @@ describe("ProdAppConfig", () => {
       devQuestBackend: {
         host: "",
         port: "",
-        baseUrl: "https://devirl.com/dev-quest/",
+        baseUrl: "https://devirl.com/dev-quest-service/",
       },
     };
 
