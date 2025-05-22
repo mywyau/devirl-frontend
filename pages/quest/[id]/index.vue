@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { QuestBackendController } from "@/controllers/QuestBackendController";
+import { deleteQuest, getQuest } from "@/controllers/QuestBackendController";
 import { type QuestPartial } from "@/types/quests";
 import { Button } from "~/components/ui/button/variants";
 import { useRoute } from "vue-router";
@@ -19,15 +19,10 @@ const error = ref<string | null>(null);
 const success = ref(false);
 const showError = ref(false);
 
-const questController = new QuestBackendController();
-
 async function handleDeleteQuest() {
   try {
-    await questController.deleteQuest(safeUserId, questId);
+    await deleteQuest(safeUserId, questId);
     success.value = true;
-    // await new Promise((resolve) => setTimeout(resolve, 750));
-    // Redirect or refresh
-    // navigateTo("/quests");
   } catch (err) {
     showError.value = true;
     console.error(err);
@@ -37,7 +32,7 @@ async function handleDeleteQuest() {
 onMounted(async () => {
   isLoading.value = true;
   try {
-    result.value = await questController.getQuest(safeUserId, questId);
+    result.value = await getQuest(safeUserId, questId);
   } catch (e) {
     console.error(e);
     error.value = "Failed to load quest.";

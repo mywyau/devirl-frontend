@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { QuestBackendController } from "@/controllers/QuestBackendController";
-import type { CreateQuestPayload } from "@/types/quests";
 import { ref } from "vue";
+import { createQuest } from "@/controllers/QuestBackendController"; // <- updated import
+import type { CreateQuestPayload } from "@/types/quests";
 import { useAuthUser } from "~/composables/useAuthUser";
 
 // Form data
@@ -16,9 +16,6 @@ if (error.value) {
   console.error("Failed to load auth session:", error.value);
 }
 
-// Create the controller
-const questController = new QuestBackendController();
-
 const isSubmitting = ref(false);
 const submissionSuccess = ref(false);
 const submissionError = ref<string | null>(null);
@@ -29,26 +26,26 @@ async function handleSubmit() {
   submissionSuccess.value = false;
   submissionError.value = null;
 
-  console.log(encodeURIComponent(user.value?.sub || "No user id"));
+  const userId = user.value?.sub;
+  if (!userId) {
+    submissionError.value = "User ID not available.";
+    isSubmitting.value = false;
+    return;
+  }
 
   try {
-    // Use .value to access the reactive data from the ref
-    const result = await questController.createQuest(
-      {
-        ...questCreatePayload.value,
-      },
-      user.value?.sub || "No user id"
-    );
+    const result = await createQuest(userId, {
+      ...questCreatePayload.value,
+    });
 
     if (result) {
       submissionSuccess.value = true;
-      // Clear the form after submission
       questCreatePayload.value = { title: "", description: "" };
     } else {
       submissionError.value = "Submission failed. Please try again.";
     }
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     submissionError.value = "An unexpected error occurred.";
   } finally {
     isSubmitting.value = false;

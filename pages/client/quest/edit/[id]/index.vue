@@ -1,10 +1,9 @@
 <script setup lang="ts">
 definePageMeta({
   middleware: "auth",
-  // layout: "quest-dashboard",
 });
 
-import { QuestBackendController } from "@/controllers/QuestBackendController";
+import { getQuest, updateQuest } from "@/controllers/QuestBackendController";
 import type { QuestPartial, UpdateQuestPayload } from "@/types/quests";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,12 +34,10 @@ const result = ref<QuestPartial | null>(null);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
-const questController = new QuestBackendController();
-
 onMounted(async () => {
   isLoading.value = true;
   try {
-    result.value = await questController.getQuest(safeUserId, questId);
+    result.value = await getQuest(safeUserId, questId);
     console.log(`[Edit Quest Page][getQuest]${result.value}`);
   } catch (e) {
     console.error(e);
@@ -60,7 +57,7 @@ async function handleUpdateQuest() {
   isSubmitting.value = true;
 
   try {
-    await questController.updateQuest(safeUserId, currentQuestId, {
+    await updateQuest(safeUserId, currentQuestId, {
       title: result.value.title,
       description: result.value.description ?? "",
     });
