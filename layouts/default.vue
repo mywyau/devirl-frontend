@@ -13,11 +13,7 @@ if (error.value) {
 }
 
 const loginUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/login`;
-
-const logout = async () => {
-  await auth.logoutRequest();
-  window.location.href = "/";
-};
+const logoutUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/logout`;
 </script>
 
 <template>
@@ -41,9 +37,19 @@ const logout = async () => {
             >Client Quests Dashboard
           </NuxtLink>
 
-          <button @click="logout" class="hover:text-red-400 text-base">
-            Logout
-          </button>
+          <NuxtLink to="/dev/quest-dashboard" class="hover:text-cyan-300"
+            >Dev Quests Dashboard
+          </NuxtLink>
+
+          <NuxtLink to="/dev/profile" class="hover:text-cyan-300"
+            >Dev Profile</NuxtLink
+          >
+
+          <NuxtLink to="/client/profile" class="hover:text-cyan-300"
+            >Client Profile</NuxtLink
+          >
+
+          <a :href="logoutUrl" class="hover:text-red-400 text-base"> Logout </a>
         </template>
 
         <template v-if="user">

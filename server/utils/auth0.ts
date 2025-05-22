@@ -3,8 +3,6 @@
 
 export async function exchangeCodeForToken(code: string, redirectUri: string) {
   
-  // console.log(process.env.AUTH0_CLIENT_SECRET);
-
   const res = await fetch(
     `https://${process.env.NUXT_PUBLIC_AUTH0_DOMAIN}/oauth/token`,
     {

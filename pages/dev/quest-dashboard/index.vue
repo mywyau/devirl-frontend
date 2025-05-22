@@ -32,7 +32,7 @@ const isActive = (status: string) => route.path.includes(status);
         <CardContent class="p-6 space-y-6">
           <div>
             <h1 class="text-4xl font-extrabold tracking-tight mb-1">
-              Freelancer Quest Dashboard {{ user?.sub }}
+              Dev Quest Dashboard {{ user?.sub }}
             </h1>
             <p class="text-gray-400 text-base">
               Track your progress and dive into each category below.

@@ -1,8 +1,10 @@
 <script setup lang="ts">
+
 import { ref } from "vue";
 import { createQuest } from "@/controllers/QuestBackendController"; // <- updated import
 import type { CreateQuestPayload } from "@/types/quests";
 import { useAuthUser } from "~/composables/useAuthUser";
+
 
 // Form data
 const questCreatePayload = ref<CreateQuestPayload>({
