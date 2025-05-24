@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { onMounted, ref } from "vue";
 import { Button } from "~/components/ui/button/variants";
 import type { QuestPartial } from "@/types/quests";

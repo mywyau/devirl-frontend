@@ -1,30 +1,43 @@
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
+import { loadConfig } from "@/configuration/ConfigLoader";
+
+const config = loadConfig();
+const jsonValue = ref<string | null>(null);
+
+const url = `${config.devQuestBackend.baseUrl}/health`;
+
+onMounted(async () => {
+  try {
+    console.log("Calling health check:", url);
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    console.log("Health check response:", data);
+
+    jsonValue.value = data || "unknown"; 
+  } catch (err) {
+    console.error("Health check failed:", err);
+    jsonValue.value = null;
+  }
+});
+</script>
+
+
 <template>
   <NuxtLayout>
     <div class="p-8 text-center">
       <h1 class="text-3xl font-bold">Backend Health Check</h1>
-      <p class="mt-4 text-xl" v-if="status">Status: {{ status }}</p>
+      <p class="mt-4 text-xl" v-if="jsonValue">Value: {{ jsonValue }}</p>
       <p class="mt-4 text-xl text-red-500" v-else>
         Loading or failed to fetch...
       </p>
     </div>
   </NuxtLayout>
 </template>
-
-<script setup lang="ts">
-
-const status = ref<string | null>(null);
-
-onMounted(async () => {
-  try {
-    console.log(`url attempted: https://devirl.com/dev-quest-service/health`)
-    const res = await fetch(`https://devirl.com/dev-quest-service/health`);
-    console.log(`response: ${res}`)
-    status.value = res;
-  } catch (err) {
-    console.error("Health check failed:", err);
-    status.value = null;
-  }
-});
-</script>
-
-aws ecs describe-task-definition --task-definition arn:aws:ecs:us-east-1:890742562318:task/dev-quest-cluster/b6f10651b1da4a96ba22189444d03313

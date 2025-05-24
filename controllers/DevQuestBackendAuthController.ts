@@ -21,11 +21,21 @@ export class DevQuestBackendAuthController {
     return url;
   }
 
+  private deleteSessionUrl(userId: string): string {
+    const url = `${this.baseUrl}auth/session/delete/${encodeURIComponent(
+      userId
+    )}`;
+    console.debug(`[AuthController] Computed storeSessionUrl: ${url}`);
+    return url;
+  }
+
   async storeCookieSessionInRedis(
     userId: string
   ): Promise<StoreSessionResponse> {
     const url = this.storeSessionUrl(userId);
-    console.info(`[AuthController] Storing session for user: ${userId} at ${url}`);
+    console.info(
+      `[AuthController] Storing session for user: ${userId} at ${url}`
+    );
 
     try {
       const response = await $fetch<StoreSessionResponse>(url, {
@@ -33,10 +43,78 @@ export class DevQuestBackendAuthController {
         credentials: "include",
       });
 
-      console.info(`[AuthController] Session stored successfully for user: ${userId}`, response);
+      console.info(
+        `[AuthController] Session stored successfully for user: ${userId}`,
+        response
+      );
       return response;
     } catch (error: any) {
-      console.error(`[AuthController] Failed to store session for user: ${userId}`, error);
+      console.error(
+        `[AuthController] Failed to store session for user: ${userId}`,
+        error
+      );
+      throw createReadableError(error);
+    }
+  }
+
+  async storeCookieSessionInRedisServerToServer(
+    userId: string,
+    cookieHeader: string
+  ): Promise<StoreSessionResponse> {
+    const url = this.storeSessionUrl(userId);
+    console.info(
+      `[AuthController] Storing session for user: ${userId} at ${url}`
+    );
+
+    try {
+      const response = await $fetch<StoreSessionResponse>(url, {
+        method: "POST",
+        headers: {
+          cookie: cookieHeader, // Manually inject the cookie header for server to server
+        },
+      });
+
+      console.info(
+        `[AuthController] Session stored successfully for user: ${userId}`,
+        response
+      );
+      return response;
+    } catch (error: any) {
+      console.error(
+        `[AuthController] Failed to store session for user: ${userId}`,
+        error
+      );
+      throw createReadableError(error);
+    }
+  }
+
+  async deleteCookieSessionInRedisServerToServer(
+    userId: string,
+    cookieHeader: string
+  ): Promise<StoreSessionResponse> {
+    const url = this.storeSessionUrl(userId);
+    console.info(
+      `[AuthController] Storing session for user: ${userId} at ${url}`
+    );
+
+    try {
+      const response = await $fetch<StoreSessionResponse>(url, {
+        method: "POST",
+        headers: {
+          cookie: cookieHeader, // Manually inject the cookie header for server to server
+        },
+      });
+
+      console.info(
+        `[AuthController] Session stored successfully for user: ${userId}`,
+        response
+      );
+      return response;
+    } catch (error: any) {
+      console.error(
+        `[AuthController] Failed to store session for user: ${userId}`,
+        error
+      );
       throw createReadableError(error);
     }
   }
@@ -44,7 +122,9 @@ export class DevQuestBackendAuthController {
 
 function createReadableError(error: any): Error {
   if (error?.data?.message) {
-    console.warn(`[AuthController] Backend error message: ${error.data.message}`);
+    console.warn(
+      `[AuthController] Backend error message: ${error.data.message}`
+    );
     return new Error(error.data.message);
   }
 
