@@ -93,8 +93,8 @@ export default defineEventHandler(async (event) => {
   }
 
   // ✅ Set userType into the session after fetching it
-  session.user.userType = userType;
-  await session.save(); // save updated session
+  // session.user.userType = userType;
+  // await session.save(); // save updated session
 
   // Optional cookie for frontend hints
   if (userType) {
@@ -108,5 +108,5 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return sendRedirect(event, userType ? "/" : "/social-login/sign-up");
+  return sendRedirect(event, userType ? "/" : "/choose-user-type");
 });

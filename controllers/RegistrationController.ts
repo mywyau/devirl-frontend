@@ -1,8 +1,11 @@
 // controllers/UserDataController.ts
 import { $fetch } from "ofetch";
 import { loadConfig } from "@/configuration/ConfigLoader";
-import { UserDataSchema } from "@/types/schema/UserDataSchema";
-import type { UserData } from "@/types/schema/UserDataSchema";
+import {
+  UserDataSchema,
+  UpdateUserTypeSchema,
+} from "@/types/schema/UserDataSchema";
+import type { UserData, UpdateUserType } from "@/types/schema/UserDataSchema";
 
 const config = loadConfig();
 const baseUrl = `${config.devQuestBackend.baseUrl}/`;
@@ -14,7 +17,7 @@ const createUserDataUrl = (userId: string) =>
   `${baseUrl}registration/data/create/${encodeURIComponent(userId)}`;
 
 const updateUserTypeUrl = (userId: string) =>
-  `${baseUrl}registration/data/update/${encodeURIComponent(userId)}`;
+  `${baseUrl}registration/update/type/${encodeURIComponent(userId)}`;
 
 const deleteUserDataUrl = (userId: string) =>
   `${baseUrl}registration/data/delete/${encodeURIComponent(userId)}`;
@@ -84,10 +87,13 @@ export async function updateUserType(
   userId: string,
   payload: UpdateUserTypePayload
 ) {
-  return await $fetch(updateUserUrl(userId), {
+  return await $fetch(updateUserTypeUrl(userId), {
     method: "PUT",
     credentials: "include",
     body: payload,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }
 

@@ -15,7 +15,6 @@ export const UserDataSchema = z.object({
 export type UserData = z.infer<typeof UserDataSchema>;
 
 export const UpdateUserTypeSchema = z.object({
-  userId: z.string(),
   userType: UserTypeSchema,
 });
 

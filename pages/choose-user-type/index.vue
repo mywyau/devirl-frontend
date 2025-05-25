@@ -2,10 +2,15 @@
 import { z } from "zod";
 import { ref, onMounted } from "vue";
 import ProfileItem from "@/components/ui/profile/ProfileItem";
-import { createUser } from "@/controllers/RegistrationController";
+import { updateUserType } from "@/controllers/RegistrationController";
 import { useAuthUser } from "~/composables/useAuthUser";
-import { UserDataSchema } from "@/types/schema/UserDataSchema";
-import type { UserData } from "@/types/schema/UserDataSchema";
+
+import {
+  UserDataSchema,
+  UpdateUserTypeSchema,
+} from "@/types/schema/UserDataSchema";
+import type { UserData, UpdateUserType } from "@/types/schema/UserDataSchema";
+
 import { Button } from "@/components/ui/button";
 import { navigateTo } from "nuxt/app";
 
@@ -24,22 +29,18 @@ const userTypeError = ref("");
 const { user, error } = await useAuthUser();
 const safeUserId = user.value?.sub || "No user id";
 
-const submitRole = async () => {
+const updateRole = async () => {
   userTypeError.value = "";
 
   try {
     const payload = {
-      email: user.value?.email,
-      firstName: user.value?.given_name,
-      lastName: user.value?.family_name,
       userType: role.value,
     };
 
-    const parsed: UserData = UserDataSchema.parse(payload);
+    const parsed: UpdateUserType = UpdateUserTypeSchema.parse(payload);
 
-    await createUser(safeUserId, parsed);
+    await updateUserType(safeUserId, parsed);
     userTypeSuccess.value = true;
-    navigateTo("/");
   } catch (e: any) {
     if (e instanceof z.ZodError) {
       userTypeError.value = e.errors.map((err) => err.message).join(", ");
@@ -57,7 +58,7 @@ const submitRole = async () => {
       </h1>
 
       <div class="space-y-8">
-        <form @submit.prevent="submitRole" class="space-y-4">
+        <form @submit.prevent="updateRole" class="space-y-4">
           <Select v-model="role">
             <SelectTrigger>
               <SelectValue placeholder="Select your role..." />
@@ -72,14 +73,14 @@ const submitRole = async () => {
         <div class="h-20" />
 
         <div class="mt-12">
-          <Button @click="submitRole" class="w-full" :disabled="!role">
+          <Button @click="updateRole" class="w-full" :disabled="!role">
             Continue
           </Button>
         </div>
       </div>
 
       <p v-if="userTypeSuccess" class="text-green-500 mt-4 text-sm text-center">
-        Signup successful! Redirecting...
+        Signup successful!
       </p>
 
       <p v-if="userTypeError" class="text-red-500 mt-4 text-sm text-center">
