@@ -54,6 +54,32 @@ export async function createUser(userId: string, payload: UserData) {
   }
 }
 
+export async function createUserServerToServer(
+  userId: string,
+  cookieHeader: string,
+  payload: UserData
+) {
+  const url = createUserDataUrl(userId);
+  console.log(`[createUser] POST to: ${url}`);
+  console.log("[createUser] Payload:", payload);
+
+  try {
+    const res = await $fetch(url, {
+      method: "POST",
+      headers: {
+        cookie: cookieHeader, // Manually inject the cookie header for server to server
+      },
+      body: payload,
+    });
+
+    console.log("[createUserServerToServer] Response:", res);
+    return res;
+  } catch (err) {
+    console.error("[createUserServerToServer] Error:", err);
+    throw err;
+  }
+}
+
 export async function updateUserType(
   userId: string,
   payload: UpdateUserTypePayload

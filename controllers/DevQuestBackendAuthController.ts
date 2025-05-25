@@ -12,12 +12,12 @@ export class DevQuestBackendAuthController {
 
   constructor(config = loadConfig(), private readonly apiBasePath = "/") {
     this.baseUrl = `${config.devQuestBackend.baseUrl}${apiBasePath}`;
-    console.info(`[AuthController] Initialized with base URL: ${this.baseUrl}`);
+    console.info(`[DevQuestBackendAuthController] Initialized with base URL: ${this.baseUrl}`);
   }
 
   private storeSessionUrl(userId: string): string {
     const url = `${this.baseUrl}auth/session/${encodeURIComponent(userId)}`;
-    console.debug(`[AuthController] Computed storeSessionUrl: ${url}`);
+    console.debug(`[DevQuestBackendAuthController] Computed storeSessionUrl: ${url}`);
     return url;
   }
 
@@ -25,7 +25,7 @@ export class DevQuestBackendAuthController {
     const url = `${this.baseUrl}auth/session/delete/${encodeURIComponent(
       userId
     )}`;
-    console.debug(`[AuthController] Computed storeSessionUrl: ${url}`);
+    console.debug(`[DevQuestBackendAuthController] Computed storeSessionUrl: ${url}`);
     return url;
   }
 
@@ -34,7 +34,7 @@ export class DevQuestBackendAuthController {
   ): Promise<StoreSessionResponse> {
     const url = this.storeSessionUrl(userId);
     console.info(
-      `[AuthController] Storing session for user: ${userId} at ${url}`
+      `[DevQuestBackendAuthController] Storing session for user: ${userId} at ${url}`
     );
 
     try {
@@ -44,13 +44,13 @@ export class DevQuestBackendAuthController {
       });
 
       console.info(
-        `[AuthController] Session stored successfully for user: ${userId}`,
+        `[DevQuestBackendAuthController] Session stored successfully for user: ${userId}`,
         response
       );
       return response;
     } catch (error: any) {
       console.error(
-        `[AuthController] Failed to store session for user: ${userId}`,
+        `[DevQuestBackendAuthController] Failed to store session for user: ${userId}`,
         error
       );
       throw createReadableError(error);
@@ -63,7 +63,7 @@ export class DevQuestBackendAuthController {
   ): Promise<StoreSessionResponse> {
     const url = this.storeSessionUrl(userId);
     console.info(
-      `[AuthController] Storing session for user: ${userId} at ${url}`
+      `[DevQuestBackendAuthController] Storing session for user: ${userId} at ${url}`
     );
 
     try {
@@ -75,13 +75,44 @@ export class DevQuestBackendAuthController {
       });
 
       console.info(
-        `[AuthController] Session stored successfully for user: ${userId}`,
+        `[DevQuestBackendAuthController] Session stored successfully for user: ${userId}`,
         response
       );
       return response;
     } catch (error: any) {
       console.error(
-        `[AuthController] Failed to store session for user: ${userId}`,
+        `[DevQuestBackendAuthController] Failed to store session for user: ${userId}`,
+        error
+      );
+      throw createReadableError(error);
+    }
+  }
+
+  async storeCookieSessionInRedisServerToServer(
+    userId: string,
+    cookieHeader: string
+  ): Promise<StoreSessionResponse> {
+    const url = this.storeSessionUrl(userId);
+    console.info(
+      `[DevQuestBackendAuthController] Storing session for user: ${userId} at ${url}`
+    );
+
+    try {
+      const response = await $fetch<StoreSessionResponse>(url, {
+        method: "POST",
+        headers: {
+          cookie: cookieHeader, // Manually inject the cookie header for server to server
+        },
+      });
+
+      console.info(
+        `[DevQuestBackendAuthController] Session stored successfully for user: ${userId}`,
+        response
+      );
+      return response;
+    } catch (error: any) {
+      console.error(
+        `[DevQuestBackendAuthController] Failed to store session for user: ${userId}`,
         error
       );
       throw createReadableError(error);
@@ -94,7 +125,7 @@ export class DevQuestBackendAuthController {
   ): Promise<StoreSessionResponse> {
     const url = this.storeSessionUrl(userId);
     console.info(
-      `[AuthController] Storing session for user: ${userId} at ${url}`
+      `[DevQuestBackendAuthController] Storing session for user: ${userId} at ${url}`
     );
 
     try {
@@ -106,13 +137,13 @@ export class DevQuestBackendAuthController {
       });
 
       console.info(
-        `[AuthController] Session stored successfully for user: ${userId}`,
+        `[DevQuestBackendAuthController] Session stored successfully for user: ${userId}`,
         response
       );
       return response;
     } catch (error: any) {
       console.error(
-        `[AuthController] Failed to store session for user: ${userId}`,
+        `[DevQuestBackendAuthController] Failed to store session for user: ${userId}`,
         error
       );
       throw createReadableError(error);
@@ -123,16 +154,16 @@ export class DevQuestBackendAuthController {
 function createReadableError(error: any): Error {
   if (error?.data?.message) {
     console.warn(
-      `[AuthController] Backend error message: ${error.data.message}`
+      `[DevQuestBackendAuthController] Backend error message: ${error.data.message}`
     );
     return new Error(error.data.message);
   }
 
   if (error?.message) {
-    console.warn(`[AuthController] Generic error message: ${error.message}`);
+    console.warn(`[DevQuestBackendAuthController] Generic error message: ${error.message}`);
     return new Error(error.message);
   }
 
-  console.warn(`[AuthController] Unknown error`, error);
+  console.warn(`[DevQuestBackendAuthController] Unknown error`, error);
   return new Error("Unknown error occurred while storing session");
 }
