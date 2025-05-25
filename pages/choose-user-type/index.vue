@@ -41,6 +41,13 @@ const updateRole = async () => {
 
     await updateUserType(safeUserId, parsed);
     userTypeSuccess.value = true;
+
+    await $fetch("/api/auth/refresh-session", {
+      method: "POST", // or GET if you prefer
+      credentials: "include",
+    });
+    
+    navigateTo("/");
   } catch (e: any) {
     if (e instanceof z.ZodError) {
       userTypeError.value = e.errors.map((err) => err.message).join(", ");
