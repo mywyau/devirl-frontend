@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { fetchUserData, createUserData, updateUserDataType, deleteUserData } from "@/connectors/userDataConnector";
+import {
+  fetchUserData,
+  createUserData,
+  updateUserDataType,
+  deleteUserData,
+} from "@/connectors/userDataConnector";
 import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
 import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
 import { $fetch } from "ofetch";
@@ -32,6 +37,7 @@ const mockUpdatePayload: UpdateUserTypePayload = {
 };
 
 const validUserData = {
+  userId: "abc123",
   firstName: "John",
   lastName: "Doe",
   email: "john@example.com",
@@ -57,7 +63,9 @@ describe("userDataConnector", () => {
   it("fetchUserData - throws on invalid schema", async () => {
     mockedFetch.mockResolvedValue({ invalid: true });
 
-    await expect(fetchUserData(mockUserId)).rejects.toThrow("Invalid user data received from backend");
+    await expect(fetchUserData(mockUserId)).rejects.toThrow(
+      "Invalid user data received from backend"
+    );
   });
 
   it("createUserData - posts to correct endpoint", async () => {

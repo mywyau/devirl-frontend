@@ -8,12 +8,15 @@
   },
   "include": [
     ".nuxt",
+    "nuxt.config.ts",
     "configuration",
     "controllers",
     "composables",
-    "nuxt.config.ts",
     "plugins",
     "types",
-    "utils"
+    "utils",
+    "pages",
+    "components",
+    "layouts"
   ]
 }

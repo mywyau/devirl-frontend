@@ -8,9 +8,12 @@ const baseUrl = `${config.devQuestBackend.baseUrl}/`;
 
 const endpoints = {
   get: (id: string) => `${baseUrl}user/data/${encodeURIComponent(id)}`,
-  create: (id: string) => `${baseUrl}user/data/create/${encodeURIComponent(id)}`,
-  update: (id: string) => `${baseUrl}user/data/update/${encodeURIComponent(id)}`,
-  delete: (id: string) => `${baseUrl}user/data/delete/${encodeURIComponent(id)}`,
+  create: (id: string) =>
+    `${baseUrl}user/data/create/${encodeURIComponent(id)}`,
+  update: (id: string) =>
+    `${baseUrl}user/data/update/${encodeURIComponent(id)}`,
+  delete: (id: string) =>
+    `${baseUrl}user/data/delete/${encodeURIComponent(id)}`,
 };
 
 export async function fetchUserData(userId: string) {
@@ -27,7 +30,10 @@ export async function fetchUserData(userId: string) {
   return parsed.data;
 }
 
-export async function createUserData(userId: string, payload: CreateUserPayload) {
+export async function createUserData(
+  userId: string,
+  payload: CreateUserPayload
+) {
   return await $fetch(endpoints.create(userId), {
     method: "POST",
     credentials: "include",
