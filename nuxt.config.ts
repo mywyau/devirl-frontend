@@ -1,3 +1,5 @@
+// ./nuxt.config.ts
+
 import { defineNuxtConfig } from "nuxt/config";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -21,14 +23,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase:
-        process.env.NUXT_PUBLIC_API_BASE ||
-        "http://localhost:8080/dev-quest-service",
-      auth0Domain: process.env.NUXT_PUBLIC_AUTH0_DOMAIN,
-      auth0ClientId: process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID,
-      auth0Audience: process.env.NUXT_PUBLIC_AUTH0_AUDIENCE,
-      auth0CallbackUrl: process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL,
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8080/dev-quest-service",
+      auth0Domain: process.env.NUXT_PUBLIC_AUTH0_DOMAIN || "[nuxt.config.ts][auth0Domain] config undefined, please define it",
+      auth0ClientId: process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID || "[nuxt.config.ts][auth0ClientId] config undefined, please define it",
+      auth0Audience: process.env.NUXT_PUBLIC_AUTH0_AUDIENCE || "[nuxt.config.ts][auth0Audience] config undefined, please define it",
+      auth0CallbackUrl: process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL || "[nuxt.config.ts][auth0CallbackUrl] config undefined, please define it",
     },
-    auth0ClientSecret: process.env.AUTH0_CLIENT_SECRET, // private by default
+    auth0ClientSecret: process.env.AUTH0_CLIENT_SECRET || "[nuxt.config.ts][auth0ClientSecret] config undefined, please define it",
   },
 });

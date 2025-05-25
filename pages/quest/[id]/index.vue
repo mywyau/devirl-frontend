@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { deleteQuest, getQuest } from "@/controllers/QuestBackendController";
-import { type QuestPartial } from "@/types/quests";
+import { QuestPartialSchema, type QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { Button } from "~/components/ui/button/variants";
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
+import { useAuthUser } from "~/composables/useAuthUser";
 
 const route = useRoute();
 const questId = route.params.id as string;
 
 const { user, userError } = await useAuthUser();
-
-console.log(encodeURIComponent(user.value?.sub || "No user id"));
 const safeUserId = user.value?.sub || "No user id";
 
 const result = ref<QuestPartial | null>(null);
@@ -32,7 +31,15 @@ async function handleDeleteQuest() {
 onMounted(async () => {
   isLoading.value = true;
   try {
-    result.value = await getQuest(safeUserId, questId);
+    const rawData = await getQuest(safeUserId, questId);
+    const parsed = QuestPartialSchema.safeParse(rawData);
+
+    if (!parsed.success) {
+      console.error("[QuestPage] Invalid quest data", parsed.error);
+      error.value = "Invalid quest data received.";
+    } else {
+      result.value = parsed.data;
+    }
   } catch (e) {
     console.error(e);
     error.value = "Failed to load quest.";
@@ -41,6 +48,7 @@ onMounted(async () => {
   }
 });
 </script>
+
 
 <template>
   <NuxtLayout>

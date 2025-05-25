@@ -40,6 +40,7 @@ const updateRole = async () => {
     const parsed: UpdateUserType = UpdateUserTypeSchema.parse(payload);
 
     await updateUserType(safeUserId, parsed);
+
     userTypeSuccess.value = true;
 
     await $fetch("/api/auth/refresh-session", {
@@ -86,13 +87,10 @@ const updateRole = async () => {
         </div>
       </div>
 
-      <p v-if="userTypeSuccess" class="text-green-500 mt-4 text-sm text-center">
-        Signup successful!
-      </p>
-
       <p v-if="userTypeError" class="text-red-500 mt-4 text-sm text-center">
         {{ userTypeError }}
       </p>
+      
     </div>
   </NuxtLayout>
 </template>

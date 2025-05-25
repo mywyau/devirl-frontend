@@ -1,105 +1,40 @@
-// controllers/UserDataController.ts
-import { $fetch } from "ofetch";
+// ./controllers/RegistrationController.ts (or connectors/registration.ts)
+
 import { loadConfig } from "@/configuration/ConfigLoader";
-import {
-  UserDataSchema,
-  UpdateUserTypeSchema,
-} from "@/types/schema/UserDataSchema";
-import type { UserData, UpdateUserType } from "@/types/schema/UserDataSchema";
+import { $fetch } from "ofetch";
+import { UserDataSchema } from "@/types/schema/UserDataSchema";
+import type { UserData, UpdateUserTypePayload } from "@/types/schema/UserDataSchema";
 
 const config = loadConfig();
-const baseUrl = `${config.devQuestBackend.baseUrl}/`;
+const baseUrl = config.devQuestBackend.baseUrl;
 
-const getUserDataUrl = (userId: string) =>
-  `${baseUrl}registration/data/${encodeURIComponent(userId)}`;
+const registrationUrl = (path: string, userId: string) =>
+  `${baseUrl}/registration/${path}/${encodeURIComponent(userId)}`;
 
-const createUserDataUrl = (userId: string) =>
-  `${baseUrl}registration/data/create/${encodeURIComponent(userId)}`;
 
-const updateUserTypeUrl = (userId: string) =>
-  `${baseUrl}registration/update/type/${encodeURIComponent(userId)}`;
-
-const deleteUserDataUrl = (userId: string) =>
-  `${baseUrl}registration/data/delete/${encodeURIComponent(userId)}`;
-
-export async function getUser(userId: string) {
-  const res = await $fetch(getUserDataUrl(userId), {
-    credentials: "include",
-  });
-
-  const result = UserDataSchema.safeParse(res);
-
-  if (!result.success) {
-    console.error("[getUser] Invalid user data", result.error);
-    throw new Error("Invalid user data received from backend");
-  }
-
-  return result.data;
-}
-
-export async function createUser(userId: string, payload: UserData) {
-  const url = createUserDataUrl(userId);
-  console.log(`[createUser] POST to: ${url}`);
-  console.log("[createUser] Payload:", payload);
-
-  try {
-    const res = await $fetch(url, {
-      method: "POST",
-      credentials: "include",
-      body: payload,
-    });
-
-    console.log("[createUser] Response:", res);
-    return res;
-  } catch (err) {
-    console.error("[createUser] Error:", err);
-    throw err;
-  }
-}
-
-export async function createUserServerToServer(
+export async function createUserNuxtServerToScalaServer(
   userId: string,
   cookieHeader: string,
   payload: UserData
 ) {
-  const url = createUserDataUrl(userId);
-  console.log(`[createUser] POST to: ${url}`);
-  console.log("[createUser] Payload:", payload);
-
-  try {
-    const res = await $fetch(url, {
-      method: "POST",
-      headers: {
-        cookie: cookieHeader, // Manually inject the cookie header for server to server
-      },
-      body: payload,
-    });
-
-    console.log("[createUserServerToServer] Response:", res);
-    return res;
-  } catch (err) {
-    console.error("[createUserServerToServer] Error:", err);
-    throw err;
-  }
+  const url = registrationUrl("data/create", userId);
+  return await $fetch(url, {
+    method: "POST",
+    headers: {
+      cookie: cookieHeader,
+    },
+    body: payload,
+  });
 }
 
-export async function updateUserType(
-  userId: string,
-  payload: UpdateUserTypePayload
-) {
-  return await $fetch(updateUserTypeUrl(userId), {
+export async function updateUserType(userId: string, payload: UpdateUserTypePayload) {
+  const url = registrationUrl("update/user/type", userId);
+  return await $fetch(url, {
     method: "PUT",
     credentials: "include",
     body: payload,
     headers: {
       "Content-Type": "application/json",
     },
-  });
-}
-
-export async function deleteUser(userId: string) {
-  return await $fetch(deleteUserUrl(userId), {
-    method: "DELETE",
-    credentials: "include",
   });
 }

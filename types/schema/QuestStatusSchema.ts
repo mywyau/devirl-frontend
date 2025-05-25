@@ -4,6 +4,9 @@ import { z } from "zod";
 // Zod schema
 export const QuestStatusSchema = z.enum(["NotStarted", "InProgress", "Completed"]);
 
+// Inferred TypeScript type from Zod
+export type QuestStatus = z.infer<typeof QuestStatusSchema>;
+
 export const QuestPartialSchema = z.object({
   userId: z.string(),
   questId: z.string(),
@@ -12,6 +15,4 @@ export const QuestPartialSchema = z.object({
   status: QuestStatusSchema,
 });
 
-// Inferred TypeScript type from Zod
-export type QuestStatus = z.infer<typeof QuestStatusSchema>;
 export type QuestPartial = z.infer<typeof QuestPartialSchema>;
