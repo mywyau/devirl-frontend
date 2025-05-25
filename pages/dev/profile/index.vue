@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { z } from "zod";
 import ProfileItem from "@/components/ui/profile/ProfileItem";
 import { getUser } from "@/controllers/UserDataController";
 import { useAuthUser } from "~/composables/useAuthUser";
@@ -12,37 +11,40 @@ import {
 const userProfile = ref<GetUserData | null>(null);
 const userProfileError = ref("");
 
+// Load current authenticated user
 const { user, error } = await useAuthUser();
-const safeUserId = user.value?.sub || "No user id";
 
-console.log("[DevUserProfile] Loaded user from session:", user.value);
+const userId = user.value?.sub;
+if (!userId) {
+  console.warn("[DevUserProfile] No user ID found in session.");
+  userProfileError.value = "User not authenticated.";
+}
 
-onMounted(async () => {
+const loadUserProfile = async (userId: string) => {
   try {
-    console.info("[DevUserProfile] Fetching user profile for ID:", safeUserId);
+    const rawData = await getUser(userId);
+    const parsed = GetUserDataSchema.safeParse(rawData);
 
-    const rawData = await getUser(safeUserId);
-    console.debug("[DevUserProfile] Raw user data from API:", rawData);
-
-    const result = GetUserDataSchema.safeParse(rawData);
-
-    if (!result.success) {
-      console.error("[DevUserProfile] Validation failed", result.error);
+    if (!parsed.success) {
+      console.error("[DevUserProfile] Validation error:", parsed.error);
       userProfileError.value = "Invalid user data from server.";
       return;
     }
 
-    console.info(
-      "[DevUserProfile] Parsed and validated user data:",
-      result.data
-    );
-    userProfile.value = result.data;
-  } catch (e: any) {
-    console.error("[DevUserProfile] Failed to load profile", e);
-    userProfileError.value = e?.data?.message || "Unable to load profile";
+    userProfile.value = parsed.data;
+  } catch (err: any) {
+    console.error("[DevUserProfile] Failed to load profile:", err);
+    userProfileError.value = err?.data?.message || "Unable to load profile";
+  }
+};
+
+onMounted(() => {
+  if (userId) {
+    loadUserProfile(userId);
   }
 });
 </script>
+
 
 <template>
   <NuxtLayout>
