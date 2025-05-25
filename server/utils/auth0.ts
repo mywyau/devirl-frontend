@@ -1,6 +1,5 @@
 // server/utils/auth0.ts
 
-
 export async function exchangeCodeForToken(code: string, redirectUri: string) {
   
   const res = await fetch(

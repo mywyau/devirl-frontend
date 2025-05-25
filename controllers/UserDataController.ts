@@ -1,73 +1,30 @@
 // controllers/UserDataController.ts
-import { $fetch } from "ofetch";
-import { loadConfig } from "@/configuration/ConfigLoader";
-import { UserDataSchema } from "@/types/schema/UserDataSchema";
-import type { CreateUserPayload } from "@/types/users";
 
-const config = loadConfig();
-const baseUrl = `${config.devQuestBackend.baseUrl}/`;
+import {
+  fetchUserData,
+  createUserData,
+  updateUserDataType,
+  deleteUserData,
+} from "@/connectors/userDataConnector";
+import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
 
-const getUserDataUrl = (userId: string) =>
-  `${baseUrl}user/data/${encodeURIComponent(userId)}`;
-
-const createUserDataUrl = (userId: string) =>
-  `${baseUrl}user/data/create/${encodeURIComponent(userId)}`;
-
-const updateUserTypeUrl = (userId: string) =>
-  `${baseUrl}user/data/update/${encodeURIComponent(userId)}`;
-
-const deleteUserDataUrl = (userId: string) =>
-  `${baseUrl}user/data/delete/${encodeURIComponent(userId)}`;
-
+/**
+ * Controller wrapper around user data fetch
+ */
 export async function getUser(userId: string) {
-  const res = await $fetch(getUserDataUrl(userId), {
-    credentials: "include",
-  });
-
-  const result = UserDataSchema.safeParse(res);
-
-  if (!result.success) {
-    console.error("[getUser] Invalid user data", result.error);
-    throw new Error("Invalid user data received from backend");
-  }
-
-  return result.data;
+  // You can add controller-level logging or error handling here if needed
+  return await fetchUserData(userId)
 }
 
 export async function createUser(userId: string, payload: CreateUserPayload) {
-  const url = createUserDataUrl(userId);
-  console.log(`[createUser] POST to: ${url}`);
-  console.log("[createUser] Payload:", payload);
-
-  try {
-    const res = await $fetch(url, {
-      method: "POST",
-      credentials: "include",
-      body: payload,
-    });
-
-    console.log("[createUser] Response:", res);
-    return res;
-  } catch (err) {
-    console.error("[createUser] Error:", err);
-    throw err;
-  }
+  // Controller can validate inputs or log the call
+  return await createUserData(userId, payload);
 }
 
-export async function updateUserType(
-  userId: string,
-  payload: UpdateUserTypePayload
-) {
-  return await $fetch(updateUserUrl(userId), {
-    method: "PUT",
-    credentials: "include",
-    body: payload,
-  });
+export async function updateUserType(userId: string, payload: UpdateUserTypePayload) {
+  return await updateUserDataType(userId, payload);
 }
 
 export async function deleteUser(userId: string) {
-  return await $fetch(deleteUserUrl(userId), {
-    method: "DELETE",
-    credentials: "include",
-  });
+  return await deleteUserData(userId);
 }

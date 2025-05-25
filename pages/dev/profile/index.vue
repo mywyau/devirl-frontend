@@ -1,25 +1,50 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import ProfileItem from "@/components/ui/profile/ProfileItem";
+import { getUser } from "@/controllers/UserDataController";
+import { useAuthUser } from "~/composables/useAuthUser";
+import {
+  GetUserDataSchema,
+  type GetUserData,
+} from "@/types/schema/UserDataSchema";
 
-// User Profile code
-
-const user = ref<null | {
-  name: string;
-  email: string;
-  user_type: string;
-}>(null);
-
+const userProfile = ref<GetUserData | null>(null);
 const userProfileError = ref("");
 
-onMounted(async () => {
+// Load current authenticated user
+const { user, error } = await useAuthUser();
+
+const userId = user.value?.sub;
+if (!userId) {
+  console.warn("[DevUserProfile] No user ID found in session.");
+  userProfileError.value = "User not authenticated.";
+}
+
+const loadUserProfile = async (userId: string) => {
   try {
-    user.value = await $fetch("/api/me");
-  } catch (e: any) {
-    userProfileError.value = e.data?.message || "Unable to load profile";
+    const rawData = await getUser(userId);
+    const parsed = GetUserDataSchema.safeParse(rawData);
+
+    if (!parsed.success) {
+      console.error("[DevUserProfile] Validation error:", parsed.error);
+      userProfileError.value = "Invalid user data from server.";
+      return;
+    }
+
+    userProfile.value = parsed.data;
+  } catch (err: any) {
+    console.error("[DevUserProfile] Failed to load profile:", err);
+    userProfileError.value = err?.data?.message || "Unable to load profile";
+  }
+};
+
+onMounted(() => {
+  if (userId) {
+    loadUserProfile(userId);
   }
 });
 </script>
+
 
 <template>
   <NuxtLayout>
@@ -27,20 +52,34 @@ onMounted(async () => {
       <div class="flex flex-col md:flex-row gap-8">
         <!-- User Profile -->
         <div class="flex-1 p-6 shadow-md rounded-2xl border">
-          <h1 class="text-2xl font-bold mb-6 text-center">Dev Profile</h1>
+          <h1 class="text-2xl font-bold mb-6 text-center">User Profile</h1>
 
           <div class="space-y-4">
-            <ProfileItem label="Name" :value="user?.name" />
-            <ProfileItem label="Email" :value="user?.email" />
-            <ProfileItem label="Role" :value="user?.user_type" />
+            <ProfileItem
+              label="Name"
+              :value="`${userProfile?.firstName ?? ''} ${
+                userProfile?.lastName ?? ''
+              }`"
+              textColor="text-white"
+            />
+            <ProfileItem
+              label="Email"
+              :value="userProfile?.email"
+              textColor="text-white"
+            />
+            <ProfileItem
+              label="Role"
+              :value="userProfile?.userType || '—'"
+              textColor="text-white"
+            />
           </div>
 
-          <div
+          <p
             v-if="userProfileError"
             class="text-red-500 mt-4 text-center text-sm"
           >
             {{ userProfileError }}
-          </div>
+          </p>
         </div>
       </div>
     </div>

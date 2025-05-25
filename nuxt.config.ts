@@ -2,6 +2,10 @@ import { defineNuxtConfig } from "nuxt/config";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  typescript: {
+    strict: true,
+    shim: false, // if you're confident with types
+  },
   nitro: {
     preset: "node-server",
   },
@@ -17,7 +21,9 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8080/dev-quest-service",
+      apiBase:
+        process.env.NUXT_PUBLIC_API_BASE ||
+        "http://localhost:8080/dev-quest-service",
       auth0Domain: process.env.NUXT_PUBLIC_AUTH0_DOMAIN,
       auth0ClientId: process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID,
       auth0Audience: process.env.NUXT_PUBLIC_AUTH0_AUDIENCE,
