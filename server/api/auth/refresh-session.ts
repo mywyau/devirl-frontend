@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
   const userType = userData?.userType ?? null;
 
   // Update session with new userType
-  session.user.userType = userType;
+  // session.user.userType = userType;
   await session.save();
 
   // Optionally update frontend hint cookie

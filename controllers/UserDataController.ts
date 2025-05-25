@@ -2,6 +2,7 @@
 import { $fetch } from "ofetch";
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { UserDataSchema } from "@/types/schema/UserDataSchema";
+import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
 import type { CreateUserPayload } from "@/types/users";
 
 const config = loadConfig();
@@ -24,7 +25,7 @@ export async function getUser(userId: string) {
     credentials: "include",
   });
 
-  const result = UserDataSchema.safeParse(res);
+  const result = GetUserDataSchema.safeParse(res);
 
   if (!result.success) {
     console.error("[getUser] Invalid user data", result.error);
