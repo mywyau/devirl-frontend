@@ -9,7 +9,7 @@ import * as userDataConnector from "@/connectors/UserDataConnector";
 import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
 
 // Mock the connector functions
-vi.mock("@/connectors/userDataConnector", () => ({
+vi.mock("@/connectors/UserDataConnector", () => ({
   fetchUserData: vi.fn(),
   createUserData: vi.fn(),
   updateUserDataType: vi.fn(),
