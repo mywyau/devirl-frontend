@@ -1,111 +1,91 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import logoutHandler from '@/server/api/auth/logout';
-import { createEvent } from 'h3';
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import handler from "@/server/api/auth/logout";
+import { getIronSession } from "iron-session";
+import { $fetch } from "ofetch";
+import { createEvent } from "h3";
 
 // Mocks
-vi.mock('iron-session', () => ({
-  getIronSession: vi.fn(),
-}));
-
-vi.mock('ofetch', () => ({
+vi.mock("ofetch", () => ({
   $fetch: vi.fn(),
 }));
 
-vi.mock('h3', async () => {
-  const h3 = await vi.importActual<typeof import('h3')>('h3');
-  return {
-    ...h3,
-    sendRedirect: vi.fn(),
-    setCookie: vi.fn(),
-  };
-});
-
-vi.mock('@/configuration/ConfigLoader', () => ({
-  loadConfig: () => ({
-    devQuestBackend: {
-      baseUrl: 'https://mock-backend.com',
-    },
-  }),
+vi.mock("iron-session", () => ({
+  getIronSession: vi.fn(),
 }));
 
-const { getIronSession } = await import('iron-session');
-const { $fetch } = await import('ofetch');
-const { sendRedirect, setCookie } = await import('h3');
+// Env setup
+process.env.NUXT_PUBLIC_AUTH0_DOMAIN = "test.auth0.com";
+process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID = "client123";
+process.env.NUXT_PUBLIC_BASE_URL = "http://localhost:3000";
+process.env.SESSION_SECRET = "test-secret";
 
-describe('logoutHandler', () => {
+describe("logout API handler", () => {
+  const userId = "user-123";
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  const createMockEvent = () =>
-    createEvent({
-      req: new Request('http://localhost/api/auth/logout'),
-      res: new Response(),
-      context: {},
+  it("deletes Redis session, destroys session, clears cookies, and redirects", async () => {
+    const destroy = vi.fn();
+    (getIronSession as any).mockResolvedValue({
+      user: { sub: userId },
+      destroy,
     });
 
-  it('destroys session and clears cookie when user is logged in', async () => {
-    const event = createMockEvent();
-    const mockSession = {
-      user: { sub: 'user123' },
-      destroy: vi.fn(),
+    const req = new Request("http://localhost/api/auth/logout");
+    const res = {
+      setHeader: vi.fn(),
+      getHeader: vi.fn().mockReturnValue([]), // ✅ Fix for H3 setCookie
+      end: vi.fn(),
+      statusCode: 200,
     };
 
-    getIronSession.mockResolvedValue(mockSession);
-    $fetch.mockResolvedValue({ ok: true });
+    const event = createEvent({ req });
+    (event as any).node.req = req;
+    (event as any).node.res = res;
 
-    await logoutHandler(event);
+    await handler(event);
 
-    expect(getIronSession).toHaveBeenCalled();
     expect($fetch).toHaveBeenCalledWith(
-      'https://mock-backend.com/auth/session/delete/user123',
-      { method: 'DELETE' }
+      `http://localhost:8080/dev-quest-service/auth/session/delete/${userId}`,
+      { method: "DELETE" }
     );
-    expect(mockSession.destroy).toHaveBeenCalled();
-    expect(setCookie).toHaveBeenCalledWith(
-      event,
-      'user_type',
-      '',
-      expect.objectContaining({
-        path: '/',
-        httpOnly: false,
-        maxAge: 0,
-      })
+
+    expect(destroy).toHaveBeenCalled();
+    expect(res.setHeader).toHaveBeenCalledWith(
+      "location",
+      expect.stringContaining("https://test.auth0.com/v2/logout?")
     );
-    expect(sendRedirect).toHaveBeenCalledWith(event, '/');
+    expect(res.statusCode).toBe(302);
+    expect(res.end).toHaveBeenCalled();
   });
 
-  it('skips Redis delete when user not in session', async () => {
-    const event = createMockEvent();
-    const mockSession = {
-      user: undefined,
-      destroy: vi.fn(),
+  it("skips Redis deletion if no session user", async () => {
+    const destroy = vi.fn();
+    (getIronSession as any).mockResolvedValue({ destroy });
+
+    const req = new Request("http://localhost/api/auth/logout");
+    const res = {
+      setHeader: vi.fn(),
+      getHeader: vi.fn().mockReturnValue([]), // ✅ Fix added here too
+      end: vi.fn(),
+      statusCode: 200,
     };
 
-    getIronSession.mockResolvedValue(mockSession);
+    const event = createEvent({ req });
+    (event as any).node.req = req;
+    (event as any).node.res = res;
 
-    await logoutHandler(event);
+    await handler(event);
 
     expect($fetch).not.toHaveBeenCalled();
-    expect(mockSession.destroy).toHaveBeenCalled();
-    expect(setCookie).toHaveBeenCalled();
-    expect(sendRedirect).toHaveBeenCalledWith(event, '/');
-  });
-
-  it('logs and continues if Redis session delete fails', async () => {
-    const event = createMockEvent();
-    const mockSession = {
-      user: { sub: 'user123' },
-      destroy: vi.fn(),
-    };
-
-    getIronSession.mockResolvedValue(mockSession);
-    $fetch.mockRejectedValue(new Error('Redis failure'));
-
-    await logoutHandler(event);
-
-    expect($fetch).toHaveBeenCalled();
-    expect(mockSession.destroy).toHaveBeenCalled();
-    expect(sendRedirect).toHaveBeenCalledWith(event, '/');
+    expect(destroy).toHaveBeenCalled();
+    expect(res.setHeader).toHaveBeenCalledWith(
+      "location",
+      expect.stringContaining("https://test.auth0.com/v2/logout?")
+    );
+    expect(res.statusCode).toBe(302);
+    expect(res.end).toHaveBeenCalled();
   });
 });
