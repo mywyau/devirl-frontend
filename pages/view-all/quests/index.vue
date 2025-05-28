@@ -12,29 +12,6 @@ const loading = ref(true);
 const { data: user, pending: authPending } = useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
 
-async function fetchQuests() {
-  if (!safeUserId.value) {
-    error.value = "Not authenticated.";
-    loading.value = false;
-    return;
-  }
-
-  loading.value = true;
-  error.value = null;
-  quests.value = [];
-
-  try {
-    for await (const quest of streamAllQuests(safeUserId.value)) {
-      quests.value.push(quest);
-    }
-  } catch (err) {
-    console.error(err);
-    error.value = "Failed to fetch quests.";
-  } finally {
-    loading.value = false;
-  }
-}
-
 onMounted(async () => {
   if (authPending.value) {
     // Wait for auth to finish before proceeding
