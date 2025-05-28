@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import ProfileItem from "@/components/ui/profile/ProfileItem";
-import { getUser } from "@/controllers/UserDataController";
+import { getUser, deleteUserData } from "@/controllers/UserDataController";
 import { useAuthUser } from "~/composables/useAuthUser";
 import {
   GetUserDataSchema,
@@ -24,9 +24,26 @@ if (!userId) {
 
 const loadUserProfile = async (userId: string) => {
   try {
-    const rawData = await getUser(userId);
-    const parsed = GetUserDataSchema.safeParse(rawData);
+    const rawData = await deleteUserData(userId);
 
+    if (!parsed.success) {
+      console.error("[DevUserProfile] Validation error:", parsed.error);
+      userProfileError.value = "Invalid user data from server.";
+      return;
+    }
+
+    userProfile.value = parsed.data;
+  } catch (err: any) {
+    console.error("[DevUserProfile] Failed to load profile:", err);
+    userProfileError.value = err?.data?.message || "Unable to load profile";
+  }
+};
+
+
+const deleteUserProfile = async (userId: string) => {
+  try {
+    const rawData = await getUser(userId);
+    
     if (!parsed.success) {
       console.error("[DevUserProfile] Validation error:", parsed.error);
       userProfileError.value = "Invalid user data from server.";

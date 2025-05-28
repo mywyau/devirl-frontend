@@ -30,7 +30,28 @@ onMounted(async () => {
   }
 });
 
+async function fetchQuests() {
+  if (!safeUserId.value) {
+    error.value = "Not authenticated.";
+    loading.value = false;
+    return;
+  }
 
+  loading.value = true;
+  error.value = null;
+  quests.value = [];
+
+  try {
+    for await (const quest of streamAllQuests(safeUserId.value)) {
+      quests.value.push(quest);
+    }
+  } catch (err) {
+    console.error(err);
+    error.value = "Failed to fetch quests.";
+  } finally {
+    loading.value = false;
+  }
+}
 </script>
 
 <template>
