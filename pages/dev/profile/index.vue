@@ -12,9 +12,11 @@ const userProfile = ref<GetUserData | null>(null);
 const userProfileError = ref("");
 
 // Load current authenticated user
-const { user, error } = await useAuthUser();
+const { data: user, userError, refresh } = await useAuthUser();
+
 
 const userId = user.value?.sub;
+
 if (!userId) {
   console.warn("[DevUserProfile] No user ID found in session.");
   userProfileError.value = "User not authenticated.";
@@ -43,6 +45,8 @@ onMounted(() => {
     loadUserProfile(userId);
   }
 });
+
+
 </script>
 
 

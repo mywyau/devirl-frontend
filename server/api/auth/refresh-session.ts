@@ -4,19 +4,17 @@ import { defineEventHandler, setCookie, createError } from "h3";
 import { getIronSession } from "iron-session";
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
+import { sessionOptions } from "@/server/utils/sessionOptions"; // ✅ import the shared options
 
 const isProd = process.env.NODE_ENV === "production";
 
 export default defineEventHandler(async (event) => {
-  const session = await getIronSession(event.node.req, event.node.res, {
-    password: process.env.SESSION_SECRET!,
-    cookieName: "auth_session",
-    ttl: 60 * 60 * 8,
-    secure: isProd,
-    sameSite: "none",
-    path: "/",
-    ...(isProd && { domain: ".devirl.com" }),
-  });
+
+  const session = await getIronSession(
+    event.node.req,
+    event.node.res,
+    sessionOptions
+  );
 
   const userId = session.user?.sub;
   if (!userId) {
@@ -47,6 +45,13 @@ export default defineEventHandler(async (event) => {
   );
 
   const userType = userData?.userType ?? null;
+
+    // 💾 Rehydrate the session
+  session.user = {
+    ...session.user,
+    userType, // augment the session with the latest info
+  };
+  
   await session.save();
 
   try {

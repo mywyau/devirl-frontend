@@ -5,7 +5,7 @@ import { useAuthUser } from "~/composables/useAuthUser";
 
 const auth = new AuthController();
 
-const { data: user, error, refresh } = await useAuthUser();
+const { data: user, error } = useAuthUser();
 
 const userType = useCookie("user_type"); // reads cookie on client and SSR
 
@@ -20,7 +20,6 @@ const handleLogout = () => {
   // Full browser redirect ensures session is reset on both client and server
   window.location.href = "/api/auth/logout";
 };
-
 </script>
 
 <template>

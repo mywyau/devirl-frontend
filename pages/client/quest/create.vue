@@ -12,7 +12,7 @@ const questCreatePayload = ref<CreateQuestPayload>({
   description: "",
 });
 
-const { user, error } = await useAuthUser();
+const { data: user, userError, refresh } = await useAuthUser();
 
 if (error.value) {
   console.error("Failed to load auth session:", error.value);
