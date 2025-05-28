@@ -1,3 +1,5 @@
+import { sessionOptions } from "@/server/utils/sessionOptions"; // update path as needed
+
 import { defineEventHandler, getQuery, sendRedirect, setCookie } from "h3";
 import { getIronSession } from "iron-session";
 import { exchangeCodeForToken, getUserInfo } from "~/server/utils/auth0";
@@ -9,17 +11,6 @@ import { loadConfig } from "@/configuration/ConfigLoader";
 
 // Determine if running in production (for secure cookies)
 const isProd = process.env.NODE_ENV === "production";
-
-// Configure the iron-session options
-const sessionOptions = {
-  password: process.env.SESSION_SECRET!, // encryption secret for the session
-  cookieName: "auth_session", // name of the session cookie
-  ttl: 60 * 60 * 8, // session lifespan: 8 hours
-  secure: isProd, // only send over HTTPS in production
-  sameSite: "none", // needed for cross-site cookies (e.g., Auth0)
-  path: "/",
-  ...(isProd && { domain: ".devirl.com" }), // domain-scoped cookie in prod
-};
 
 export default defineEventHandler(async (event) => {
   // 1. Get Auth0 code from query string (Auth0 sends this after login redirect)
