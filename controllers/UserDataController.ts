@@ -5,7 +5,7 @@ import {
   createUserData,
   updateUserDataType,
   deleteUserData,
-} from "@/connectors/userDataConnector";
+} from "@/connectors/UserDataConnector";
 import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
 
 /**

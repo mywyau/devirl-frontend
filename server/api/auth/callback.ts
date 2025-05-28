@@ -2,7 +2,7 @@ import { defineEventHandler, getQuery, sendRedirect, setCookie } from "h3";
 import { getIronSession } from "iron-session";
 import { exchangeCodeForToken, getUserInfo } from "~/server/utils/auth0";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
-import { createUserServerToServer } from "@/controllers/RegistrationController";
+import { createUserNuxtServerToScalaServer } from "@/controllers/RegistrationController";
 import { UserDataSchema } from "@/types/schema/UserDataSchema";
 import type { UserData } from "@/types/schema/UserDataSchema";
 import { loadConfig } from "@/configuration/ConfigLoader";
@@ -79,7 +79,7 @@ export default defineEventHandler(async (event) => {
   );
 
   // 11. Register the user (if they don’t already exist) using your backend
-  await createUserServerToServer(userId, cookieHeader, parsed);
+  await createUserNuxtServerToScalaServer(userId, cookieHeader, parsed);
 
   // 12. Now try to fetch user data from backend to get their userType (if set)
   const config = loadConfig();
@@ -87,7 +87,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const userData = await $fetch(
-      `${config.devQuestBackend.baseUrl}/user/data/${encodeURIComponent(
+      `${config.devQuestBackend.baseUrl}/registration/user/data/${encodeURIComponent(
         userId
       )}`,
       {
@@ -102,11 +102,23 @@ export default defineEventHandler(async (event) => {
     console.warn(`[callback.ts] User not found in backend: ${err}`);
   }
 
-  // 13. Optionally store userType in the session too (if you're ready to do secure role checks)
-  // session.user.userType = userType;
-  // await session.save();
+  if (userType) {
+    try {
+      const response = await $fetch(
+        `${config.devQuestBackend.baseUrl}/auth/session/sync/${encodeURIComponent(userId)}`,
+        {
+          method: "POST",
+          headers: {
+            cookie: cookieHeader, // Send session cookie for auth
+          },
+        }
+      );
+    } catch (err) {
+      console.warn(`[callback.ts] Auth session not synced in backend cache from db: ${err}`);
+    }
+  }
 
-  // 14. Optionally store userType in a non-httpOnly cookie for frontend UI use
+  // 13. Store userType in a non-httpOnly cookie for frontend UI use
   if (userType) {
     setCookie(event, "user_type", userType, {
       httpOnly: false, // frontend-accessible
@@ -119,6 +131,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // 15. Redirect user based on whether they've selected a role yet
+  // 14. Redirect user based on whether they've selected a role yet
   return sendRedirect(event, userType ? "/" : "/choose-user-type");
 });

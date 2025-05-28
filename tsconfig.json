@@ -11,6 +11,7 @@
     "nuxt.config.ts",
     "configuration",
     "controllers",
+    "connectors",
     "composables",
     "plugins",
     "types",

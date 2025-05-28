@@ -4,7 +4,7 @@ import {
   createUserData,
   updateUserDataType,
   deleteUserData,
-} from "@/connectors/userDataConnector";
+} from "@/connectors/UserDataConnector";
 import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
 import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
 import { $fetch } from "ofetch";

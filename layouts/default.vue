@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { AuthController } from "@/controllers/AuthController";
+import { useAuthUser } from "~/composables/useAuthUser";
 
 const auth = new AuthController();
-
-import { useAuthUser } from "~/composables/useAuthUser";
 
 const { user, error } = await useAuthUser();
 
@@ -16,6 +15,7 @@ if (error.value) {
 
 const loginUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/login`;
 const logoutUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/logout`;
+
 </script>
 
 <template>

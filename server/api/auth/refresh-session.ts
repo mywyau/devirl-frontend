@@ -1,5 +1,6 @@
 // server/api/auth/refresh-session.ts
-import { defineEventHandler, setCookie } from "h3";
+import { $fetch } from "ofetch";
+import { defineEventHandler, setCookie, createError } from "h3";
 import { getIronSession } from "iron-session";
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
@@ -19,7 +20,10 @@ export default defineEventHandler(async (event) => {
 
   const userId = session.user?.sub;
   if (!userId) {
-    throw createError({ statusCode: 401, message: "User not authenticated" });
+    throw createError({
+      statusCode: 401,
+      statusMessage: "User not authenticated",
+    });
   }
 
   const config = loadConfig();
@@ -33,7 +37,7 @@ export default defineEventHandler(async (event) => {
 
   // Refetch updated user data (including userType)
   const userData = await $fetch(
-    `${config.devQuestBackend.baseUrl}/user/data/${encodeURIComponent(userId)}`,
+    `${config.devQuestBackend.baseUrl}/registration/user/data/${encodeURIComponent(userId)}`,
     {
       method: "GET",
       headers: {
@@ -43,10 +47,25 @@ export default defineEventHandler(async (event) => {
   );
 
   const userType = userData?.userType ?? null;
-
-  // Update session with new userType
-  // session.user.userType = userType;
   await session.save();
+
+  try {
+    const response = await $fetch(
+      `${config.devQuestBackend.baseUrl}/auth/session/sync/${encodeURIComponent(
+        userId
+      )}`,
+      {
+        method: "POST",
+        headers: {
+          cookie: sessionCookie ?? "",
+        },
+      }
+    );
+  } catch (err) {
+    console.warn(
+      `[callback.ts] Auth session not synced in backend cache from db: ${err}`
+    );
+  }
 
   // Optionally update frontend hint cookie
   if (userType) {

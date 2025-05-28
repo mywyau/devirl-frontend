@@ -1,3 +1,5 @@
+// ./server/api/auth/logout.ts
+
 import { defineEventHandler, sendRedirect, setCookie } from 'h3';
 import { getIronSession } from 'iron-session';
 import { $fetch } from 'ofetch';
