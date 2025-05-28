@@ -5,7 +5,7 @@ import {
   updateUserType,
   deleteUser,
 } from "@/controllers/UserDataController";
-import * as userDataConnector from "@/connectors/userDataConnector";
+import * as userDataConnector from "@/connectors/UserDataConnector";
 import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
 
 // Mock the connector functions
