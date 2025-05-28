@@ -56,7 +56,7 @@ const updateRole = async () => {
       credentials: "include",
     });
 
-    navigateTo("/");
+    // navigateTo("/");
   } catch (e: any) {
     if (e instanceof z.ZodError) {
       userTypeError.value = e.errors.map((err) => err.message).join(", ");

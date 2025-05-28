@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watchEffect } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useAuthUser } from "~/composables/useAuthUser";
 import { streamAllQuests } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/quests";
@@ -8,21 +8,11 @@ const quests = ref<QuestPartial[]>([]);
 const error = ref<string | null>(null);
 const loading = ref(true);
 
-// Step 1: safely get the session
-const { data: user, pending: authPending, error: authError } = useAuthUser();
+// Get the user session
+const { data: user, pending: authPending } = useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
 
-console.log(safeUserId.value);
-
-// Step 2: defer data loading until session is ready and user is available
-watchEffect(async () => {
-  if (authPending.value) return;
-
-  console.log("[watchEffect] user.value:", user.value);
-  console.log("[watchEffect] safeUserId:", safeUserId.value);
-
-  console.log("Auth pending done. User:", user.value);
-
+async function fetchQuests() {
   if (!safeUserId.value) {
     error.value = "Not authenticated.";
     loading.value = false;
@@ -38,12 +28,32 @@ watchEffect(async () => {
       quests.value.push(quest);
     }
   } catch (err) {
-    error.value = "Failed to fetch quests.";
     console.error(err);
+    error.value = "Failed to fetch quests.";
   } finally {
     loading.value = false;
   }
+}
+
+onMounted(async () => {
+  if (authPending.value) {
+    // Wait for auth to finish before proceeding
+    const stop = watch(
+      authPending,
+      (pending) => {
+        if (!pending) {
+          stop(); // Stop watching once resolved
+          fetchQuests();
+        }
+      },
+      { immediate: true }
+    );
+  } else {
+    fetchQuests();
+  }
 });
+
+
 </script>
 
 <template>

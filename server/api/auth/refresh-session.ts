@@ -27,11 +27,15 @@ export default defineEventHandler(async (event) => {
   const config = loadConfig();
 
   const allCookies = event.node.req.headers.cookie || "";
+
+
+  console.log(`allCookies: ${allCookies}\n`, ); // Debug: see what's being sent as cookie header
+
   const sessionCookie = allCookies
     .split(";")
     .find((c) => c.trim().startsWith("auth_session="));
 
-  console.log(sessionCookie); // Debug: see what's being sent as cookie header
+  console.log(`session cookie: ${sessionCookie}\n`, ); // Debug: see what's being sent as cookie header
 
   // Refetch updated user data (including userType)
   const userData = await $fetch(
@@ -45,14 +49,10 @@ export default defineEventHandler(async (event) => {
   );
 
   const userType = userData?.userType ?? null;
-
-    // 💾 Rehydrate the session
-  session.user = {
-    ...session.user,
-    userType, // augment the session with the latest info
-  };
   
   await session.save();
+
+  console.log(sessionCookie)
 
   try {
     const response = await $fetch(
