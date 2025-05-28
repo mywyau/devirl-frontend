@@ -1,110 +1,110 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+// ✅ Mock BEFORE importing the module under test
+vi.mock("@/configuration/ConfigLoader", () => ({
+  loadConfig: () => ({
+    devQuestBackend: { baseUrl: "https://mock-backend.com" },
+  }),
+}));
+
+vi.mock("ofetch", async () => {
+  const actual = await vi.importActual("ofetch");
+  return {
+    ...actual,
+    $fetch: vi.fn(),
+  };
+});
+
+import { $fetch } from "ofetch";
 import {
   fetchUserData,
   createUserData,
   updateUserDataType,
   deleteUserData,
 } from "@/connectors/UserDataConnector";
-import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
-import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
-import { $fetch } from "ofetch";
 
-// Mock config loader
-vi.mock("@/configuration/ConfigLoader", () => ({
-  loadConfig: () => ({
-    devQuestBackend: {
-      baseUrl: "https://mock-api.com",
-    },
-  }),
-}));
+describe("UserDataConnector", () => {
+  const userId = "test-user";
+  const validResponse = {
+    userId: userId,
+    email: "alice_smith@gmail.com",
+    firstName: "Alice",
+    lastName: "Smith",
+    userType: "Dev",
+  };
 
-vi.mock("ofetch", () => ({
-  $fetch: vi.fn(),
-}));
-
-const mockedFetch = $fetch as unknown as ReturnType<typeof vi.fn>;
-
-const mockUserId = "abc123";
-const mockPayload: CreateUserPayload = {
-  firstName: "John",
-  lastName: "Doe",
-  email: "john@example.com",
-  userType: "Dev",
-};
-
-const mockUpdatePayload: UpdateUserTypePayload = {
-  userType: "Client",
-};
-
-const validUserData = {
-  userId: "abc123",
-  firstName: "John",
-  lastName: "Doe",
-  email: "john@example.com",
-  userType: "Dev",
-};
-
-describe("userDataConnector", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("fetchUserData - returns validated user data", async () => {
-    mockedFetch.mockResolvedValue(validUserData);
+  it("fetchUserData - success", async () => {
+    ($fetch as any).mockResolvedValue(validResponse);
 
-    const data = await fetchUserData(mockUserId);
-    expect(data).toEqual(validUserData);
-    expect(mockedFetch).toHaveBeenCalledWith(
-      `https://mock-api.com/user/data/${mockUserId}`,
+    const result = await fetchUserData(userId);
+    expect(result).toEqual(validResponse);
+
+    expect($fetch).toHaveBeenCalledWith(
+      `https://mock-backend.com/user/data/${userId}`,
       { credentials: "include" }
     );
   });
 
-  it("fetchUserData - throws on invalid schema", async () => {
-    mockedFetch.mockResolvedValue({ invalid: true });
+  it("fetchUserData - fails with invalid schema", async () => {
+    ($fetch as any).mockResolvedValue({ bad: "data" });
 
-    await expect(fetchUserData(mockUserId)).rejects.toThrow(
+    await expect(fetchUserData(userId)).rejects.toThrow(
       "Invalid user data received from backend"
     );
   });
 
-  it("createUserData - posts to correct endpoint", async () => {
-    mockedFetch.mockResolvedValue({ success: true });
+  it("createUserData - success", async () => {
+    const payload = { name: "Alice", role: "Dev" };
+    const mockResponse = { code: "201", message: "Created" };
 
-    const res = await createUserData(mockUserId, mockPayload);
-    expect(res).toEqual({ success: true });
-    expect(mockedFetch).toHaveBeenCalledWith(
-      `https://mock-api.com/user/data/create/${mockUserId}`,
+    ($fetch as any).mockResolvedValue(mockResponse);
+
+    const result = await createUserData(userId, payload);
+    expect(result).toEqual(mockResponse);
+
+    expect($fetch).toHaveBeenCalledWith(
+      `https://mock-backend.com/user/data/create/${userId}`,
       {
         method: "POST",
         credentials: "include",
-        body: mockPayload,
+        body: payload,
       }
     );
   });
 
-  it("updateUserDataType - sends PUT with correct data", async () => {
-    mockedFetch.mockResolvedValue({ updated: true });
+  it("updateUserDataType - success", async () => {
+    const payload = { userType: "Client" };
+    const mockResponse = { code: "200", message: "Updated" };
 
-    const res = await updateUserDataType(mockUserId, mockUpdatePayload);
-    expect(res).toEqual({ updated: true });
-    expect(mockedFetch).toHaveBeenCalledWith(
-      `https://mock-api.com/user/data/update/${mockUserId}`,
+    ($fetch as any).mockResolvedValue(mockResponse);
+
+    const result = await updateUserDataType(userId, payload);
+    expect(result).toEqual(mockResponse);
+
+    expect($fetch).toHaveBeenCalledWith(
+      `https://mock-backend.com/user/data/update/${userId}`,
       {
         method: "PUT",
         credentials: "include",
-        body: mockUpdatePayload,
+        body: payload,
       }
     );
   });
 
-  it("deleteUserData - sends DELETE to correct endpoint", async () => {
-    mockedFetch.mockResolvedValue({ deleted: true });
+  it("deleteUserData - success", async () => {
+    const mockResponse = { code: "204", message: "Deleted" };
 
-    const res = await deleteUserData(mockUserId);
-    expect(res).toEqual({ deleted: true });
-    expect(mockedFetch).toHaveBeenCalledWith(
-      `https://mock-api.com/user/data/delete/${mockUserId}`,
+    ($fetch as any).mockResolvedValue(mockResponse);
+
+    const result = await deleteUserData(userId);
+    expect(result).toEqual(mockResponse);
+
+    expect($fetch).toHaveBeenCalledWith(
+      `https://mock-backend.com/user/data/delete/${userId}`,
       {
         method: "DELETE",
         credentials: "include",

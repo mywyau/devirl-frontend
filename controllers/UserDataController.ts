@@ -11,6 +11,8 @@ import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
 /**
  * Controller wrapper around user data fetch
  */
+
+
 export async function getUser(userId: string) {
   // You can add controller-level logging or error handling here if needed
   return await fetchUserData(userId)

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { deleteQuest, getQuest } from "@/controllers/QuestBackendController";
-import { QuestPartialSchema, type QuestPartial } from "@/types/schema/QuestStatusSchema";
+import {
+  QuestPartialSchema,
+  type QuestPartial,
+} from "@/types/schema/QuestStatusSchema";
 import { Button } from "~/components/ui/button/variants";
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
@@ -9,7 +12,8 @@ import { useAuthUser } from "~/composables/useAuthUser";
 const route = useRoute();
 const questId = route.params.id as string;
 
-const { user, userError } = await useAuthUser();
+const { data: user, userError, refresh } = await useAuthUser();
+
 const safeUserId = user.value?.sub || "No user id";
 
 const result = ref<QuestPartial | null>(null);
@@ -48,7 +52,6 @@ onMounted(async () => {
   }
 });
 </script>
-
 
 <template>
   <NuxtLayout>

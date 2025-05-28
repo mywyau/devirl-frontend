@@ -1,39 +1,57 @@
 <script setup lang="ts">
-
-import { onMounted, ref } from "vue";
-import { Button } from "~/components/ui/button/variants";
-import type { QuestPartial } from "@/types/quests";
-import { streamAllQuests } from "@/controllers/QuestBackendController"; // <- updated import
+import { ref, computed, onMounted } from "vue";
 import { useAuthUser } from "~/composables/useAuthUser";
+import { streamAllQuests } from "@/controllers/QuestBackendController";
+import type { QuestPartial } from "@/types/quests";
 
 const quests = ref<QuestPartial[]>([]);
-const isLoading = ref(false);
 const error = ref<string | null>(null);
+const loading = ref(true);
 
-const { user, userError } = await useAuthUser();
+// Get the user session
+const { data: user, pending: authPending } = useAuthUser();
+const safeUserId = computed(() => user.value?.sub ?? null);
 
-console.log(encodeURIComponent(user.value?.sub || "No user id"));
-const safeUserId = user.value?.sub || "No user id";
+onMounted(async () => {
+  if (authPending.value) {
+    // Wait for auth to finish before proceeding
+    const stop = watch(
+      authPending,
+      (pending) => {
+        if (!pending) {
+          stop(); // Stop watching once resolved
+          fetchQuests();
+        }
+      },
+      { immediate: true }
+    );
+  } else {
+    fetchQuests();
+  }
+});
 
-async function loadAllQuests() {
-  isLoading.value = true;
+async function fetchQuests() {
+  if (!safeUserId.value) {
+    error.value = "Not authenticated.";
+    loading.value = false;
+    return;
+  }
+
+  loading.value = true;
+  error.value = null;
+  quests.value = [];
+
   try {
-    for await (const quest of streamAllQuests(safeUserId)) {
+    for await (const quest of streamAllQuests(safeUserId.value)) {
       quests.value.push(quest);
     }
-  } catch (e) {
-    if (e.name !== "AbortError") {
-      console.error(e);
-      error.value = "Failed to load quests.";
-    }
+  } catch (err) {
+    console.error(err);
+    error.value = "Failed to fetch quests.";
   } finally {
-    isLoading.value = false;
+    loading.value = false;
   }
 }
-
-onMounted(() => {
-  loadAllQuests();
-});
 </script>
 
 <template>
@@ -41,46 +59,36 @@ onMounted(() => {
     <div class="p-6 max-w-4xl mx-auto">
       <h1 class="text-3xl font-bold mb-6 text-white">All Available Quests</h1>
 
-      <div v-if="error" class="text-red-500">{{ error }}</div>
-      <div v-else>
-        <div v-if="quests.length === 0 && isLoading" class="text-gray-500">
-          Loading quests...
-        </div>
-        <div v-if="quests.length === 0 && !isLoading" class="text-gray-400">
-          No quests available yet.
-        </div>
+      <div v-if="authPending || loading" class="text-gray-500">
+        Loading quests...
+      </div>
+      <div v-else-if="error" class="text-red-500">{{ error }}</div>
+      <div v-else-if="quests.length === 0" class="text-gray-400">
+        No quests available yet.
+      </div>
 
-        <div class="grid gap-6">
-          <div
-            v-for="quest in quests"
-            :key="quest.questId"
-            class="border p-4 rounded-xl shadow hover:shadow-md transition bg-white/5 text-white border border-white/10"
-          >
-            <h2 class="text-xl font-semibold">{{ quest.title }}</h2>
-            <!-- <p class="text-gray-400 mt-2">{{ quest.description }}</p> -->
-            <div class="mt-2 text-sm text-yellow-400">
-              Status: {{ quest.status }}
-            </div>
-            <div class="mt-4 flex justify-between items-center">
-              <span class="font-mono text-sm text-green-400">
-                💰 {{ quest.bounty || 0.0 }} ETH
-              </span>
-              <NuxtLink
-                :to="`/quest/${quest.questId}`"
-                class="text-blue-400 hover:underline hover:text-blue-300"
-              >
-                <Button
-                  variant="default"
-                  class="bg-blue-500 text-white rounded hover:bg-blue-400"
-                >
-                  View Quest →
-                </Button>
-              </NuxtLink>
-            </div>
+      <div class="grid gap-6" v-else>
+        <div
+          v-for="quest in quests"
+          :key="quest.questId"
+          class="border p-4 rounded-xl shadow bg-white/5 text-white"
+        >
+          <h2 class="text-xl font-semibold">{{ quest.title }}</h2>
+          <div class="mt-2 text-sm text-yellow-400">
+            Status: {{ quest.status }}
+          </div>
+          <div class="mt-4 flex justify-between items-center">
+            <span class="font-mono text-sm text-green-400"
+              >💰 {{ quest.bounty || 0.0 }} ETH</span
+            >
+            <NuxtLink
+              :to="`/quest/${quest.questId}`"
+              class="text-blue-400 hover:underline"
+            >
+              View Quest →
+            </NuxtLink>
           </div>
         </div>
-
-        <div v-if="isLoading" class="text-white mt-4">Loading more...</div>
       </div>
     </div>
   </NuxtLayout>

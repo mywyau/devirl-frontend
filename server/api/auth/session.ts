@@ -1,20 +1,8 @@
-import { eventHandler } from "h3";
+// ./server/api/auth/session.ts
+import { sessionOptions } from "@/server/utils/sessionOptions";
+import { eventHandler, createError } from "h3";
 import { getIronSession } from "iron-session";
-
-const isProd = process.env.NODE_ENV === "production";
-
-const sessionOptions = {
-  password: process.env.SESSION_SECRET!,
-  cookieName: "auth_session",
-  cookieOptions: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    // sameSite: isProd ? "none" : "lax", // use lax locally to avoid silent cookie rejection
-    sameSite: "none",
-    path: "/",
-    ...(isProd && { domain: ".devirl.com" }), // optionally set domain for subdomain sharing
-  },
-};
+import type { AuthUser } from "@/types/auth"; // your custom user type
 
 export default eventHandler(async (event) => {
   const session = await getIronSession(
@@ -23,7 +11,13 @@ export default eventHandler(async (event) => {
     sessionOptions
   );
 
-  if (!session.user) return null;
+  console.log("Session content", session); // <- add this
 
-  return session.user;
+  if (!session.user) {
+    throw createError({ statusCode: 401, statusMessage: "Not authenticated" });
+  }
+
+  return {
+    user: session.user as AuthUser,
+  };
 });

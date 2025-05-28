@@ -26,11 +26,19 @@ const role = ref("");
 const userTypeSuccess = ref(false);
 const userTypeError = ref("");
 
-const { user, error } = await useAuthUser();
-const safeUserId = user.value?.sub || "No user id";
+const { data: user, error } = useAuthUser();
+
+const safeUserId = user.value?.sub ?? "No user id";
 
 const updateRole = async () => {
+
   userTypeError.value = "";
+
+  const safeUserId = user.value?.sub;
+  if (!safeUserId) {
+    userTypeError.value = "User ID is missing. Please log in again.";
+    return;
+  }
 
   try {
     const payload = {
@@ -44,11 +52,11 @@ const updateRole = async () => {
     userTypeSuccess.value = true;
 
     await $fetch("/api/auth/refresh-session", {
-      method: "POST", // or GET if you prefer
+      method: "POST",
       credentials: "include",
     });
-    
-    navigateTo("/");
+
+    // navigateTo("/");
   } catch (e: any) {
     if (e instanceof z.ZodError) {
       userTypeError.value = e.errors.map((err) => err.message).join(", ");
@@ -57,6 +65,7 @@ const updateRole = async () => {
     }
   }
 };
+
 </script>
 <template>
   <NuxtLayout>
@@ -90,7 +99,6 @@ const updateRole = async () => {
       <p v-if="userTypeError" class="text-red-500 mt-4 text-sm text-center">
         {{ userTypeError }}
       </p>
-      
     </div>
   </NuxtLayout>
 </template>

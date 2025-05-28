@@ -10,7 +10,7 @@ const rewardCreatePayload = ref<CreateRewardPayload>({
   bonus: "",
 });
 
-const { user, error } = await useAuthUser();
+const { data: user, userError, refresh } = await useAuthUser();
 
 if (error.value) {
   console.error("Failed to load auth session:", error.value);

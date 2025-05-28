@@ -1,5 +1,7 @@
-import { $fetch } from "ofetch";
+// ./connectors/UserDataConnector.ts
+
 import { loadConfig } from "@/configuration/ConfigLoader";
+import { $fetch } from "ofetch";
 import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
 import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
 

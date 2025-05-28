@@ -1,9 +1,24 @@
-import { useFetch } from "nuxt/app";
+// ~/composables/useAuthUser.ts
+import { useAsyncData } from "nuxt/app";
+import type { AuthUser } from "@/types/auth";
 
-export const useAuthUser = async () => {
-  const { data, error } = await useFetch('/api/auth/session', {
-    credentials: 'include',
-  });
-
-  return { user: data, error };
-};
+export const useAuthUser = () =>
+  useAsyncData<AuthUser | null>(
+    "authUser",
+    async () => {
+      try {
+        const { user } = await $fetch<{ user: AuthUser }>("/api/auth/session", {
+          credentials: "include",
+        });
+        return user ?? null;
+      } catch (err: any) {
+        if (err?.response?.status === 401) return null;
+        throw err;
+      }
+    },
+    {
+      default: () => null,
+      lazy: false,
+      server: true,
+    }
+  );

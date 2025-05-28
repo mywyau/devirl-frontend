@@ -4,19 +4,17 @@ import { defineEventHandler, setCookie, createError } from "h3";
 import { getIronSession } from "iron-session";
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
+import { sessionOptions } from "@/server/utils/sessionOptions"; // ✅ import the shared options
 
 const isProd = process.env.NODE_ENV === "production";
 
 export default defineEventHandler(async (event) => {
-  const session = await getIronSession(event.node.req, event.node.res, {
-    password: process.env.SESSION_SECRET!,
-    cookieName: "auth_session",
-    ttl: 60 * 60 * 8,
-    secure: isProd,
-    sameSite: "none",
-    path: "/",
-    ...(isProd && { domain: ".devirl.com" }),
-  });
+
+  const session = await getIronSession(
+    event.node.req,
+    event.node.res,
+    sessionOptions
+  );
 
   const userId = session.user?.sub;
   if (!userId) {
@@ -29,11 +27,15 @@ export default defineEventHandler(async (event) => {
   const config = loadConfig();
 
   const allCookies = event.node.req.headers.cookie || "";
+
+
+  console.log(`allCookies: ${allCookies}\n`, ); // Debug: see what's being sent as cookie header
+
   const sessionCookie = allCookies
     .split(";")
     .find((c) => c.trim().startsWith("auth_session="));
 
-  console.log(sessionCookie); // Debug: see what's being sent as cookie header
+  console.log(`session cookie: ${sessionCookie}\n`, ); // Debug: see what's being sent as cookie header
 
   // Refetch updated user data (including userType)
   const userData = await $fetch(
@@ -47,7 +49,10 @@ export default defineEventHandler(async (event) => {
   );
 
   const userType = userData?.userType ?? null;
+  
   await session.save();
+
+  console.log(sessionCookie)
 
   try {
     const response = await $fetch(

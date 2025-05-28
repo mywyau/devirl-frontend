@@ -12,14 +12,19 @@ import {
 const userProfile = ref<GetUserData | null>(null);
 const userProfileError = ref("");
 
-const { user, error } = await useAuthUser();
-const safeUserId = user.value?.sub || "No user id";
+const { data: user, userError, refresh } = await useAuthUser();
 
 console.log("[ClientUserProfile] Loaded user from session:", user.value);
 
 onMounted(async () => {
+  
+  const safeUserId = user.value?.sub || "No user id";
+
   try {
-    console.info("[ClientUserProfile] Fetching user profile for ID:", safeUserId);
+    console.info(
+      "[ClientUserProfile] Fetching user profile for ID:",
+      safeUserId
+    );
 
     const rawData = await getUser(safeUserId);
     console.debug("[ClientUserProfile] Raw user data from API:", rawData);

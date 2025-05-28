@@ -10,7 +10,7 @@ console.log("[Welcome Page] Setup running...");
 const config = useRuntimeConfig();
 
 // 1. Call Nuxt3 backend server and fetch user session
-const { user, error } = await useAuthUser();
+const { data: user, userError, refresh } = await useAuthUser();
 
 if (error.value) {
   console.error("Failed to load auth session:", error.value);

@@ -5,7 +5,7 @@ import { useAuthUser } from "~/composables/useAuthUser";
 
 const auth = new AuthController();
 
-const { user, error } = await useAuthUser();
+const { data: user, error } = useAuthUser();
 
 const userType = useCookie("user_type"); // reads cookie on client and SSR
 
@@ -16,6 +16,10 @@ if (error.value) {
 const loginUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/login`;
 const logoutUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/logout`;
 
+const handleLogout = () => {
+  // Full browser redirect ensures session is reset on both client and server
+  window.location.href = "/api/auth/logout";
+};
 </script>
 
 <template>
@@ -67,7 +71,12 @@ const logoutUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/logout`;
             Client Profile
           </NuxtLink>
 
-          <a :href="logoutUrl" class="hover:text-red-400 text-base"> Logout </a>
+          <a
+            href="#"
+            @click.prevent="handleLogout"
+            class="hover:text-red-400 text-base"
+            >Logout</a
+          >
         </template>
 
         <template v-else>
