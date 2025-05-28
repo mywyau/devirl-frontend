@@ -88,37 +88,6 @@ export class DevQuestBackendAuthController {
     }
   }
 
-  async storeCookieSessionInRedisServerToServer(
-    userId: string,
-    cookieHeader: string
-  ): Promise<StoreSessionResponse> {
-    const url = this.storeSessionUrl(userId);
-    console.info(
-      `[DevQuestBackendAuthController] Storing session for user: ${userId} at ${url}`
-    );
-
-    try {
-      const response = await $fetch<StoreSessionResponse>(url, {
-        method: "POST",
-        headers: {
-          cookie: cookieHeader, // Manually inject the cookie header for server to server
-        },
-      });
-
-      console.info(
-        `[DevQuestBackendAuthController] Session stored successfully for user: ${userId}`,
-        response
-      );
-      return response;
-    } catch (error: any) {
-      console.error(
-        `[DevQuestBackendAuthController] Failed to store session for user: ${userId}`,
-        error
-      );
-      throw createReadableError(error);
-    }
-  }
-
   async deleteCookieSessionInRedisServerToServer(
     userId: string,
     cookieHeader: string
