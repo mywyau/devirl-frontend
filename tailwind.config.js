@@ -1,5 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  safelist: [
+    {
+      pattern: /bg-(red|blue|green|yellow)-(400|500)/,
+      variants: ['hover'],        // this adds hover:bg-*-400 & hover:bg-*-500
+    },
+  ],
   content: [
     "./components/**/*.{vue,js,ts}",
     "./layouts/**/*.{vue,js,ts}",

@@ -3,7 +3,9 @@
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { $fetch } from "ofetch";
 import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
-import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
+// import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
+import type { CreateUserData, UpdateUserType, UpdateUserData } from "@/types/schema/UserDataSchema";
+import { CreateUserDataSchema, UpdateUserTypeSchema, UpdateUserDataSchema } from "@/types/schema/UserDataSchema";
 
 const config = loadConfig();
 const baseUrl = `${config.devQuestBackend.baseUrl}/`;
@@ -34,7 +36,7 @@ export async function fetchUserData(userId: string) {
 
 export async function createUserData(
   userId: string,
-  payload: CreateUserPayload
+  payload: CreateUserData
 ) {
   return await $fetch(endpoints.create(userId), {
     method: "POST",
@@ -43,9 +45,20 @@ export async function createUserData(
   });
 }
 
+export async function updateUserData(
+  userId: string,
+  payload: UpdateUserData
+) {
+  return await $fetch(endpoints.update(userId), {
+    method: "PUT",
+    credentials: "include",
+    body: payload,
+  });
+}
+
 export async function updateUserDataType(
   userId: string,
-  payload: UpdateUserTypePayload
+  payload: UpdateUserType
 ) {
   return await $fetch(endpoints.update(userId), {
     method: "PUT",

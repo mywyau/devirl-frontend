@@ -3,27 +3,27 @@
 import {
   fetchUserData,
   createUserData,
+  updateUserData,
   updateUserDataType,
   deleteUserData,
 } from "@/connectors/UserDataConnector";
-import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
-
-/**
- * Controller wrapper around user data fetch
- */
+import type { CreateUserData, UpdateUserType, UpdateUserData } from "@/types/schema/UserDataSchema";
+import { CreateUserDataSchema, UpdateUserTypeSchema, UpdateUserDataSchema } from "@/types/schema/UserDataSchema";
 
 
 export async function getUser(userId: string) {
-  // You can add controller-level logging or error handling here if needed
   return await fetchUserData(userId)
 }
 
-export async function createUser(userId: string, payload: CreateUserPayload) {
-  // Controller can validate inputs or log the call
+export async function createUser(userId: string, payload: CreateUserData) {
   return await createUserData(userId, payload);
 }
 
-export async function updateUserType(userId: string, payload: UpdateUserTypePayload) {
+export async function updateUser(userId: string, payload: UpdateUserData) {
+  return await updateUserData(userId, payload);
+}
+
+export async function updateUserType(userId: string, payload: UpdateUserType) {
   return await updateUserDataType(userId, payload);
 }
 

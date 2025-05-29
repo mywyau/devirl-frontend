@@ -21,7 +21,7 @@
             <NuxtLink
               v-if="quest.id === '1' || quest.id === '2'"
               :to="`/quest/${quest.id}`"
-              class="inline-block mt-3 text-sm text-blue-500 hover:underline"
+              class="inline-block mt-3 text-sm text-sky-300 hover:text-sky-200 hover:underline"
             >
               <Button
                 type="submit"
@@ -34,7 +34,7 @@
             <NuxtLink
               v-else
               :to="`/error`"
-              class="inline-block mt-3 text-sm text-blue-500 hover:underline"
+              class="inline-block mt-3 text-sm text-sky-300 hover:text-sky-200 hover:underline"
             >
               <Button
                 type="submit"

@@ -83,7 +83,7 @@ async function fetchQuests() {
             >
             <NuxtLink
               :to="`/quest/${quest.questId}`"
-              class="text-blue-400 hover:underline"
+              class="text-white hover:underline hover:text-cyan-400"
             >
               View Quest →
             </NuxtLink>
