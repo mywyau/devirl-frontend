@@ -25,7 +25,8 @@ const success = ref(false);
 const showError = ref(false);
 const isSubmitting = ref(false);
 
-const { data: user, userError, refresh } = await useAuthUser();
+const { data: user, error: userError } = await useAuthUser();
+
 
 console.log(encodeURIComponent(user.value?.sub || "No user id"));
 const safeUserId = user.value?.sub || "No user id";

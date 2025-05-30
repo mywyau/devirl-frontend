@@ -1,56 +1,71 @@
 <script setup lang="ts">
-import { deleteQuest, getQuest } from "@/controllers/QuestBackendController";
+import { useRoute } from "vue-router";
+import { useAsyncData } from "#imports"; // Nuxt auto-import
+import { computed, ref } from "vue";
+
+import { getQuest } from "@/controllers/QuestBackendController";
 import {
   QuestPartialSchema,
   type QuestPartial,
 } from "@/types/schema/QuestStatusSchema";
-import { Button } from "~/components/ui/button/variants";
-import { useRoute } from "vue-router";
-import { ref, onMounted } from "vue";
 import { useAuthUser } from "~/composables/useAuthUser";
+import { Button } from "~/components/ui/button/variants";
 
+// 1) Grab the route param
 const route = useRoute();
-const questId = route.params.id as string;
+const questIdFromRoute = route.params.id as string;
 
-const { data: user, userError, refresh } = await useAuthUser();
+// 2) Resolve the logged-in user (top-level await)
+const { data: user, error: userError } = await useAuthUser();
+const safeUserId = computed(() => user.value?.sub ?? null);
 
-const safeUserId = user.value?.sub || "No user id";
+// 3) Fetch quest data via useAsyncData (runs on server, then hydrates)
+const {
+  data: rawQuestData,
+  pending,
+  error: fetchError,
+} = await useAsyncData(
+  `quest-${questIdFromRoute}`,
+ () => getQuest(safeUserId.value, questIdFromRoute),
+  {
+    server: true,   // run on server only
+    client: false,  // do NOT run again on the client
+    default: () => null,
+  }
+);
 
-const result = ref<QuestPartial | null>(null);
-const isLoading = ref(false);
-const error = ref<string | null>(null);
+// 4) Validate and parse with Zod
+const parsed = computed(() => {
+  if (!rawQuestData.value) return null;
+  return QuestPartialSchema.safeParse(rawQuestData.value);
+});
+
+// 5) Expose a `result` (the typed QuestPartial) or `null`
+const result = computed<QuestPartial | null>(() => {
+  if (parsed.value?.success) return parsed.value.data;
+  return null;
+});
+
+// 6) Build an `error` message if fetch fails or Zod parsing fails
+const error = computed<string | null>(() => {
+  if (fetchError.value) {
+    return "Failed to load quest.";
+  }
+  if (parsed.value && !parsed.value.success) {
+    return "Invalid quest data received.";
+  }
+  return null;
+});
+
+// 7) Tie `isLoading` to the pending state of the fetch
+const isLoading = pending;
+
+// 8) (Optional) keep your “accept”/“report” state for future actions
 const success = ref(false);
 const showError = ref(false);
 
-async function handleDeleteQuest() {
-  try {
-    await deleteQuest(safeUserId, questId);
-    success.value = true;
-  } catch (err) {
-    showError.value = true;
-    console.error(err);
-  }
-}
-
-onMounted(async () => {
-  isLoading.value = true;
-  try {
-    const rawData = await getQuest(safeUserId, questId);
-    const parsed = QuestPartialSchema.safeParse(rawData);
-
-    if (!parsed.success) {
-      console.error("[QuestPage] Invalid quest data", parsed.error);
-      error.value = "Invalid quest data received.";
-    } else {
-      result.value = parsed.data;
-    }
-  } catch (e) {
-    console.error(e);
-    error.value = "Failed to load quest.";
-  } finally {
-    isLoading.value = false;
-  }
-});
+// If you need to implement a handler later, you can do:
+// async function handleAcceptQuest() { … }
 </script>
 
 <template>
@@ -77,31 +92,29 @@ onMounted(async () => {
         </div>
 
         <div class="mt-6 flex gap-4">
-          <NuxtLink :to="`/client/quest/edit/${questId}`">
-            <Button
-              variant="secondary"
-              class="bg-yellow-500 text-white rounded hover:bg-yellow-400"
-            >
-              Edit quest
-            </Button>
-          </NuxtLink>
-
           <Button
             variant="secondary"
-            class="bg-red-600 text-white rounded hover:bg-red-500"
-            @click="handleDeleteQuest"
+            class="bg-red-500 text-white rounded hover:bg-red-400"
+            @click=""
           >
-            Delete quest
+            Report Quest
           </Button>
+
+          <!--
+          <Button
+            variant="secondary"
+            class="bg-green-500 text-white rounded hover:bg-green-400"
+            @click="handleAcceptQuest"
+          >
+            Accept Quest
+          </Button>
+          -->
         </div>
 
         <p v-if="success" class="text-green-500 text-sm pt-4">
-          Quest Deleted successfully!
+          Quest action succeeded!
         </p>
-
-        <p v-if="showError" class="text-red-500 text-sm">
-          Delete quest unsuccessful!
-        </p>
+        <p v-if="showError" class="text-red-500 text-sm">Action failed!</p>
       </div>
     </div>
   </NuxtLayout>
