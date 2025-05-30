@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { loadConfig } from "@/configuration/ConfigLoader";
-import { AuthController } from "@/controllers/AuthController";
 import { useAuthUser } from "~/composables/useAuthUser";
-
-const auth = new AuthController();
 
 const { data: user, error } = useAuthUser();
 
@@ -29,20 +26,20 @@ const handleLogout = () => {
     <header
       class="px-6 py-4 border-b border-gray-700 flex justify-between items-center"
     >
-      <NuxtLink to="/" class="text-xl font-bold text-white hover:text-cyan-300">
+      <NuxtLink to="/" class="text-xl font-bold text-white hover:text-sky-300">
         Dev Irl
       </NuxtLink>
 
       <nav class="space-x-6 flex items-center">
         <template v-if="user">
-          <NuxtLink to="/view-all/quests" class="hover:text-cyan-300">
+          <NuxtLink to="/view-all/quests" class="hover:text-sky-300">
             View all quests
           </NuxtLink>
 
           <NuxtLink
             v-if="userType === 'Client'"
             to="/client/quest-dashboard"
-            class="hover:text-cyan-300"
+            class="hover:text-sky-300"
           >
             Client Quests Dashboard
           </NuxtLink>
@@ -50,7 +47,7 @@ const handleLogout = () => {
           <NuxtLink
             v-if="userType === 'Dev'"
             to="/dev/quest-dashboard"
-            class="hover:text-cyan-300"
+            class="hover:text-sky-300"
           >
             Dev Quests Dashboard
           </NuxtLink>
@@ -58,7 +55,7 @@ const handleLogout = () => {
           <NuxtLink
             v-if="userType === 'Dev'"
             to="/dev/profile"
-            class="hover:text-cyan-300"
+            class="hover:text-sky-300"
           >
             Dev Profile
           </NuxtLink>
@@ -66,7 +63,7 @@ const handleLogout = () => {
           <NuxtLink
             v-if="userType === 'Client'"
             to="/client/profile"
-            class="hover:text-cyan-300"
+            class="hover:text-sky-300"
           >
             Client Profile
           </NuxtLink>

@@ -28,8 +28,6 @@ const userTypeError = ref("");
 
 const { data: user, error } = useAuthUser();
 
-const safeUserId = user.value?.sub ?? "No user id";
-
 const updateRole = async () => {
 
   userTypeError.value = "";

@@ -30,3 +30,22 @@ export const GetUserDataSchema = z.object({
 });
 
 export type GetUserData = z.infer<typeof GetUserDataSchema>;
+
+export const CreateUserDataSchema = z.object({
+  userId: z.string(),
+  email: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  userType: UserTypeSchema.optional(),
+});
+
+export type CreateUserData = z.infer<typeof CreateUserDataSchema>;
+
+export const UpdateUserDataSchema = z.object({
+  email: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  userType: UserTypeSchema.optional(),
+});
+
+export type UpdateUserData = z.infer<typeof UpdateUserDataSchema>;

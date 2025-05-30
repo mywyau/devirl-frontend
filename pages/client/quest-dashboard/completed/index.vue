@@ -1,128 +1,102 @@
+<!-- src/pages/ClientCompletedQuests.vue -->
+<script setup lang="ts">
+import { ref, computed, onMounted, watch } from "vue";
+import { Button } from "@/components/ui/button/variants";
+import { useAuthUser } from "~/composables/useAuthUser";
+import { streamAllQuestsByStatus } from "@/controllers/QuestBackendController";
+import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
+
+// User session
+const { data: user, pending: authPending } = useAuthUser();
+const safeUserId = computed(() => user.value?.sub ?? null);
+
+// Quests state
+const quests = ref<QuestPartial[]>([]);
+const error = ref<string | null>(null);
+const loading = ref<boolean>(true);
+
+// Fetch completed quests stream
+async function fetchCompletedQuests() {
+  const userId = safeUserId.value;
+  if (!userId) {
+    error.value = "Not authenticated.";
+    loading.value = false;
+    return;
+  }
+
+  loading.value = true;
+  error.value = null;
+  quests.value = [];
+
+  try {
+    for await (const quest of streamAllQuestsByStatus(
+      userId,
+      "NotStarted",
+      1,
+      50
+    )) {
+      quests.value.push(quest);
+    }
+  } catch (err: any) {
+    console.error("[ClientCompletedQuests][fetchCompletedQuests] Error streaming quests:", err);
+    error.value = "Failed to fetch completed quests.";
+  } finally {
+    loading.value = false;
+  }
+}
+
+// Trigger on mount after auth resolves
+onMounted(() => {
+  if (authPending.value) {
+    const stop = watch(
+      authPending,
+      (pending) => {
+        if (!pending) {
+          stop();
+          fetchCompletedQuests();
+        }
+      },
+      { immediate: true }
+    );
+  } else {
+    fetchCompletedQuests();
+  }
+});
+</script>
+
 <template>
   <NuxtLayout>
-    <div class="p-6 max-w-5xl mx-auto text-green-300">
-      
-      <h1 class="text-3xl font-bold mb-8">Client Completed Quests</h1>
-      <p class="text-xl font-bold mb-8">
-        Quests which a freelancer has completed
+    <div class="p-6 max-w-5xl mx-auto">
+      <h1 class="text-3xl font-bold mb-4 text-green-400">Completed Quests</h1>
+      <p class="text-lg mb-6 text-green-300">
+        Below are all the quests you have completed.
       </p>
 
-      <div class="grid grid-cols-2 gap-6">
-        <div
-          v-for="quest in quests"
-          :key="quest.id"
-          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
-        >
-          <h3 class="text-xl font-semibold text-indigo-300">
-            {{ quest.title }}
-          </h3>
-          <p class="text-gray-300 text-sm mt-2 mb-2">{{ quest.description }}</p>
-          <p class="text-green-400 font-medium">
-            Bounty: {{ quest.bounty }} ETH
-          </p>
-
-          <div class="mt-4 flex justify-end">
-            <NuxtLink
-              v-if="quest.id === '1' || quest.id === '2'"
-              :to="`/quest/${quest.id}`"
-              class="inline-block mt-3 text-sm text-blue-500 hover:underline"
-            >
-              <Button
-                type="submit"
-                variant="default"
-                class="bg-indigo-400 text-white rounded hover:bg-indigo-300"
+      <div v-if="loading" class="text-gray-400">Loading completed quests...</div>
+      <div v-else-if="error" class="text-red-500">{{ error }}</div>
+      <div v-else>
+        <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div
+            v-for="quest in quests"
+            :key="quest.questId"
+            class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
+          >
+            <h3 class="text-xl font-semibold text-indigo-300">{{ quest.title }}</h3>
+            <p class="text-gray-300 text-sm mt-2 mb-4">{{ quest.description }}</p>
+            <div class="mt-auto flex justify-end">
+              <NuxtLink
+                :to="`/quest/${quest.questId}`"
+                class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
               >
-                View Details
-              </Button>
-            </NuxtLink>
-            <NuxtLink
-              v-else
-              :to="`/error`"
-              class="inline-block mt-3 text-sm text-blue-500 hover:underline"
-            >
-              <Button
-                type="submit"
-                variant="default"
-                class="bg-indigo-400 text-white rounded hover:bg-indigo-300"
-              >
-                View Details
-              </Button>
-            </NuxtLink>
+                <Button variant="default" class="bg-indigo-500 text-white rounded hover:bg-indigo-300">
+                  View Details
+                </Button>
+              </NuxtLink>
+            </div>
           </div>
         </div>
+        <div v-else class="text-gray-400">You have no completed quests.</div>
       </div>
     </div>
   </NuxtLayout>
 </template>
-
-<script setup lang="ts">
-definePageMeta({
-  middleware: "auth",
-  // layout: "quest-dashboard",
-});
-
-const { isLoggedIn } = useUser();
-
-import { Button } from "~/components/ui/button/variants";
-
-const statusColorMap: Record<string, string> = {
-  "in progress": "text-yellow-300",
-  submitted: "text-blue-400",
-  completed: "text-green-300",
-  failed: "text-red-300",
-};
-
-// Dummy data — replace with API integration later
-const quests = [
-  {
-    id: "1",
-    title: "Implement Web3 Wallet Integration",
-    description:
-      "Allow users to connect MetaMask and authenticate with Ethereum signatures.",
-    bounty: 0.25,
-    status: "completed",
-  },
-  {
-    id: "2",
-    title: "Refactor Legacy Vue Components",
-    description:
-      "Modernize old Vue 2-style components to Vue 3 with Composition API.",
-    bounty: 0.18,
-    status: "completed",
-  },
-  {
-    id: "3",
-    title: "Add Unit Tests for QuestService",
-    description:
-      "Increase test coverage for the QuestService and ensure proper error handling.",
-    bounty: 0.12,
-    status: "completed",
-  },
-  {
-    id: "4",
-    title: "Optimize Lighthouse Performance Score",
-    description:
-      "Improve core web vitals by reducing initial JavaScript bundle size.",
-    bounty: 0.2,
-    status: "completed",
-  },
-];
-
-// Group quests by status
-const groupedQuests = computed(() => {
-  const map = {
-    "in progress": [],
-    submitted: [],
-    completed: [],
-    failed: [],
-  } as Record<string, typeof quests>;
-
-  for (const quest of quests) {
-    map[quest.status]?.push(quest);
-  }
-
-  return map;
-});
-</script>
-
-<style scoped></style>

@@ -1,106 +1,166 @@
+<!-- src/pages/DevUserProfile.vue -->
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
 import ProfileItem from "@/components/ui/profile/ProfileItem";
-import { getUser, deleteUserData } from "@/controllers/UserDataController";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { deleteUser, getUser } from "@/controllers/UserDataController";
+import {
+  DeleteResponseSchema,
+  type DeleteResponse,
+} from "@/types/schema/ApiResponses";
 import {
   GetUserDataSchema,
   type GetUserData,
 } from "@/types/schema/UserDataSchema";
+import { onMounted, ref } from "vue";
+import { Button } from "~/components/ui/button/variants";
+import { useAuthUser } from "~/composables/useAuthUser";
 
+// Reactive state
 const userProfile = ref<GetUserData | null>(null);
-const userProfileError = ref("");
+const userProfileError = ref<string>("");
+const isLoading = ref<boolean>(false);
 
-// Load current authenticated user
-const { data: user, userError, refresh } = await useAuthUser();
+const deleteResponse = ref<DeleteResponse | null>(null);
+const deleteError = ref<string>("");
+const isDeleting = ref<boolean>(false);
+const deleteSuccess = ref<string>("");
 
+// Authenticated user
+const { data: authUser, error: authError } = await useAuthUser();
+const userId = authUser.value?.sub;
 
-const userId = user.value?.sub;
-
-if (!userId) {
-  console.warn("[DevUserProfile] No user ID found in session.");
-  userProfileError.value = "User not authenticated.";
+// Fetch user profile
+async function fetchUserProfile(id: string) {
+  userProfileError.value = "";
+  isLoading.value = true;
+  try {
+    const raw = await getUser(id);
+    const result = GetUserDataSchema.safeParse(raw);
+    if (!result.success) {
+      console.error("[DevUserProfile] Profile validation error:", result.error);
+      userProfileError.value = "Invalid user data from server.";
+      return;
+    }
+    userProfile.value = result.data;
+  } catch (e: any) {
+    console.error("[DevUserProfile] Fetch error:", e);
+    userProfileError.value = e?.data?.message || "Unable to load profile.";
+  } finally {
+    isLoading.value = false;
+  }
 }
 
-const loadUserProfile = async (userId: string) => {
-  try {
-    const rawData = await deleteUserData(userId);
+// Delete user profile
+async function handleDeleteUser() {
 
-    if (!parsed.success) {
-      console.error("[DevUserProfile] Validation error:", parsed.error);
-      userProfileError.value = "Invalid user data from server.";
-      return;
-    }
-
-    userProfile.value = parsed.data;
-  } catch (err: any) {
-    console.error("[DevUserProfile] Failed to load profile:", err);
-    userProfileError.value = err?.data?.message || "Unable to load profile";
+  deleteError.value = deleteSuccess.value = "";
+  isDeleting.value = true;
+  if (!userId) {
+    deleteError.value = "User ID not found.";
+    isDeleting.value = false;
+    return;
   }
-};
 
-
-const deleteUserProfile = async (userId: string) => {
   try {
-    const rawData = await getUser(userId);
-    
+    const raw = await deleteUser(userId);
+    const parsed = DeleteResponseSchema.safeParse(raw);
     if (!parsed.success) {
-      console.error("[DevUserProfile] Validation error:", parsed.error);
-      userProfileError.value = "Invalid user data from server.";
-      return;
+      console.error("[DevUserProfile] Delete validation error:", parsed.error);
+      deleteError.value = "Invalid response from server.";
+    } else {
+      deleteResponse.value = parsed.data;
+      deleteSuccess.value = parsed.data.message || "User deleted successfully.";
+      userProfile.value = null;
     }
-
-    userProfile.value = parsed.data;
-  } catch (err: any) {
-    console.error("[DevUserProfile] Failed to load profile:", err);
-    userProfileError.value = err?.data?.message || "Unable to load profile";
+  } catch (e: any) {
+    console.error("[DevUserProfile] Delete error:", e);
+    deleteError.value = e?.data?.message || "Unable to delete user.";
+  } finally {
+    isDeleting.value = false;
   }
-};
+}
 
+// Initialize
 onMounted(() => {
-  if (userId) {
-    loadUserProfile(userId);
+  if (!userId) {
+    userProfileError.value = "User not authenticated.";
+    console.warn("[DevUserProfile] No user ID in session.");
+    return;
   }
+  fetchUserProfile(userId);
 });
-
-
 </script>
-
 
 <template>
   <NuxtLayout>
     <div class="max-w-5xl mx-auto mt-16 p-6">
       <div class="flex flex-col md:flex-row gap-8">
-        <!-- User Profile -->
         <div class="flex-1 p-6 shadow-md rounded-2xl border">
-          <h1 class="text-2xl font-bold mb-6 text-center">User Profile</h1>
+          <h1 class="text-2xl font-bold mb-6 text-center">Dev User Profile</h1>
 
-          <div class="space-y-4">
-            <ProfileItem
-              label="Name"
-              :value="`${userProfile?.firstName ?? ''} ${
-                userProfile?.lastName ?? ''
-              }`"
-              textColor="text-white"
-            />
-            <ProfileItem
-              label="Email"
-              :value="userProfile?.email"
-              textColor="text-white"
-            />
-            <ProfileItem
-              label="Role"
-              :value="userProfile?.userType || '—'"
-              textColor="text-white"
-            />
+          <div v-if="isLoading">Loading...</div>
+          <div v-else>
+            <div v-if="userProfile">
+              <div class="space-y-4">
+                <ProfileItem
+                  textColor="text-gray-400"
+                  labelColor="text-white"
+                  label="First Name"
+                  :value="`${userProfile.firstName}`"
+                />
+
+                <ProfileItem
+                  textColor="text-gray-400"
+                  labelColor="text-white"
+                  label="Last Name"
+                  :value="`${userProfile.lastName}`"
+                />
+                <ProfileItem
+                  textColor="text-gray-400"
+                  labelColor="text-white"
+                  label="Email"
+                  :value="userProfile.email"
+                />
+                <ProfileItem
+                  textColor="text-gray-400"
+                  labelColor="text-white"
+                  label="Role"
+                  :value="userProfile.userType ?? '—'"
+                />
+              </div>
+
+              <Button
+                variant="secondary"
+                class="mt-6 bg-red-600 text-white rounded hover:bg-red-500"
+                :disabled="isDeleting"
+                @click="handleDeleteUser"
+              >
+                {{ isDeleting ? "Deleting..." : "Delete user profile" }}
+              </Button>
+
+              <p
+                v-if="deleteError"
+                class="text-red-500 mt-4 text-center text-sm"
+              >
+                {{ deleteError }}
+              </p>
+              <p
+                v-if="deleteSuccess"
+                class="text-green-600 mt-4 text-center text-sm"
+              >
+                {{ deleteSuccess }}
+              </p>
+            </div>
+
+            <p
+              v-else-if="userProfileError"
+              class="text-red-500 mt-4 text-center text-sm"
+            >
+              {{ userProfileError }}
+            </p>
+            <p v-else class="text-gray-600 mt-4 text-center text-sm">
+              No profile data available.
+            </p>
           </div>
-
-          <p
-            v-if="userProfileError"
-            class="text-red-500 mt-4 text-center text-sm"
-          >
-            {{ userProfileError }}
-          </p>
         </div>
       </div>
     </div>

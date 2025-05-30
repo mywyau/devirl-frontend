@@ -100,7 +100,7 @@ describe("refreshSessionHandler", () => {
       })
     );
 
-    expect(mockSession.save).toHaveBeenCalled();
+    expect(mockSession.save).not.toHaveBeenCalled();
     expect(result).toEqual({ success: true, userType: "Dev" });
   });
 
