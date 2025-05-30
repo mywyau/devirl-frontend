@@ -57,7 +57,7 @@ async function fetchQuests() {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold mb-6 text-white">All Available Quests</h1>
+      <h1 class="text-3xl font-bold mb-6 text-white">All Available Public Quests</h1>
 
       <div v-if="authPending || loading" class="text-gray-500">
         Loading quests...
@@ -83,7 +83,7 @@ async function fetchQuests() {
             >
             <NuxtLink
               :to="`/quest/${quest.questId}`"
-              class="text-white hover:underline hover:text-cyan-400"
+              class="text-white hover:underline hover:text-sky-300"
             >
               View Quest →
             </NuxtLink>

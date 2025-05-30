@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 // Zod schema
-export const QuestStatusSchema = z.enum(["NotStarted", "InProgress", "Completed"]);
+export const QuestStatusSchema = z.enum(["NotStarted", "InProgress", "Completed", "Failed", "Review"]);
 
 // Inferred TypeScript type from Zod
 export type QuestStatus = z.infer<typeof QuestStatusSchema>;

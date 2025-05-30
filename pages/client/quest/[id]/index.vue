@@ -4,9 +4,9 @@ import {
   QuestPartialSchema,
   type QuestPartial,
 } from "@/types/schema/QuestStatusSchema";
-import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
 import { Button } from "~/components/ui/button/variants";
+import { useRoute } from "vue-router";
+import { ref, onMounted } from "vue";
 import { useAuthUser } from "~/composables/useAuthUser";
 
 const route = useRoute();
@@ -22,9 +22,9 @@ const error = ref<string | null>(null);
 const success = ref(false);
 const showError = ref(false);
 
-async function handleAcceptQuest() {
+async function handleDeleteQuest() {
   try {
-    await acceptQuestRequest(safeUserId, questId);
+    await deleteQuest(safeUserId, questId);
     success.value = true;
   } catch (err) {
     showError.value = true;
@@ -77,20 +77,21 @@ onMounted(async () => {
         </div>
 
         <div class="mt-6 flex gap-4">
-          <Button
-            variant="secondary"
-            class="bg-red-500 text-white rounded hover:bg-red-400"
-            @click=""
-          >
-            Report Quest
-          </Button>
+          <NuxtLink :to="`/client/quest/edit/${questId}`">
+            <Button
+              variant="secondary"
+              class="bg-yellow-500 text-white rounded hover:bg-yellow-400"
+            >
+              Edit quest
+            </Button>
+          </NuxtLink>
 
           <Button
             variant="secondary"
-            class="bg-green-500 text-white rounded hover:bg-green-400"
+            class="bg-red-600 text-white rounded hover:bg-red-500"
             @click="handleDeleteQuest"
           >
-            Accept Quest
+            Delete quest
           </Button>
         </div>
 
