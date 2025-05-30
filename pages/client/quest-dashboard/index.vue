@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button/variants";
 const statuses = [
   { key: "not-started", label: "Not Started", color: "gray" },
   { key: "in-progress", label: "In Progress", color: "yellow" },
-  { key: "submitted", label: "Submitted", color: "blue" },
+  { key: "review", label: "Review", color: "blue" },
   { key: "completed", label: "Completed", color: "green" },
   { key: "failed", label: "Failed", color: "red" },
 ];

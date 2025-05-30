@@ -68,7 +68,7 @@ onMounted(() => {
                 💰 {{ quest.bounty || 0.0 }} ETH
               </span>
               <NuxtLink
-                :to="`/quest/${quest.questId}`"
+                :to="`/client/quest/${quest.questId}`"
                 class="text-blue-400 hover:underline hover:text-blue-300"
               >
                 <Button

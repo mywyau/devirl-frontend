@@ -1,103 +1,123 @@
+<!-- src/pages/ClientFailedQuests.vue -->
+<script setup lang="ts">
+import { ref, computed, onMounted, watch } from "vue";
+import { Button } from "@/components/ui/button/variants";
+import { useAuthUser } from "@/composables/useAuthUser";
+import { streamAllQuestsByStatus } from "@/controllers/QuestBackendController";
+import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
+
+// User session
+const { data: user, pending: authPending } = useAuthUser();
+const safeUserId = computed(() => user.value?.sub ?? null);
+
+// Quests state
+const quests = ref<QuestPartial[]>([]);
+const error = ref<string | null>(null);
+const loading = ref<boolean>(true);
+
+// Fetch not-started quests stream
+async function fetchFailedQuests() {
+  const userId = safeUserId.value;
+  if (!userId) {
+    error.value = "Not authenticated.";
+    loading.value = false;
+    return;
+  }
+
+  loading.value = true;
+  error.value = null;
+  quests.value = [];
+
+  let receivedAny = false;
+  try {
+    for await (const quest of streamAllQuestsByStatus(
+      userId,
+      "Failed",
+      1,
+      50
+    )) {
+      if (!receivedAny) {
+        loading.value = false;
+        receivedAny = true;
+      }
+      quests.value.push(quest);
+    }
+    if (!receivedAny) {
+      loading.value = false;
+    }
+  } catch (e: any) {
+    console.error("[ClientFailedQuests] Error streaming quests:", e);
+    error.value = "Failed to fetch not started quests.";
+    loading.value = false;
+  }
+}
+
+// Trigger on mount after auth resolves
+onMounted(() => {
+  if (authPending.value) {
+    const stop = watch(
+      authPending,
+      (pending) => {
+        if (!pending) {
+          stop();
+          fetchFailedQuests();
+        }
+      },
+      { immediate: true }
+    );
+  } else {
+    fetchFailedQuests();
+  }
+});
+</script>
+
 <template>
   <NuxtLayout>
-    <div class="p-6 max-w-5xl mx-auto text-red-300">
-      <h1 class="text-3xl font-bold mb-8">Failed Quests</h1>
+    <div class="p-6 max-w-5xl mx-auto">
+      <h1 class="text-3xl font-bold mb-4 text-red-400">Failed</h1>
+      <p class="text-lg mb-6 text-red-300">
+        Below are all the quests that are failed.
+      </p>
 
-      <div class="grid grid-cols-2 gap-6">
+      <!-- Show quests immediately when available -->
+      <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div
           v-for="quest in quests"
-          :key="quest.id"
-          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow"
+          :key="quest.questId"
+          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
-          <h3 class="text-xl font-semibold text-indigo-300">
-            {{ quest.title }}
-          </h3>
-          <p class="text-gray-300 text-sm mt-2 mb-2">{{ quest.description }}</p>
-          <p class="text-green-400 font-medium">
-            Bounty: {{ quest.bounty }} ETH
-          </p>
-          <NuxtLink
-            v-if="quest.id === '1' || quest.id === '2'"
-            :to="`/quest/${quest.id}`"
-            class="inline-block mt-3 text-sm text-sky-300 hover:text-sky-200 hover:underline"
-          >
-            View Details
-          </NuxtLink>
-          <NuxtLink
-            v-else
-            :to="`/error`"
-            class="inline-block mt-3 text-sm text-sky-300 hover:text-sky-200 hover:underline"
-          >
-            View Details
-          </NuxtLink>
+          <h3 class="text-xl font-semibold text-red-300">{{ quest.title }}</h3>
+          <p class="text-white-300 text-sm mt-2 mb-4">{{ quest.description }}</p>
+          <div class="mt-auto flex justify-end">
+            <NuxtLink
+              :to="`/quest/${quest.questId}`"
+              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
+            >
+              <Button
+                variant="default"
+                class="bg-red-500 text-white rounded hover:bg-red-400"
+              >
+                View Details
+              </Button>
+            </NuxtLink>
+          </div>
         </div>
+      </div>
+
+      <!-- If still loading and no quests yet -->
+      <div v-else-if="loading" class="text-gray-400">
+        Loading Failed quests...
+      </div>
+
+      <!-- Error state -->
+      <div v-else-if="error" class="text-red-500">
+        {{ error }}
+      </div>
+
+      <!-- No data after loading -->
+      <div v-else class="text-gray-400">
+        You have no failed quests.
       </div>
     </div>
   </NuxtLayout>
 </template>
-
-
-<script setup lang="ts">
-
-definePageMeta({
-  middleware: "auth",
-  // layout: "quest-dashboard",
-});
-
-const statusColorMap: Record<string, string> = {
-  "in progress": "text-yellow-300",
-  submitted: "text-blue-400",
-  completed: "text-green-300",
-  failed: "text-red-300",
-};
-
-// Dummy data — replace with API integration later
-const quests = [
-  {
-    id: "1",
-    title: "Clean up Scala tech debt",
-    description: "Strongly type our API client for better DX.",
-    bounty: 0.1,
-    status: "failed",
-  },
-  {
-    id: "2",
-    title: "Setup github integration",
-    description: "Implement dark mode across the frontend.",
-    bounty: 0.2,
-    status: "failed",
-  },
-  {
-    id: "3",
-    title: "Fix Routing for payments page",
-    description: "Users should be redirected back after login.",
-    bounty: 0.15,
-    status: "failed",
-  },
-  {
-    id: "4",
-    title: "Create new microservice",
-    description: "Users should be redirected back after login.",
-    bounty: 0.15,
-    status: "failed",
-  },
-];
-
-// Group quests by status
-const groupedQuests = computed(() => {
-  const map = {
-    "in progress": [],
-    submitted: [],
-    completed: [],
-    failed: [],
-  } as Record<string, typeof quests>;
-
-  for (const quest of quests) {
-    map[quest.status]?.push(quest);
-  }
-
-  return map;
-});
-</script>
-
-<style scoped></style>
