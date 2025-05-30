@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "~/components/ui/button/variants";
 
 const statuses = [
+  { key: "not-started", label: "Not Started", color: "gray" },
   { key: "in-progress", label: "In Progress", color: "yellow" },
   { key: "submitted", label: "Submitted", color: "blue" },
   { key: "completed", label: "Completed", color: "green" },
@@ -47,7 +48,7 @@ const statuses = [
               </Button>
             </NuxtLink>
 
-            <div class="flex justify-between">
+            <div class="ml-auto flex space-x-3">
               <NuxtLink
                 to="/client/quests"
                 class="inline-flex items-center justify-center rounded-md bg-indigo-500 px-4 py-2 text-sm text-white hover:bg-indigo-400"

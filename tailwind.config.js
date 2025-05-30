@@ -2,7 +2,7 @@
 export default {
   safelist: [
     {
-      pattern: /bg-(red|blue|green|yellow)-(400|500)/,
+      pattern: /bg-(red|blue|green|yellow|gray)-(400|500)/,
       variants: ['hover'],        // this adds hover:bg-*-400 & hover:bg-*-500
     },
   ],
