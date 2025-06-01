@@ -1,36 +1,31 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { z } from "zod";
-import { ref, onMounted } from "vue";
-import ProfileItem from "@/components/ui/profile/ProfileItem";
-import { updateUserType } from "@/controllers/RegistrationController";
 import { useAuthUser } from "~/composables/useAuthUser";
+import { updateUserType } from "@/controllers/RegistrationController";
 
-import {
-  UserDataSchema,
-  UpdateUserTypeSchema,
-} from "@/types/schema/UserDataSchema";
-import type { UserData, UpdateUserType } from "@/types/schema/UserDataSchema";
+import type { UpdateUserType } from "@/types/schema/UserDataSchema";
+import { UpdateUserTypeSchema } from "@/types/schema/UserDataSchema";
 
 import { Button } from "@/components/ui/button";
-import { navigateTo } from "nuxt/app";
-
 import {
   Select,
   SelectTrigger,
   SelectContent,
   SelectItem,
   SelectValue,
+  SelectLabel,
 } from "@/components/ui/select";
 
-const role = ref("");
+const role = ref<string>("");
 const userTypeSuccess = ref(false);
 const userTypeError = ref("");
 
-const { data: user, error } = useAuthUser();
+const { data: user } = useAuthUser();
 
 const updateRole = async () => {
-
   userTypeError.value = "";
+  userTypeSuccess.value = false;
 
   const safeUserId = user.value?.sub;
   if (!safeUserId) {
@@ -39,22 +34,16 @@ const updateRole = async () => {
   }
 
   try {
-    const payload = {
-      userType: role.value,
-    };
-
-    const parsed: UpdateUserType = UpdateUserTypeSchema.parse(payload);
-
-    await updateUserType(safeUserId, parsed);
+    const payload: UpdateUserType = UpdateUserTypeSchema.parse({ userType: role.value });
+    await updateUserType(safeUserId, payload);
 
     userTypeSuccess.value = true;
 
+    // Refresh server session so role changes propagate
     await $fetch("/api/auth/refresh-session", {
       method: "POST",
       credentials: "include",
     });
-
-    // navigateTo("/");
   } catch (e: any) {
     if (e instanceof z.ZodError) {
       userTypeError.value = e.errors.map((err) => err.message).join(", ");
@@ -63,40 +52,73 @@ const updateRole = async () => {
     }
   }
 };
-
 </script>
+
 <template>
   <NuxtLayout>
-    <div class="max-w-xl mx-auto mt-16 p-6 flex-1 rounded-2xl border shadow-md">
-      <h1 class="text-2xl font-bold mb-6 text-center text-indigo-400">
-        Complete Your Signup
-      </h1>
+    <div class="min-h-screen flex items-center justify-center px-4">
+      <div class="max-w-md w-full bg-white rounded-2xl border border-gray-300 shadow-lg p-8 space-y-6">
+        <h1 class="text-3xl font-semibold text-center text-black">
+          Complete Your Signup
+        </h1>
 
-      <div class="space-y-8">
-        <form @submit.prevent="updateRole" class="space-y-4">
-          <Select v-model="role">
-            <SelectTrigger>
-              <SelectValue placeholder="Select your role..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Client">Client</SelectItem>
-              <SelectItem value="Dev">Dev</SelectItem>
-            </SelectContent>
-          </Select>
-        </form>
+        <div v-if="userTypeError" class="text-red-600 text-sm text-center">
+          {{ userTypeError }}
+        </div>
+        <div v-else-if="userTypeSuccess" class="text-green-600 text-sm text-center">
+          Role updated successfully!
+        </div>
 
-        <div class="h-20" />
+        <form @submit.prevent="updateRole" class="space-y-6">
+          <div class="flex flex-col space-y-2">
+            <label for="role-select" class="text-sm font-medium text-black">
+              Select Your Role
+            </label>
 
-        <div class="mt-12">
-          <Button @click="updateRole" class="w-full" :disabled="!role">
+            <Select v-model="role">
+              <!-- Give the trigger a stable test ID -->
+              <SelectTrigger
+                id="role-select"
+                data-testid="role-select-trigger"
+                class="w-full flex justify-between items-center rounded-lg border border-gray-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+              >
+                <SelectValue placeholder="Choose one…" />
+              </SelectTrigger>
+
+              <SelectContent
+                data-testid="role-select-content"
+                class="w-full bg-white rounded-lg border border-gray-400"
+              >
+                <SelectLabel class="px-4 py-2 text-xs font-medium text-gray-500">
+                  Roles
+                </SelectLabel>
+                <SelectItem
+                  value="Client"
+                  data-testid="role-select-item-Client"
+                  class="w-full px-4 py-2 text-black hover:bg-gray-100"
+                >
+                  Client
+                </SelectItem>
+                <SelectItem
+                  value="Dev"
+                  data-testid="role-select-item-Dev"
+                  class="w-full px-4 py-2 text-black hover:bg-gray-100"
+                >
+                  Dev
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button
+            type="submit"
+            :disabled="!role"
+            class="w-full bg-black hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-600 text-white"
+          >
             Continue
           </Button>
-        </div>
+        </form>
       </div>
-
-      <p v-if="userTypeError" class="text-red-500 mt-4 text-sm text-center">
-        {{ userTypeError }}
-      </p>
     </div>
   </NuxtLayout>
 </template>
