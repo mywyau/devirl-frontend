@@ -1,8 +1,8 @@
-<!-- src/pages/ClientCompletedQuests.vue -->
+<!-- src/pages/ClientNotStartedQuests.vue -->
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue";
 import { Button } from "@/components/ui/button/variants";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { useAuthUser } from "@/composables/useAuthUser";
 import { streamAllQuestsByStatus } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 
@@ -15,7 +15,7 @@ const quests = ref<QuestPartial[]>([]);
 const error = ref<string | null>(null);
 const loading = ref<boolean>(true);
 
-// Fetch completed quests stream
+// Fetch not-started quests stream
 async function fetchNotStartedQuests() {
   const userId = safeUserId.value;
   if (!userId) {
@@ -28,19 +28,26 @@ async function fetchNotStartedQuests() {
   error.value = null;
   quests.value = [];
 
+  let receivedAny = false;
   try {
     for await (const quest of streamAllQuestsByStatus(
       userId,
-      "NotStarted",
+      "InProgress",
       1,
       50
     )) {
+      if (!receivedAny) {
+        loading.value = false;
+        receivedAny = true;
+      }
       quests.value.push(quest);
     }
-  } catch (err: any) {
-    console.error("[ClientCompletedQuests][fetchCompletedQuests] Error streaming quests:", err);
+    if (!receivedAny) {
+      loading.value = false;
+    }
+  } catch (e: any) {
+    console.error("[ClientNotStartedQuests] Error streaming quests:", e);
     error.value = "Failed to fetch in progress quests.";
-  } finally {
     loading.value = false;
   }
 }
@@ -67,35 +74,49 @@ onMounted(() => {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-yellow-400">Not Started</h1>
-      <p class="text-lg mb-6 text-yellow-300">
+      <h1 class="text-3xl font-bold mb-4 text-amber-400">In Progress</h1>
+      <p class="text-lg mb-6 text-amber-200">
         Below are all the quests that are in progress.
       </p>
 
-      <div v-if="loading" class="text-gray-400">Loading Not Started quests...</div>
-      <div v-else-if="error" class="text-red-500">{{ error }}</div>
-      <div v-else>
-        <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div
-            v-for="quest in quests"
-            :key="quest.questId"
-            class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
-          >
-            <h3 class="text-xl font-semibold text-indigo-300">{{ quest.title }}</h3>
-            <p class="text-gray-300 text-sm mt-2 mb-4">{{ quest.description }}</p>
-            <div class="mt-auto flex justify-end">
-              <NuxtLink
-                :to="`/quest/${quest.questId}`"
-                class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
+      <!-- Show quests immediately when available -->
+      <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+          v-for="quest in quests"
+          :key="quest.questId"
+          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
+        >
+          <h3 class="text-xl font-semibold text-amber-300">{{ quest.title }}</h3>
+          <p class="text-white-300 text-sm mt-2 mb-4">{{ quest.description }}</p>
+          <div class="mt-auto flex justify-end">
+            <NuxtLink
+              :to="`/quest/${quest.questId}`"
+              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
+            >
+              <Button
+                variant="default"
+                class="bg-amber-500 text-white rounded hover:bg-amber-300"
               >
-                <Button variant="default" class="bg-indigo-500 text-white rounded hover:bg-indigo-300">
-                  View Details
-                </Button>
-              </NuxtLink>
-            </div>
+                View Details
+              </Button>
+            </NuxtLink>
           </div>
         </div>
-        <div v-else class="text-gray-400">You have no in progress quests.</div>
+      </div>
+
+      <!-- If still loading and no quests yet -->
+      <div v-else-if="loading" class="text-gray-400">
+        Loading In Progress quests...
+      </div>
+
+      <!-- Error state -->
+      <div v-else-if="error" class="text-red-500">
+        {{ error }}
+      </div>
+
+      <!-- No data after loading -->
+      <div v-else class="text-gray-400">
+        You have no quests in progress.
       </div>
     </div>
   </NuxtLayout>

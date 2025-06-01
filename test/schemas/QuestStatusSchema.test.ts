@@ -17,7 +17,7 @@ describe("QuestStatusSchema", () => {
 
 describe("QuestPartialSchema", () => {
   const validData = {
-    userId: "user123",
+    clientId: "user123",
     questId: "quest456",
     title: "Slay the Dragon",
     description: "Defeat the fire-breathing beast.",
@@ -40,13 +40,13 @@ describe("QuestPartialSchema", () => {
   it("fails when required fields are missing", () => {
     const invalid = {
       questId: "q1",
-      title: "Missing userId",
+      title: "Missing clientId",
       status: "NotStarted",
     };
 
     const result = QuestPartialSchema.safeParse(invalid);
     expect(result.success).toBe(false);
-    expect(result.error.issues.some(issue => issue.path.includes("userId"))).toBe(true);
+    expect(result.error.issues.some(issue => issue.path.includes("clientId"))).toBe(true);
   });
 
   it("fails when status is invalid", () => {

@@ -1,7 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: "auth",
-});
 
 import { getQuest, updateQuest } from "@/controllers/QuestBackendController";
 import type { QuestPartial, UpdateQuestPayload } from "@/types/quests";
@@ -25,7 +22,8 @@ const success = ref(false);
 const showError = ref(false);
 const isSubmitting = ref(false);
 
-const { data: user, userError, refresh } = await useAuthUser();
+const { data: user, error: userError } = await useAuthUser();
+
 
 console.log(encodeURIComponent(user.value?.sub || "No user id"));
 const safeUserId = user.value?.sub || "No user id";

@@ -3,13 +3,19 @@ import { loadConfig } from "@/configuration/ConfigLoader";
 import type { CreateQuestPayload } from "@/types/quests";
 import {
   QuestPartialSchema,
+  type QuestPartial,
   type QuestStatus,
 } from "@/types/schema/QuestStatusSchema";
 import { $fetch } from "ofetch";
 
 export interface UpdateQuestPayload {
   title?: string;
-  status?: string;
+  description?: string;
+}
+
+export interface AcceptQuestPayload {
+  devId: string;
+  questId: string;
 }
 
 const config = loadConfig();
@@ -22,7 +28,10 @@ const createQuestUrl = (userId: string) =>
   `${baseUrl}quest/create/${encodeURIComponent(userId)}`;
 
 const updateQuestUrl = (userId: string, questId: string) =>
-  `${baseUrl}quest/update/${encodeURIComponent(userId)}/${questId}`;
+  `${baseUrl}quest/update/details/${encodeURIComponent(userId)}/${questId}`;
+
+const acceptQuestUrl = (userId: string) =>
+  `${baseUrl}quest/accept/quest/${encodeURIComponent(userId)}`;
 
 const deleteQuestUrl = (userId: string, questId: string) =>
   `${baseUrl}quest/${encodeURIComponent(userId)}/${questId}`;
@@ -44,42 +53,26 @@ const streamQuestByStatusUrl = (
   `&page=${page}` +
   `&limit=${limit}`;
 
-// export function streamQuestByStatusUrl(
-//   userId: string,
-//   status: QuestStatus,
-//   page = 1,
-//   limit = 10
-// ) {
-//   // 1) Remove any leading/trailing quotes that snuck into the ID
-//   const cleanId = userId.replace(/^"+|"+$/g, "");
+export interface FetchOptions {
+  headers?: Record<string, string>;
+}
 
-//   // 2) Ensure baseUrl has no trailing slash, then add your path
-//   const root = baseUrl.replace(/\/$/, "");
-//   const endpoint = `/quest/stream/new/${encodeURIComponent(cleanId)}`;
-
-//   // 3) Build full URL
-//   const url = new URL(root + endpoint);
-//   url.searchParams.set("status", status);
-//   url.searchParams.set("page", String(page));
-//   url.searchParams.set("limit", String(limit));
-
-//   console.log("[streamAllQuests] →", url.toString());
-//   return url.toString();
-// }
-
-export async function getQuest(userId: string, questId: string) {
+export async function getQuest(
+  userId: string,
+  questId: string,
+  opts?: FetchOptions
+): Promise<QuestPartial> {
   const res = await $fetch(getQuestUrl(userId, questId), {
     credentials: "include",
+    headers: opts?.headers,
   });
 
-  const result = QuestPartialSchema.safeParse(res);
-
-  if (!result.success) {
-    console.error("[getQuest] Invalid quest data", result.error);
+  const parsed = QuestPartialSchema.safeParse(res);
+  if (!parsed.success) {
+    console.error("[getQuest] Invalid quest data", parsed.error);
     throw new Error("Invalid quest data received from backend");
   }
-
-  return result.data;
+  return parsed.data;
 }
 
 export async function createQuest(userId: string, payload: CreateQuestPayload) {
@@ -102,6 +95,17 @@ export async function updateQuest(
   });
 }
 
+export async function acceptQuestRequest(
+  userId: string,
+  payload: AcceptQuestPayload
+) {
+  return await $fetch(acceptQuestUrl(userId), {
+    method: "PUT",
+    credentials: "include",
+    body: payload,
+  });
+}
+
 export async function deleteQuest(userId: string, questId: string) {
   return await $fetch(deleteQuestUrl(userId, questId), {
     method: "DELETE",
@@ -109,9 +113,13 @@ export async function deleteQuest(userId: string, questId: string) {
   });
 }
 
-export async function* streamAllQuestsForUser(userId: string) {
+export async function* streamAllQuestsForUser(
+  userId: string,
+  opts?: FetchOptions
+) {
   const res = await fetch(getAllQuestUrlForUser(userId), {
     credentials: "include",
+    headers: opts?.headers,
   });
 
   if (!res.ok || !res.body) {
@@ -217,7 +225,7 @@ export async function* streamAllQuestsByStatus(
 
   const res = await fetch(url, {
     credentials: "include",
-    headers: { "Accept": "application/x-ndjson" },
+    headers: { Accept: "application/x-ndjson" },
   });
 
   if (!res.ok || !res.body) {
@@ -245,7 +253,11 @@ export async function* streamAllQuestsByStatus(
         try {
           yield JSON.parse(line);
         } catch (err) {
-          console.error("[streamAllQuestsByStatus] Failed to parse line:", line, err);
+          console.error(
+            "[streamAllQuestsByStatus] Failed to parse line:",
+            line,
+            err
+          );
         }
       }
     }
