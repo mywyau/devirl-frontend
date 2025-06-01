@@ -1,7 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  middleware: "auth",
-});
 
 import { getQuest, updateQuest } from "@/controllers/QuestBackendController";
 import type { QuestPartial, UpdateQuestPayload } from "@/types/quests";

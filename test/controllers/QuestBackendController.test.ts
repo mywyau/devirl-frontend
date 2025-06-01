@@ -25,7 +25,7 @@ vi.mock("ofetch", async () => {
 import { $fetch } from "ofetch";
 
 const mockQuestPartial = {
-  userId: "quest123",
+  clientId: "quest123",
   questId: "quest123",
   title: "Test Quest",
   description: "Some test description",

@@ -1,5 +1,6 @@
 // controllers/QuestBackendController.ts
 import { loadConfig } from "@/configuration/ConfigLoader";
+import type { CreateQuestPayload } from "@/types/quests";
 import {
   QuestPartialSchema,
   type QuestPartial,
@@ -27,7 +28,7 @@ const createQuestUrl = (userId: string) =>
   `${baseUrl}quest/create/${encodeURIComponent(userId)}`;
 
 const updateQuestUrl = (userId: string, questId: string) =>
-  `${baseUrl}quest/update/${encodeURIComponent(userId)}/${questId}`;
+  `${baseUrl}quest/update/details/${encodeURIComponent(userId)}/${questId}`;
 
 const acceptQuestUrl = (userId: string) =>
   `${baseUrl}quest/accept/quest/${encodeURIComponent(userId)}`;
