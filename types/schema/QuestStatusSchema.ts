@@ -8,6 +8,7 @@ export const QuestStatusSchema = z.enum([
   "Failed",
   "Review",
   "Open",
+  "Assigned"
 ]);
 
 // Inferred TypeScript type from Zod

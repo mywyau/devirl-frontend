@@ -3,7 +3,10 @@ import { useRoute } from "vue-router";
 import { useAsyncData } from "#imports"; // Nuxt auto-import
 import { computed, ref } from "vue";
 
-import { getQuest } from "@/controllers/QuestBackendController";
+import {
+  getQuest,
+  acceptQuestRequest,
+} from "@/controllers/QuestBackendController";
 import {
   QuestPartialSchema,
   type QuestPartial,
@@ -26,10 +29,10 @@ const {
   error: fetchError,
 } = await useAsyncData(
   `quest-${questIdFromRoute}`,
- () => getQuest(safeUserId.value, questIdFromRoute),
+  () => getQuest(safeUserId.value, questIdFromRoute),
   {
-    server: true,   // run on server only
-    client: false,  // do NOT run again on the client
+    server: true, // run on server only
+    client: false, // do NOT run again on the client
     default: () => null,
   }
 );
@@ -61,11 +64,31 @@ const error = computed<string | null>(() => {
 const isLoading = pending;
 
 // 8) (Optional) keep your “accept”/“report” state for future actions
-const success = ref(false);
-const showError = ref(false);
+const acceptSuccess = ref(false);
+const acceptError = ref(false);
 
 // If you need to implement a handler later, you can do:
-// async function handleAcceptQuest() { … }
+async function handleAcceptQuest() {
+  if (!safeUserId.value) {
+    acceptError.value = true;
+    return;
+  }
+  try {
+    // On the client, credentials: "include" is enough to send the cookie
+    await acceptQuestRequest(safeUserId.value, {
+      devId: safeUserId.value,
+      questId: questIdFromRoute,
+    });
+    acceptSuccess.value = true;
+  } catch (err) {
+    acceptError.value = true;
+    console.error(err);
+  }
+}
+
+const reportSuccess = ref(false);
+const reportError = ref(false);
+
 </script>
 
 <template>
@@ -91,7 +114,8 @@ const showError = ref(false);
           }}</span>
         </div>
 
-        <div class="mt-6 flex gap-4">
+        <div v-if="result?.status.toString() === 'Open'" class="mt-6 flex gap-4">
+        <!-- <div class="mt-6 flex gap-4"> -->
           <Button
             variant="secondary"
             class="bg-red-500 text-white rounded hover:bg-red-400"
@@ -100,7 +124,6 @@ const showError = ref(false);
             Report Quest
           </Button>
 
-          <!--
           <Button
             variant="secondary"
             class="bg-green-500 text-white rounded hover:bg-green-400"
@@ -108,13 +131,21 @@ const showError = ref(false);
           >
             Accept Quest
           </Button>
-          -->
         </div>
 
-        <p v-if="success" class="text-green-500 text-sm pt-4">
-          Quest action succeeded!
+        <p v-if="acceptSuccess" class="text-green-500 text-sm pt-4">
+          Accept Quest Succeded
         </p>
-        <p v-if="showError" class="text-red-500 text-sm">Action failed!</p>
+        <p v-if="acceptError" class="text-red-500 text-sm">
+          Accept Quest Failed!
+        </p>
+
+        <p v-if="reportSuccess" class="text-green-500 text-sm pt-4">
+          Report Quest Succeded!
+        </p>
+        <p v-if="reportError" class="text-red-500 text-sm">
+          Report Quest Failed!
+        </p>
       </div>
     </div>
   </NuxtLayout>

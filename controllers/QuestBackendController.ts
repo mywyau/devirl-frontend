@@ -48,10 +48,22 @@ const streamQuestByStatusUrl = (
   page = 1,
   limit = 10
 ) =>
-  `${baseUrl}quest/stream/new/${encodeURIComponent(userId)}` +
+  `${baseUrl}quest/stream/client/new/${encodeURIComponent(userId)}` +
   `?status=${questStatus.toString()}` +
   `&page=${page}` +
   `&limit=${limit}`;
+
+
+const streamQuestByStatusDevUrl = (
+  devId: string,
+  questStatus: QuestStatus,
+  page = 1,
+  limit = 10
+) =>
+  `${baseUrl}quest/stream/dev/new/${encodeURIComponent(devId)}` +
+  `?status=${questStatus.toString()}` +
+  `&page=${page}` +
+  `&limit=${limit}`;  
 
 export interface FetchOptions {
   headers?: Record<string, string>;
@@ -213,7 +225,7 @@ export async function* streamAllQuests(userId: string) {
   }
 }
 
-// Stream quests filtered by status
+// Stream quests filtered by status clientId
 export async function* streamAllQuestsByStatus(
   userId: string,
   questStatus: QuestStatus,
@@ -221,6 +233,72 @@ export async function* streamAllQuestsByStatus(
   limit = 10
 ) {
   const url = streamQuestByStatusUrl(userId, questStatus, page, limit);
+  console.debug("[streamAllQuestsByStatus] URL →", url);
+
+  const res = await fetch(url, {
+    credentials: "include",
+    headers: { Accept: "application/x-ndjson" },
+  });
+
+  if (!res.ok || !res.body) {
+    throw new Error(
+      `[streamAllQuestsByStatus] Failed with status ${res.status}`
+    );
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+
+    let newlineIndex;
+    while ((newlineIndex = buffer.indexOf("\n")) >= 0) {
+      const line = buffer.slice(0, newlineIndex).trim();
+      buffer = buffer.slice(newlineIndex + 1);
+
+      if (line) {
+        try {
+          yield JSON.parse(line);
+        } catch (err) {
+          console.error(
+            "[streamAllQuestsByStatus] Failed to parse line:",
+            line,
+            err
+          );
+        }
+      }
+    }
+  }
+
+  // Parse any remaining buffer
+  const leftover = buffer.trim();
+  if (leftover) {
+    try {
+      yield JSON.parse(leftover);
+    } catch (err) {
+      console.error(
+        "[streamAllQuestsByStatus] Failed to parse leftover buffer:",
+        leftover,
+        err
+      );
+    }
+  }
+}
+
+
+// Stream quests filtered by status for devId
+export async function* streamAllQuestsByStatusDev(
+  devId: string,
+  questStatus: QuestStatus,
+  page = 1,
+  limit = 10
+) {
+  const url = streamQuestByStatusDevUrl(devId, questStatus, page, limit);
   console.debug("[streamAllQuestsByStatus] URL →", url);
 
   const res = await fetch(url, {

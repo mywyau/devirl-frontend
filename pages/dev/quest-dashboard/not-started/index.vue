@@ -3,7 +3,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuestsByStatus } from "@/controllers/QuestBackendController";
+import { streamAllQuestsByStatusDev } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 
 // User session
@@ -30,7 +30,7 @@ async function fetchNotStartedQuests() {
 
   let receivedAny = false;
   try {
-    for await (const quest of streamAllQuestsByStatus(
+    for await (const quest of streamAllQuestsByStatusDev(
       userId,
       "NotStarted",
       1,
