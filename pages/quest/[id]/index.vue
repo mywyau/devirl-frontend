@@ -11,8 +11,8 @@ import {
   QuestPartialSchema,
   type QuestPartial,
 } from "@/types/schema/QuestStatusSchema";
-import { useAuthUser } from "~/composables/useAuthUser";
-import { Button } from "~/components/ui/button/variants";
+import { useAuthUser } from "@/composables/useAuthUser";
+import { Button } from "@/components/ui/button/variants";
 
 // 1) Grab the route param
 const route = useRoute();
@@ -88,7 +88,6 @@ async function handleAcceptQuest() {
 
 const reportSuccess = ref(false);
 const reportError = ref(false);
-
 </script>
 
 <template>
@@ -114,8 +113,11 @@ const reportError = ref(false);
           }}</span>
         </div>
 
-        <div v-if="result?.status.toString() === 'Open'" class="mt-6 flex gap-4">
-        <!-- <div class="mt-6 flex gap-4"> -->
+        <div
+          v-if="result?.status.toString() === 'Open'"
+          class="mt-6 flex gap-4"
+        >
+          <!-- <div class="mt-6 flex gap-4"> -->
           <Button
             variant="secondary"
             class="bg-red-500 text-white rounded hover:bg-red-400"

@@ -1,10 +1,13 @@
-<!-- src/pages/ClientSubmittedQuests.vue -->
+<!-- src/pages/ClientNotStartedQuests.vue -->
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
 import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuestsByStatus } from "@/controllers/QuestBackendController";
+import {
+  streamAllQuestsByStatusDev,
+  updateQuestStatusRequest,
+} from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
+import { computed, onMounted, ref, watch } from "vue";
 
 // User session
 const { data: user, pending: authPending } = useAuthUser();
@@ -30,7 +33,7 @@ async function fetchNotStartedQuests() {
 
   let receivedAny = false;
   try {
-    for await (const quest of streamAllQuestsByStatus(
+    for await (const quest of streamAllQuestsByStatusDev(
       userId,
       "Review",
       1,
@@ -47,7 +50,7 @@ async function fetchNotStartedQuests() {
     }
   } catch (e: any) {
     console.error("[ClientNotStartedQuests] Error streaming quests:", e);
-    error.value = "Failed to fetch submitted quests.";
+    error.value = "Failed to fetch quests in review.";
     loading.value = false;
   }
 }
@@ -69,14 +72,36 @@ onMounted(() => {
     fetchNotStartedQuests();
   }
 });
+
+// 8) (Optional) keep your “accept”/“report” state for future actions
+const inReviewSuccess = ref(false);
+const inReviewError = ref(false);
+
+// If you need to implement a handler later, you can do:
+async function handleUpdateQuestStatus(questId: string) {
+  if (!safeUserId.value) {
+    inReviewError.value = true;
+    return;
+  }
+  try {
+    // On the client, credentials: "include" is enough to send the cookie
+    await updateQuestStatusRequest(safeUserId.value, questId, {
+      questStatus: "Review",
+    });
+    inReviewSuccess.value = true;
+  } catch (err) {
+    inReviewError.value = true;
+    console.error(err);
+  }
+}
 </script>
 
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
       <h1 class="text-3xl font-bold mb-4 text-blue-400">Review</h1>
-      <p class="text-lg mb-6 text-blue-300">
-        Below are all the quests in review.
+      <p class="text-lg mb-6 text-blue-400">
+        Below are all the quests that are in review.
       </p>
 
       <!-- Show quests immediately when available -->
@@ -86,16 +111,19 @@ onMounted(() => {
           :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
-          <h3 class="text-xl font-semibold text-blue-300">{{ quest.title }}</h3>
-          <p class="text-white-300 text-sm mt-2 mb-4">{{ quest.description }}</p>
-          <div class="mt-auto flex justify-end">
+          <h3 class="text-xl font-semibold text-indigo-300">{{ quest.title }}</h3>
+          <p class="text-white-300 text-sm mt-2 mb-4">
+            {{ quest.description }}
+          </p>
+
+          <div class="mt-auto flex justify-end space-x-3">
             <NuxtLink
               :to="`/quest/${quest.questId}`"
               class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
             >
               <Button
                 variant="default"
-                class="bg-blue-500 text-white rounded hover:bg-blue-400"
+                class="bg-indigo-400 text-white rounded hover:bg-indigo-300"
               >
                 View Details
               </Button>
@@ -106,7 +134,7 @@ onMounted(() => {
 
       <!-- If still loading and no quests yet -->
       <div v-else-if="loading" class="text-gray-400">
-        Loading quests in review...
+        Loading Not Started quests...
       </div>
 
       <!-- Error state -->
@@ -114,10 +142,16 @@ onMounted(() => {
         {{ error }}
       </div>
 
-      <!-- No data after loading -->
-      <div v-else class="text-gray-400">
-        You have no quests in review.
+      <div v-else-if="inReviewSuccess" class="text-green-500">
+        Successfully moved quest to in review!
       </div>
+
+      <div v-else-if="inReviewError" class="text-red-500">
+        Unable to move quest to in review
+      </div>
+
+      <!-- No data after loading -->
+      <div v-else class="text-gray-400">You have no quests in review.</div>
     </div>
   </NuxtLayout>
 </template>

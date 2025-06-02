@@ -3,8 +3,10 @@ import { loadConfig } from "@/configuration/ConfigLoader";
 import type { CreateQuestPayload } from "@/types/quests";
 import {
   QuestPartialSchema,
+  UpdateQuestStatusSchema,
   type QuestPartial,
   type QuestStatus,
+  type UpdateQuestStatus,
 } from "@/types/schema/QuestStatusSchema";
 import { $fetch } from "ofetch";
 
@@ -29,6 +31,9 @@ const createQuestUrl = (userId: string) =>
 
 const updateQuestUrl = (userId: string, questId: string) =>
   `${baseUrl}quest/update/details/${encodeURIComponent(userId)}/${questId}`;
+
+const updateQuestStatusUrl = (userId: string, questId: string) =>
+  `${baseUrl}quest/update/status/${encodeURIComponent(userId)}/${questId}`;
 
 const acceptQuestUrl = (userId: string) =>
   `${baseUrl}quest/accept/quest/${encodeURIComponent(userId)}`;
@@ -101,6 +106,18 @@ export async function updateQuest(
   payload: UpdateQuestPayload
 ) {
   return await $fetch(updateQuestUrl(userId, questId), {
+    method: "PUT",
+    credentials: "include",
+    body: payload,
+  });
+}
+
+export async function updateQuestStatusRequest(
+  userId: string,
+  questId: string,
+  payload: UpdateQuestStatus
+) {
+  return await $fetch(updateQuestStatusUrl(userId, questId), {
     method: "PUT",
     credentials: "include",
     body: payload,
@@ -227,12 +244,12 @@ export async function* streamAllQuests(userId: string) {
 
 // Stream quests filtered by status clientId
 export async function* streamAllQuestsByStatus(
-  userId: string,
+  clientId: string,
   questStatus: QuestStatus,
   page = 1,
   limit = 10
 ) {
-  const url = streamQuestByStatusUrl(userId, questStatus, page, limit);
+  const url = streamQuestByStatusUrl(clientId, questStatus, page, limit);
   console.debug("[streamAllQuestsByStatus] URL →", url);
 
   const res = await fetch(url, {
