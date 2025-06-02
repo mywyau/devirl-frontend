@@ -57,8 +57,8 @@ async function fetchQuests() {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold mb-6 text-white">
-        All Available Public Quests
+      <h1 class="text-3xl font-bold mb-6 text-pink-300">
+        All Available Open Quests
       </h1>
 
       <div v-if="authPending || loading" class="text-gray-500">
@@ -73,15 +73,15 @@ async function fetchQuests() {
         <div
           v-for="quest in quests"
           :key="quest.questId"
-          class="border p-4 rounded-xl shadow bg-white/5 text-white"
+          class="border p-4 rounded-xl shadow bg-white/5"
         >
-          <h2 class="text-xl font-semibold">{{ quest.title }}</h2>
-          <div class="mt-2 text-sm text-yellow-400">
-            Status: {{ quest.status }}
+          <h2 class="text-xl font-semibold text-indigo-300">{{ quest.title }}</h2>
+          <div class="mt-2 text-sm text-teal-400">
+            {{ quest.status }}
           </div>
           <div class="mt-4 flex justify-between items-center">
             <span class="font-mono text-sm text-green-400"
-              >💰 {{ quest.bounty || 0.0 }} ETH</span
+              >💰 £{{ quest.bounty || 0.0 }}</span
             >
             <NuxtLink
               :to="`/quest/${quest.questId}`"

@@ -24,3 +24,10 @@ export const QuestPartialSchema = z.object({
 });
 
 export type QuestPartial = z.infer<typeof QuestPartialSchema>;
+
+
+export const UpdateQuestStatusSchema = z.object({
+  questStatus: QuestStatusSchema,
+});
+
+export type UpdateQuestStatus = z.infer<typeof UpdateQuestStatusSchema>;

@@ -1,10 +1,13 @@
 <!-- src/pages/ClientNotStartedQuests.vue -->
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
 import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuestsByStatusDev } from "@/controllers/QuestBackendController";
+import {
+  streamAllQuestsByStatusDev,
+  updateQuestStatusRequest,
+} from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
+import { computed, onMounted, ref, watch } from "vue";
 
 // User session
 const { data: user, pending: authPending } = useAuthUser();
@@ -69,15 +72,51 @@ onMounted(() => {
     fetchNotStartedQuests();
   }
 });
+
+// 8) (Optional) keep your “accept”/“report” state for future actions
+const inProgressSuccess = ref(false);
+const inProgressError = ref(false);
+
+// If you need to implement a handler later, you can do:
+async function handleupdateQuestStatus(questId: string) {
+  if (!safeUserId.value) {
+    inProgressError.value = true;
+    return;
+  }
+  try {
+    // On the client, credentials: "include" is enough to send the cookie
+    await updateQuestStatusRequest(safeUserId.value, questId, {
+      questStatus: "InProgress",
+    });
+    inProgressSuccess.value = true;
+  } catch (err) {
+    inProgressError.value = true;
+    console.error(err);
+  }
+}
 </script>
 
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-gray-300">Not Started</h1>
-      <p class="text-lg mb-6 text-gray-400">
+      <h1 class="text-3xl font-bold mb-4 text-gray-200">Not Started</h1>
+      <p class="text-lg mb-6 text-gray-300">
         Below are all the quests that are not started.
       </p>
+
+      <!-- ← New: Feedback messages go here, outside of the quests‐list logic -->
+      <div
+        v-if="inProgressSuccess"
+        class="mb-4 p-3 bg-green-600 text-white rounded"
+      >
+        Successfully moved quest to In Progress!
+      </div>
+      <div
+        v-else-if="inProgressError"
+        class="mb-4 p-3 bg-red-600 text-white rounded"
+      >
+        Unable to move quest to In Progress.
+      </div>
 
       <!-- Show quests immediately when available -->
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -86,20 +125,33 @@ onMounted(() => {
           :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
-          <h3 class="text-xl font-semibold text-gray-300">{{ quest.title }}</h3>
-          <p class="text-white-300 text-sm mt-2 mb-4">{{ quest.description }}</p>
-          <div class="mt-auto flex justify-end">
+          <h3 class="text-xl font-semibold text-indigo-300">
+            {{ quest.title }}
+          </h3>
+          <p class="text-white-300 text-sm mt-2 mb-4">
+            {{ quest.description }}
+          </p>
+
+          <div class="mt-auto flex justify-end space-x-3">
             <NuxtLink
               :to="`/quest/${quest.questId}`"
               class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
             >
               <Button
                 variant="default"
-                class="bg-gray-500 text-white rounded hover:bg-gray-400"
+                class="bg-indigo-400 text-white rounded hover:bg-indigo-300"
               >
                 View Details
               </Button>
             </NuxtLink>
+
+            <Button
+              variant="secondary"
+              class="bg-yellow-500 text-white rounded hover:bg-yellow-400"
+              @click="handleupdateQuestStatus(quest.questId)"
+            >
+              Move quest to In Progress
+            </Button>
           </div>
         </div>
       </div>
@@ -114,10 +166,16 @@ onMounted(() => {
         {{ error }}
       </div>
 
-      <!-- No data after loading -->
-      <div v-else class="text-gray-400">
-        You have no not started quests.
+      <!-- <div v-else-if="inProgressSuccess" class="text-green-500">
+        Successfully moved quest to in progress!
       </div>
+
+      <div v-else-if="inProgressError" class="text-red-500">
+        Unable to move quest to in progress
+      </div> -->
+
+      <!-- No data after loading -->
+      <div v-else class="text-gray-400">You have no not started quests.</div>
     </div>
   </NuxtLayout>
 </template>
