@@ -16,7 +16,6 @@ vi.mock("iron-session", () => ({
 // Env setup
 process.env.NUXT_PUBLIC_AUTH0_DOMAIN = "test.auth0.com";
 process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID = "client123";
-process.env.NUXT_PUBLIC_BASE_URL = "http://localhost:3000";
 process.env.SESSION_SECRET = "test-secret";
 
 describe("logout API handler", () => {
