@@ -7,7 +7,7 @@ import {
   syncSessionToBackend,
   syncUserToBackend,
 } from "@/utils/CallbackHelpers";
-import { defineEventHandler, sendRedirect } from "h3";
+import { defineEventHandler } from "h3";
 
 export default defineEventHandler(async (event) => {
   const { code } = getQuery(event);
@@ -32,5 +32,9 @@ export default defineEventHandler(async (event) => {
     setUserTypeCookie(event, userType);
   }
 
-  return sendRedirect(event, userType ? "/" : "/choose-user-type");
+  // return sendRedirect(event, userType ? "/" : "/choose-user-type");
+  const redirectUrl = userType ? "/" : "/choose-user-type";
+
+  // ✅ Instead of redirecting, return it in JSON
+  return { redirectUrl };
 });

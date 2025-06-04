@@ -14,17 +14,24 @@ onMounted(async () => {
   }
 
   try {
-    await $fetch('/api/auth/callback', {
+    const { redirectUrl } = await $fetch('/api/auth/callback', {
       params: { code },
       credentials: 'include',
     })
-    await router.push('/')
+
+    if (redirectUrl) {
+      await router.push(redirectUrl)
+    } else {
+      console.warn('No redirect URL returned, falling back to home')
+      await router.push('/')
+    }
   } catch (err) {
     console.error('Auth callback failed:', err)
-    await router.push('/error') // or show a friendly error message
+    await router.push('/error')
   }
 })
 </script>
+
 
 <template>
   <div class="flex items-center justify-center h-screen">
