@@ -1,12 +1,10 @@
 // ./server/utils/sessionOptions
 
-const config = useRuntimeConfig()
-
 const isProd = process.env.NODE_ENV === "production";
 
 // Configure the iron-session options
 export const sessionOptions = {
-  password: config.public.sessionSecret!, // encryption secret for the session
+  password: process.env.SESSION_SECRET!, // encryption secret for the session
   cookieName: "auth_session", // name of the session cookie
   ttl: 60 * 60 * 8, // session lifespan: 8 hours
   // sameSite: "lax",

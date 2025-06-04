@@ -2,19 +2,17 @@
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
 import { createUserNuxtServerToScalaServer } from "@/controllers/RegistrationController";
+import { exchangeCodeForToken, getUserInfo } from "@/server/utils/auth0";
 import { sessionOptions } from "@/server/utils/sessionOptions";
 import type { UserData } from "@/types/schema/UserDataSchema";
 import { UserDataSchema } from "@/types/schema/UserDataSchema";
+import type { SessionData } from "@/types/SessionData";
 import {
   createError,
-  defineEventHandler,
   getQuery,
-  sendRedirect,
-  setCookie,
+  setCookie
 } from "h3";
 import { getIronSession } from "iron-session";
-import { exchangeCodeForToken, getUserInfo } from "@/server/utils/auth0";
-// import { getSessionCookieHeader } from "@/utils/CallbackHelpers";
 
 
 export function getSessionCookieHeader(
@@ -54,15 +52,18 @@ export async function authenticateUser(
 }
 
 export async function storeSession(event: any, user: any): Promise<string> {
-  const session = await getIronSession(
-  // const session = await getIronSession<SessionData>(
+  // const session = await getIronSession(
+  const session = await getIronSession<SessionData>(
     event.node.req,
     event.node.res,
     sessionOptions
   );
   session.user = user;
   await session.save();
-  console.log("[callback] Set-Cookie header:", event.node.res.getHeader("Set-Cookie"));
+  console.log(
+    "[callback] Set-Cookie header:",
+    event.node.res.getHeader("Set-Cookie")
+  );
   return getSessionCookieHeader(event.node.res.getHeader("Set-Cookie"));
 }
 

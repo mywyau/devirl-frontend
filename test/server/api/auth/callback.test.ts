@@ -1,8 +1,6 @@
-
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getAccessToken } from "@/server/api/auth/callback"; // adjust if it's in utils or another file
 import { exchangeCodeForToken } from "@/server/utils/auth0";
-
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { getAccessToken } from "~/utils/CallbackHelpers";
 
 vi.mock("@/server/utils/auth0", () => ({
   exchangeCodeForToken: vi.fn(),
@@ -45,15 +43,15 @@ describe("getAccessToken", () => {
 
   it("returns access token when code is provided", async () => {
     const event = createMockEvent("mock-code");
-    (exchangeCodeForToken as vi.Mock).mockResolvedValue({ access_token: "abc123" });
+    (exchangeCodeForToken as vi.Mock).mockResolvedValue({
+      access_token: "abc123",
+    });
 
     const token = await getAccessToken(event);
-    expect(exchangeCodeForToken).toHaveBeenCalledWith("mock-code", "https://example.com/callback");
+    expect(exchangeCodeForToken).toHaveBeenCalledWith(
+      "mock-code",
+      "https://example.com/callback"
+    );
     expect(token).toBe("abc123");
   });
 });
-
-
-
-
-

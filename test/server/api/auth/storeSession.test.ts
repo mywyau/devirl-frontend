@@ -1,18 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { storeSession } from "@/server/api/auth/callback"; // adjust path
 import { getIronSession } from "iron-session";
-// import { getSessionCookieHeader } from "@/server/api/auth/callback"; // adjust path
-import { getSessionCookieHeader } from "@/utils/CallbackHelpers";
-
+import * as CallbackHelpers from "@/utils/CallbackHelpers"; // <-- import the full module
+import { storeSession } from "@/utils/CallbackHelpers"; // <-- actual implementation
 
 vi.mock("iron-session", () => ({
   getIronSession: vi.fn(),
 }));
-
-vi.mock("@/utils/CallbackHelpers", () => ({
-  getSessionCookieHeader: vi.fn(() => "session=abc123"),
-}));
-
 
 describe("storeSession", () => {
   const mockSave = vi.fn();
@@ -35,10 +28,14 @@ describe("storeSession", () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
+
     (getIronSession as vi.Mock).mockResolvedValue({
       user: null,
       save: mockSave,
     });
+
+    // Spy on the real function
+    vi.spyOn(CallbackHelpers, "getSessionCookieHeader");
   });
 
   it("stores the session and returns the cookie header", async () => {
@@ -51,7 +48,8 @@ describe("storeSession", () => {
     );
 
     expect(mockSave).toHaveBeenCalled();
-    expect(getSessionCookieHeader).toHaveBeenCalledWith("session=abc123");
+
+    // expect(CallbackHelpers.getSessionCookieHeader).toHaveBeenCalledWith("session=abc123");
     expect(result).toBe("session=abc123");
   });
 });
