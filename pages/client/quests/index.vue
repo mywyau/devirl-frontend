@@ -13,7 +13,7 @@ import { useAuthUser } from "@/composables/useAuthUser";
 const { data: user } = await useAuthUser();
 const safeUserId = computed(() => user.value?.sub || "");
 
-console.log("SSR user:", user.value);
+console.debug("SSR user:", user.value);
 
 // 2) Grab the “cookie” header so we can forward it into our streaming endpoint
 const requestHeaders = useRequestHeaders(["cookie"]);
@@ -46,8 +46,8 @@ const {
 // 4) Log SSR result for debugging
 if (process.server) {
   watchEffect(() => {
-    console.log("SSR rawQuests:", rawQuests.value);
-    console.log("SSR error:", error.value);
+    console.debug("SSR rawQuests:", rawQuests.value);
+    console.debug("SSR error:", error.value);
   });
 }
 

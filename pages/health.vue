@@ -9,7 +9,7 @@ const url = `${config.devQuestBackend.baseUrl}/health`;
 
 onMounted(async () => {
   try {
-    console.log("Calling health check:", url);
+    console.debug("Calling health check:", url);
 
     const res = await fetch(url);
 
@@ -19,7 +19,7 @@ onMounted(async () => {
 
     const data = await res.json();
 
-    console.log("Health check response:", data);
+    console.debug("Health check response:", data);
 
     jsonValue.value = data || "unknown"; 
   } catch (err) {

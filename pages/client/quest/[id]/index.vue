@@ -44,12 +44,12 @@ const {
   }
 );
 
-console.log("SSR rawQuestData:", rawQuestData.value);
+console.debug("SSR rawQuestData:", rawQuestData.value);
 
 // 5) Log SSR result (for debugging)
 if (process.server) {
   watchEffect(() => {
-    console.log("SSR rawQuestData:", rawQuestData.value);
+    console.debug("SSR rawQuestData:", rawQuestData.value);
   });
 }
 

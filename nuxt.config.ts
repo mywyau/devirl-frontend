@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     // host: "0.0.0.0", // 👈 bind inside container
     port: 3000,
   },
-
+  debug: false,
   runtimeConfig: {
     public: {
       sessionSecret: process.env.SESSION_SECRET || "No session secret set for iron session",

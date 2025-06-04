@@ -5,7 +5,7 @@ import { useRuntimeConfig } from "nuxt/app";
 import { useAuthUser } from "~/composables/useAuthUser";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
 
-console.log("[Welcome Page] Setup running...");
+console.debug("[Welcome Page] Setup running...");
 
 const config = useRuntimeConfig();
 

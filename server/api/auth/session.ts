@@ -11,7 +11,7 @@ export default eventHandler(async (event) => {
     sessionOptions
   );
 
-  // console.log("Session content", session); // <- add this
+  // console.debug("Session content", session); // <- add this
 
   if (!session.user) {
     throw createError({ statusCode: 401, statusMessage: "Not authenticated" });

@@ -29,7 +29,7 @@ async function handleSubmit() {
   submissionSuccess.value = false;
   submissionError.value = null;
 
-  console.log(encodeURIComponent(user.value?.sub || "No user id"));
+  console.debug(encodeURIComponent(user.value?.sub || "No user id"));
 
   try {
     // Use .value to access the reactive data from the ref

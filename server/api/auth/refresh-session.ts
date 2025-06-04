@@ -28,13 +28,13 @@ export default defineEventHandler(async (event) => {
   const allCookies = event.node.req.headers.cookie || "";
 
 
-  console.log(`allCookies: ${allCookies}\n`, ); // Debug: see what's being sent as cookie header
+  console.debug(`allCookies: ${allCookies}\n`, ); // Debug: see what's being sent as cookie header
 
   const sessionCookie = allCookies
     .split(";")
     .find((c) => c.trim().startsWith("auth_session="));
 
-  console.log(`session cookie: ${sessionCookie}\n`, ); // Debug: see what's being sent as cookie header
+  console.debug(`session cookie: ${sessionCookie}\n`, ); // Debug: see what's being sent as cookie header
 
   // Refetch updated user data (including userType)
   const userData = await $fetch(
@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
 
   const userType = userData?.userType ?? null;
 
-  console.log(sessionCookie)
+  console.debug(sessionCookie)
 
   try {
     const response = await $fetch(

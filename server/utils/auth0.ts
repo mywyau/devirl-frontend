@@ -8,9 +8,9 @@ const auth0ClientSecret = runtimeConf.auth0ClientSecret;
 const auth0Domain = runtimeConf.public.auth0Domain;
 const auth0ClientId = runtimeConf.public.auth0ClientId;
 
-// console.log("auth0ClientSecret ", auth0ClientSecret)
-// console.log("auth0Domain", auth0Domain)
-// console.log("auth0ClientId", auth0ClientId)
+// console.debug("auth0ClientSecret ", auth0ClientSecret)
+// console.debug("auth0Domain", auth0Domain)
+// console.debug("auth0ClientId", auth0ClientId)
 
 export async function exchangeCodeForToken(code: string, redirectUri: string) {
   const res = await fetch(`https://${auth0Domain}/oauth/token`, {

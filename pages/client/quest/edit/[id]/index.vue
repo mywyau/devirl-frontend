@@ -25,7 +25,7 @@ const isSubmitting = ref(false);
 const { data: user, error: userError } = await useAuthUser();
 
 
-console.log(encodeURIComponent(user.value?.sub || "No user id"));
+console.debug(encodeURIComponent(user.value?.sub || "No user id"));
 const safeUserId = user.value?.sub || "No user id";
 
 const result = ref<QuestPartial | null>(null);
@@ -36,7 +36,7 @@ onMounted(async () => {
   isLoading.value = true;
   try {
     result.value = await getQuest(safeUserId, questId);
-    console.log(`[Edit Quest Page][getQuest]${result.value}`);
+    console.debug(`[Edit Quest Page][getQuest]${result.value}`);
   } catch (e) {
     console.error(e);
     error.value = "[Edit Quest Page] Failed to load quest.";

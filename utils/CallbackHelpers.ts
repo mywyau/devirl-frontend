@@ -28,7 +28,7 @@ export function getSessionCookieHeader(
 }
 
 const isProd = process.env.NODE_ENV === "production";
-console.log("[isProd] CallbackHelpers ", isProd);
+console.debug("[isProd] CallbackHelpers ", isProd);
 
 export async function getAccessToken(code:string): Promise<string> {
 
@@ -61,7 +61,7 @@ export async function storeSession(event: any, user: any): Promise<string> {
   );
   session.user = user;
   await session.save();
-  console.log(
+  console.debug(
     "[callback] Set-Cookie header:",
     event.node.res.getHeader("Set-Cookie")
   );
@@ -104,7 +104,7 @@ export async function fetchUserType(
     );
     return userData?.userType ?? null;
   } catch (err) {
-    console.log(`[callback.ts] User not found in backend: ${err}`);
+    console.debug(`[callback.ts] User not found in backend: ${err}`);
     return null;
   }
 }
@@ -125,7 +125,7 @@ export async function syncSessionToBackend(
       }
     );
   } catch (err) {
-    console.log(
+    console.debug(
       `[callback.ts] Auth session not synced in backend cache from db: ${err}`
     );
   }
