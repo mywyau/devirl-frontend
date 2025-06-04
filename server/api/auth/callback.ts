@@ -11,14 +11,14 @@ import { defineEventHandler, sendRedirect } from "h3";
 
 export default defineEventHandler(async (event) => {
   const { code } = getQuery(event);
-  console.debug("code", code);
+  console.log("code", code);
 
   if (!code || typeof code !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Missing code" });
   }
 
   const isProd = process.env.NODE_ENV === "production";
-  console.debug("[isProd] ", isProd);
+  console.log("[isProd] ", isProd);
 
   const accessToken = await getAccessToken(code);
   const { user, userId } = await authenticateUser(accessToken);
