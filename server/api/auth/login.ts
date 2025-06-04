@@ -1,6 +1,5 @@
 import { createError, defineEventHandler, sendRedirect } from "h3";
-
-import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
+import { useRuntimeConfig } from "#imports";
 
 const runtimeConf = useRuntimeConfig();
 
@@ -9,9 +8,18 @@ const auth0ClientId = runtimeConf.public.auth0ClientId;
 const auth0CallbackUrl = runtimeConf.public.auth0CallbackUrl;
 
 export default defineEventHandler(async (event) => {
-  // const { NUXT_PUBLIC_AUTH0_DOMAIN, NUXT_PUBLIC_AUTH0_CLIENT_ID, NUXT_PUBLIC_AUTH0_CALLBACK_URL } = process.env;
+  console.log("[auth0/login] Runtime config values:", {
+    auth0Domain,
+    auth0ClientId,
+    auth0CallbackUrl,
+  });
 
   if (!auth0Domain || !auth0ClientId || !auth0CallbackUrl) {
+    console.log("[auth0/login] Missing Auth0 env vars", {
+      auth0Domain,
+      auth0ClientId,
+      auth0CallbackUrl,
+    });
     throw createError({
       statusCode: 500,
       statusMessage: "Missing Auth0 env vars",
@@ -26,6 +34,8 @@ export default defineEventHandler(async (event) => {
       redirect_uri: auth0CallbackUrl,
       scope: "openid profile email",
     });
+
+  console.log("[auth0/login] Redirecting to:", redirectTo);
 
   return sendRedirect(event, redirectTo);
 });
