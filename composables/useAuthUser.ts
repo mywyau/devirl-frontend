@@ -1,6 +1,6 @@
 // ~/composables/useAuthUser.ts
 import { useAsyncData, useRequestHeaders } from "nuxt/app";
-import type { AuthUser } from "@/types/auth";
+import type { AuthUser } from "@/types/AuthUser";
 
 export const useAuthUser = () =>
   useAsyncData<AuthUser | null>(

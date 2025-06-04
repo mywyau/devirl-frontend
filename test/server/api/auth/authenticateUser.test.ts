@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { authenticateUser } from "@/server/api/auth/callback"; // adjust path if needed
 import { getUserInfo } from "@/server/utils/auth0";
+import { authenticateUser } from "~/utils/CallbackHelpers";
 
 // Mock the h3 createError function
 vi.mock("h3", async () => {

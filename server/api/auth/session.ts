@@ -1,17 +1,17 @@
 // ./server/api/auth/session.ts
 import { sessionOptions } from "@/server/utils/sessionOptions";
-import { eventHandler, createError } from "h3";
+import type { AuthUser } from "@/types/AuthUser";
+import { createError, eventHandler, SessionData } from "h3";
 import { getIronSession } from "iron-session";
-import type { AuthUser } from "@/types/auth"; // your custom user type
 
 export default eventHandler(async (event) => {
-  const session = await getIronSession(
+  const session = await getIronSession<SessionData>(
     event.node.req,
     event.node.res,
     sessionOptions
   );
 
-  console.log("Session content", session); // <- add this
+  // console.log("Session content", session); // <- add this
 
   if (!session.user) {
     throw createError({ statusCode: 401, statusMessage: "Not authenticated" });

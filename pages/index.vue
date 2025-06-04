@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useAppConfig } from "nuxt/app";
-import { Button } from "~/components/ui/button/variants";
+
+const isProd = process.env.NODE_ENV === "production";
+console.log("[isProd] ", isProd);
 
 </script>
 

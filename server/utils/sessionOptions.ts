@@ -1,4 +1,6 @@
-const isProd = process.env.NODE_ENV === 'production';
+// ./server/utils/sessionOptions
+
+const isProd = process.env.NODE_ENV === "production";
 
 // Configure the iron-session options
 export const sessionOptions = {
