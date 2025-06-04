@@ -1,4 +1,3 @@
-
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
 import { createUserNuxtServerToScalaServer } from "@/controllers/RegistrationController";
@@ -7,13 +6,17 @@ import { sessionOptions } from "@/server/utils/sessionOptions";
 import type { UserData } from "@/types/schema/UserDataSchema";
 import { UserDataSchema } from "@/types/schema/UserDataSchema";
 import type { SessionData } from "@/types/SessionData";
-import {
-  createError,
-  getQuery,
-  setCookie
-} from "h3";
+import { createError, getQuery, setCookie } from "h3";
 import { getIronSession } from "iron-session";
 
+import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
+
+const runtimeConf = useRuntimeConfig();
+
+// const isProd = runtimeConf.public.auth0Domain;
+const auth0Domain = runtimeConf.public.auth0Domain;
+const auth0ClientId = runtimeConf.public.auth0ClientId;
+const auth0CallbackUrl = runtimeConf.public.auth0CallbackUrl;
 
 export function getSessionCookieHeader(
   raw: string | string[] | number | undefined
@@ -24,16 +27,14 @@ export function getSessionCookieHeader(
     : String(raw).split(";")[0];
 }
 
-
 const isProd = process.env.NODE_ENV === "production";
-console.log("[isProd] ", isProd)
+console.log("[isProd] CallbackHelpers ", isProd);
 
+export async function getAccessToken(code:string): Promise<string> {
 
-export async function getAccessToken(event: any): Promise<string> {
-  const { code } = getQuery(event);
   if (!code) throw createError({ statusCode: 400, message: "Missing code" });
 
-  const redirectUri = process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL!;
+  const redirectUri = auth0CallbackUrl!;
   const { access_token } = await exchangeCodeForToken(
     code as string,
     redirectUri
@@ -108,7 +109,10 @@ export async function fetchUserType(
   }
 }
 
-export async function syncSessionToBackend(userId: string, cookieHeader: string) {
+export async function syncSessionToBackend(
+  userId: string,
+  cookieHeader: string
+) {
   const config = loadConfig();
   try {
     await $fetch(

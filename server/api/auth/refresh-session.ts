@@ -2,8 +2,8 @@
 import { $fetch } from "ofetch";
 import { defineEventHandler, setCookie, createError } from "h3";
 import { getIronSession } from "iron-session";
-import { loadConfig } from "@/configuration/ConfigLoader";
-import { sessionOptions } from "@/server/utils/sessionOptions"; // ✅ import the shared options
+import { loadConfig } from "~/configuration/ConfigLoader";
+import { sessionOptions } from "~/server/utils/sessionOptions"; // ✅ import the shared options
 
 const isProd = process.env.NODE_ENV === "production";
 

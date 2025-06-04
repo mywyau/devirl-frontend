@@ -1,10 +1,18 @@
 // ./server/api/auth/logout.ts
 
-import { loadConfig } from "@/configuration/ConfigLoader";
-import { sessionOptions } from "@/server/utils/sessionOptions"; // ✅ import the shared options
+import { loadConfig } from "~/configuration/ConfigLoader";
+import { sessionOptions } from "~/server/utils/sessionOptions"; // ✅ import the shared options
 import { defineEventHandler, sendRedirect, setCookie } from "h3";
 import { getIronSession } from "iron-session";
 import { $fetch } from "ofetch";
+
+import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
+
+const runtimeConf = useRuntimeConfig();
+
+const auth0Domain = runtimeConf.public.auth0Domain;
+const auth0ClientId = runtimeConf.public.auth0ClientId;
+const auth0CallbackUrl = runtimeConf.public.auth0CallbackUrl;
 
 export default defineEventHandler(async (event) => {
   const config = loadConfig();
@@ -52,22 +60,22 @@ export default defineEventHandler(async (event) => {
   });
 
   // ✅ Redirect to Auth0 logout endpoint
-  const {
-    NUXT_PUBLIC_AUTH0_DOMAIN,
-    NUXT_PUBLIC_AUTH0_CLIENT_ID,
-    NUXT_PUBLIC_BASE_URL,
-  } = process.env;
+  // const {
+  //   NUXT_PUBLIC_AUTH0_DOMAIN,
+  //   NUXT_PUBLIC_AUTH0_CLIENT_ID,
+  //   NUXT_PUBLIC_BASE_URL,
+  // } = process.env;
 
-  if (!NUXT_PUBLIC_AUTH0_DOMAIN || !NUXT_PUBLIC_AUTH0_CLIENT_ID) {
+  if (!auth0Domain || !auth0ClientId) {
     throw new Error("Missing Auth0 environment variables");
   }
 
   const returnTo = config.devIrlFrontend.baseUrl || "http://localhost:3000";
 
   const auth0LogoutUrl =
-    `https://${NUXT_PUBLIC_AUTH0_DOMAIN}/v2/logout?` +
+    `https://${auth0Domain}/v2/logout?` +
     new URLSearchParams({
-      client_id: NUXT_PUBLIC_AUTH0_CLIENT_ID,
+      client_id: auth0ClientId,
       returnTo,
     }).toString();
 

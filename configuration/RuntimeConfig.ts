@@ -2,6 +2,8 @@
 import { z } from "zod";
 
 export const RuntimeConfigSchema = z.object({
+  sessionSecret: z.string(),
+  devIrlFrontendBaseUrl: z.string(),
   apiBase: z.string(),
   auth0Domain: z.string(),
   auth0ClientId: z.string(),

@@ -9,7 +9,8 @@ import {
   QuestPartialSchema,
   type QuestPartial,
 } from "@/types/schema/QuestStatusSchema";
-import { useAuthUser } from "~/composables/useAuthUser";
+
+import { useAuthUser } from "@/composables/useAuthUser";
 
 // 1) Grab the route param
 const route = useRoute();

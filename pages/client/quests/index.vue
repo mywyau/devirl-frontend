@@ -6,8 +6,8 @@ import { useRouter } from "vue-router";
 import { streamAllQuestsForUser } from "@/controllers/QuestBackendController";
 // import { QuestPartial } from "@/types/quests";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
-import { Button } from "~/components/ui/button/variants";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { Button } from "@/components/ui/button/variants";
+import { useAuthUser } from "@/composables/useAuthUser";
 
 // 1) Resolve the logged‐in user (SSR will forward the cookie via useAuthUser)
 const { data: user } = await useAuthUser();

@@ -1,22 +1,25 @@
 <script setup lang="ts">
 
+// import { useValidatedRuntimeConfig } from "@/configuration/useValidatedRuntimeConfig";
+
+// const runtimeConf = useValidatedRuntimeConfig();
+
 const isProd = process.env.NODE_ENV === "production";
 console.log("[isProd] ", isProd);
 
-
 // Public variables (safe to fully print)
-console.log("[env] NUXT_PUBLIC_BASE_URL =", process.env.NUXT_PUBLIC_BASE_URL);
-console.log("[env] NUXT_PUBLIC_API_BASE =", process.env.NUXT_PUBLIC_API_BASE);
-console.log("[env] NUXT_PUBLIC_AUTH0_DOMAIN =", process.env.NUXT_PUBLIC_AUTH0_DOMAIN);
-console.log("[env] NUXT_PUBLIC_AUTH0_CLIENT_ID =", process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID);
-console.log("[env] NUXT_PUBLIC_AUTH0_CALLBACK_URL =", process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL);
-console.log("[env] NUXT_PUBLIC_AUTH0_AUDIENCE =", process.env.NUXT_PUBLIC_AUTH0_AUDIENCE);
-console.log("[env] STRIPE_PUBLISHABLE_KEY =", process.env.STRIPE_PUBLISHABLE_KEY);
+// console.log("[env] NUXT_PUBLIC_BASE_URL =", runtimeConf.devIrlFrontendBaseUrl);
+// console.log("[env] NUXT_PUBLIC_API_BASE =", runtimeConf.apiBase);
+// console.log("[env] NUXT_PUBLIC_AUTH0_DOMAIN =", runtimeConf.auth0Domain);
+// console.log("[env] NUXT_PUBLIC_AUTH0_CLIENT_ID =", runtimeConf.auth0ClientId);
+// console.log("[env] NUXT_PUBLIC_AUTH0_CALLBACK_URL =", runtimeConf.auth0CallbackUrl);
+// console.log("[env] NUXT_PUBLIC_AUTH0_AUDIENCE =", runtimeConf.auth0Audience);
+// console.log("[env] STRIPE_PUBLISHABLE_KEY =", "nah");
 
-// Sensitive variables (do NOT print full values!)
-console.log("[env] SESSION_SECRET defined =", !!process.env.SESSION_SECRET);
-console.log("[env] SESSION_SECRET length =", process.env.SESSION_SECRET?.length);
-console.log("[env] AUTH0_CLIENT_SECRET defined =", !!process.env.AUTH0_CLIENT_SECRET);
+// // Sensitive variables (do NOT print full values!)
+// console.log("[env] SESSION_SECRET defined =", !!runtimeConf.sessionSecret);
+// console.log("[env] SESSION_SECRET length =", runtimeConf.sessionSecret?.length);
+// console.log("[env] AUTH0_CLIENT_SECRET defined =", !!process.env.AUTH0_CLIENT_SECRET);
 
 </script>
 

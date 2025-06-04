@@ -4,12 +4,14 @@ import { RuntimeConfigSchema } from '../../configuration/RuntimeConfig'
 
 describe('RuntimeConfigSchema', () => {
   const validConfig = {
-    apiBase: 'http://localhost:8080',
-    auth0Domain: 'your-domain.auth0.com',
-    auth0ClientId: 'client_123',
-    auth0Audience: 'https://api.example.com',
-    auth0CallbackUrl: 'http://localhost:3000/callback',
-  }
+    sessionSecret: "some 32 char secret",
+    devIrlFrontendBaseUrl: "http://localhost:3000",
+    apiBase: "http://localhost:8080",
+    auth0Domain: "your-domain.auth0.com",
+    auth0ClientId: "client_123",
+    auth0Audience: "https://api.example.com",
+    auth0CallbackUrl: "http://localhost:3000/callback",
+  };
 
   it('passes validation with valid config', () => {
     const parsed = RuntimeConfigSchema.parse(validConfig)

@@ -5,18 +5,22 @@ import {
   setUserTypeCookie,
   storeSession,
   syncSessionToBackend,
-  syncUserToBackend
+  syncUserToBackend,
 } from "@/utils/CallbackHelpers";
-import {
-  defineEventHandler,
-  sendRedirect
-} from "h3";
-
-const isProd = process.env.NODE_ENV === "production";
-console.log("[isProd] ", isProd);
+import { defineEventHandler, sendRedirect } from "h3";
 
 export default defineEventHandler(async (event) => {
-  const accessToken = await getAccessToken(event);
+  const { code } = getQuery(event);
+  console.log("code", code);
+
+  if (!code || typeof code !== "string") {
+    throw createError({ statusCode: 400, statusMessage: "Missing code" });
+  }
+
+  const isProd = process.env.NODE_ENV === "production";
+  console.log("[isProd] ", isProd);
+
+  const accessToken = await getAccessToken(code);
   const { user, userId } = await authenticateUser(accessToken);
   const cookieHeader = await storeSession(event, user);
   await syncUserToBackend(user, userId, cookieHeader);

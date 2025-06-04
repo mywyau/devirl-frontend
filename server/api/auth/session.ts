@@ -1,6 +1,6 @@
 // ./server/api/auth/session.ts
-import { sessionOptions } from "@/server/utils/sessionOptions";
-import type { AuthUser } from "@/types/AuthUser";
+import { sessionOptions } from "~/server/utils/sessionOptions";
+import type { AuthUser } from "~/types/AuthUser";
 import { createError, eventHandler, SessionData } from "h3";
 import { getIronSession } from "iron-session";
 
