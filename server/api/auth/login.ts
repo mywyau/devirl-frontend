@@ -1,3 +1,5 @@
+//  ./server/api/auth/login.ts
+
 import { defineEventHandler, sendRedirect, createError } from 'h3';
 
 export default defineEventHandler(async (event) => {

@@ -1,3 +1,5 @@
+//  server/api/auth/callback.ts
+
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
 import { createUserNuxtServerToScalaServer } from "@/controllers/RegistrationController";
@@ -12,7 +14,7 @@ import {
   setCookie,
 } from "h3";
 import { getIronSession } from "iron-session";
-import { exchangeCodeForToken, getUserInfo } from "~/server/utils/auth0";
+import { exchangeCodeForToken, getUserInfo } from "@/server/utils/auth0";
 import { getSessionCookieHeader } from "@/utils/CallbackHelpers";
 
 interface SessionData {
@@ -26,15 +28,6 @@ interface SessionData {
 }
 
 const isProd = process.env.NODE_ENV === "production";
-
-// export function getSessionCookieHeader(
-//   raw: string | string[] | number | undefined
-// ): string {
-//   if (!raw) return "";
-//   return Array.isArray(raw)
-//     ? raw.map((h) => h.split(";")[0]).join("; ")
-//     : String(raw).split(";")[0];
-// }
 
 export async function getAccessToken(event: any): Promise<string> {
   const { code } = getQuery(event);

@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
   const {
     NUXT_PUBLIC_AUTH0_DOMAIN,
     NUXT_PUBLIC_AUTH0_CLIENT_ID,
-    NUXT_PUBLIC_BASE_URL,
+    NUXT_PUBLIC_DEVIRL_BASE_URL,
   } = process.env;
 
   if (!NUXT_PUBLIC_AUTH0_DOMAIN || !NUXT_PUBLIC_AUTH0_CLIENT_ID) {
