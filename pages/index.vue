@@ -3,6 +3,21 @@
 const isProd = process.env.NODE_ENV === "production";
 console.log("[isProd] ", isProd);
 
+
+// Public variables (safe to fully print)
+console.log("[env] NUXT_PUBLIC_BASE_URL =", process.env.NUXT_PUBLIC_BASE_URL);
+console.log("[env] NUXT_PUBLIC_API_BASE =", process.env.NUXT_PUBLIC_API_BASE);
+console.log("[env] NUXT_PUBLIC_AUTH0_DOMAIN =", process.env.NUXT_PUBLIC_AUTH0_DOMAIN);
+console.log("[env] NUXT_PUBLIC_AUTH0_CLIENT_ID =", process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID);
+console.log("[env] NUXT_PUBLIC_AUTH0_CALLBACK_URL =", process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL);
+console.log("[env] NUXT_PUBLIC_AUTH0_AUDIENCE =", process.env.NUXT_PUBLIC_AUTH0_AUDIENCE);
+console.log("[env] STRIPE_PUBLISHABLE_KEY =", process.env.STRIPE_PUBLISHABLE_KEY);
+
+// Sensitive variables (do NOT print full values!)
+console.log("[env] SESSION_SECRET defined =", !!process.env.SESSION_SECRET);
+console.log("[env] SESSION_SECRET length =", process.env.SESSION_SECRET?.length);
+console.log("[env] AUTH0_CLIENT_SECRET defined =", !!process.env.AUTH0_CLIENT_SECRET);
+
 </script>
 
 <template>
