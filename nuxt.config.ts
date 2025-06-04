@@ -23,7 +23,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_BASE_URL || "http://localhost:3000",
+      sessionSecret: process.env.SESSION_SECRET || "No session secret set for iron session",
+      devIrlFrontendBaseUrl: process.env.NUXT_PUBLIC_BASE_URL || "http://localhost:3000",
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8080/dev-quest-service",
       auth0Domain: process.env.NUXT_PUBLIC_AUTH0_DOMAIN || "[nuxt.config.ts][auth0Domain] config undefined, please define it",
       auth0ClientId: process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID || "[nuxt.config.ts][auth0ClientId] config undefined, please define it",
