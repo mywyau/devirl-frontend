@@ -8,11 +8,3 @@ export const useValidatedRuntimeConfig = () => {
 
   return RuntimeConfigSchema.parse(config);
 };
-
-
-// export const nuxtConfig = () => {
-
-//   const config = useRuntimeConfig();
-
-//   return config;
-// };

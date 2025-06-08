@@ -17,6 +17,11 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: "Missing code" });
   }
 
+  console.log("auth0Domain", runtimeConf.public.auth0Domain)
+  console.log("auth0ClientId", runtimeConf.public.auth0ClientId)
+  console.log("auth0CallbackUrl", runtimeConf.public.auth0CallbackUrl)
+  console.log("devIrlFrontendBaseUrl", runtimeConf.public.devIrlFrontendBaseUrl)
+
   const redirectUri = runtimeConf.public.auth0CallbackUrl!;
   const { access_token } = await exchangeCodeForToken(code, redirectUri);
   const user = await getUserInfo(access_token);
