@@ -13,6 +13,9 @@ import {
 } from "@/types/schema/QuestStatusSchema";
 import { useAuthUser } from "@/composables/useAuthUser";
 import { Button } from "@/components/ui/button/variants";
+import { useCookie } from "nuxt/app";
+
+const userType = useCookie("user_type"); // reads cookie on client and SSR
 
 // 1) Grab the route param
 const route = useRoute();
@@ -117,7 +120,6 @@ const reportError = ref(false);
           v-if="result?.status.toString() === 'Open'"
           class="mt-6 flex gap-4"
         >
-          <!-- <div class="mt-6 flex gap-4"> -->
           <Button
             variant="secondary"
             class="bg-red-500 text-white rounded hover:bg-red-400"
@@ -127,6 +129,7 @@ const reportError = ref(false);
           </Button>
 
           <Button
+            v-if="userType === 'Dev'"
             variant="secondary"
             class="bg-green-500 text-white rounded hover:bg-green-400"
             @click="handleAcceptQuest"
