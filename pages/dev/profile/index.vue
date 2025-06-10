@@ -102,26 +102,26 @@ onMounted(() => {
             <div v-if="userProfile">
               <div class="space-y-4">
                 <ProfileItem
-                  textColor="text-gray-400"
+                  textColor="text-zinc-400"
                   labelColor="text-white"
                   label="First Name"
                   :value="`${userProfile.firstName}`"
                 />
 
                 <ProfileItem
-                  textColor="text-gray-400"
+                  textColor="text-zinc-400"
                   labelColor="text-white"
                   label="Last Name"
                   :value="`${userProfile.lastName}`"
                 />
                 <ProfileItem
-                  textColor="text-gray-400"
+                  textColor="text-zinc-400"
                   labelColor="text-white"
                   label="Email"
                   :value="userProfile.email"
                 />
                 <ProfileItem
-                  textColor="text-gray-400"
+                  textColor="text-zinc-400"
                   labelColor="text-white"
                   label="Role"
                   :value="userProfile.userType ?? '—'"
@@ -157,7 +157,7 @@ onMounted(() => {
             >
               {{ userProfileError }}
             </p>
-            <p v-else class="text-gray-600 mt-4 text-center text-sm">
+            <p v-else class="text-zinc-600 mt-4 text-center text-sm">
               No profile data available.
             </p>
           </div>

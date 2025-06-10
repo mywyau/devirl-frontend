@@ -105,7 +105,7 @@ onMounted(() => {
       </div>
 
       <!-- If still loading and no quests yet -->
-      <div v-else-if="loading" class="text-gray-400">
+      <div v-else-if="loading" class="text-zinc-400">
         Loading Failed quests...
       </div>
 
@@ -115,7 +115,7 @@ onMounted(() => {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-gray-400">
+      <div v-else class="text-zinc-400">
         You have no failed quests.
       </div>
     </div>

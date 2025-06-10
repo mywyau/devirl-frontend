@@ -101,7 +101,7 @@ async function handleDeleteQuest() {
       <h1 class="text-3xl font-bold mb-6">Quest Details</h1>
 
       <!-- 1) SSR (and hydration) show “Loading…” until getQuest resolves -->
-      <div v-if="isLoading" class="text-gray-400">Loading quest…</div>
+      <div v-if="isLoading" class="text-zinc-400">Loading quest…</div>
 
       <!-- 2) If there was a network/auth or Zod parse error -->
       <div v-else-if="errorMessage" class="text-red-500">
@@ -122,7 +122,7 @@ async function handleDeleteQuest() {
         <h2 class="text-2xl font-semibold text-indigo-300 mb-2">
           {{ result?.title }}
         </h2>
-        <p class="mb-4 text-gray-300">{{ result?.description }}</p>
+        <p class="mb-4 text-zinc-300">{{ result?.description }}</p>
 
         <div>
           <span class="font-semibold">Status: </span>

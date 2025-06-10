@@ -111,7 +111,7 @@ async function handleUpdateQuestStatus(questId: string) {
           :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
-          <h3 class="text-xl font-semibold text-indigo-300">{{ quest.title }}</h3>
+          <h3 class="text-xl font-semibold text-blue-300">{{ quest.title }}</h3>
           <p class="text-white-300 text-sm mt-2 mb-4">
             {{ quest.description }}
           </p>
@@ -133,7 +133,7 @@ async function handleUpdateQuestStatus(questId: string) {
       </div>
 
       <!-- If still loading and no quests yet -->
-      <div v-else-if="loading" class="text-gray-400">
+      <div v-else-if="loading" class="text-zinc-400">
         Loading Not Started quests...
       </div>
 
@@ -151,7 +151,7 @@ async function handleUpdateQuestStatus(questId: string) {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-gray-400">You have no quests in review.</div>
+      <div v-else class="text-zinc-400">You have no quests in review.</div>
     </div>
   </NuxtLayout>
 </template>

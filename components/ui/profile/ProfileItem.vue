@@ -9,8 +9,8 @@ defineProps<{
 
 <template>
   <div class="flex justify-between border-b py-2">
-    <span :class="labelColor ?? 'text-gray-600 font-medium'">{{ label }}</span>
-    <span :class="textColor ?? 'text-gray-800 font-medium'">
+    <span :class="labelColor ?? 'text-zinc-600 font-medium'">{{ label }}</span>
+    <span :class="textColor ?? 'text-zinc-800 font-medium'">
       {{ value || "—" }}
     </span>
   </div>

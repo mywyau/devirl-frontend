@@ -3,7 +3,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuestsByStatus } from "@/controllers/QuestBackendController";
+import { streamAllQuestsByStatus, streamAllQuestsByStatusDev } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 
 // User session
@@ -30,7 +30,7 @@ async function fetchCompletedQuests() {
 
   let receivedAny = false;
   try {
-    for await (const quest of streamAllQuestsByStatus(
+    for await (const quest of streamAllQuestsByStatusDev(
       userId,
       "Completed",
       1,
@@ -105,7 +105,7 @@ onMounted(() => {
       </div>
 
       <!-- If still loading and no quests yet -->
-      <div v-else-if="loading" class="text-gray-400">
+      <div v-else-if="loading" class="text-zinc-400">
         Loading Completed quests...
       </div>
 
@@ -115,7 +115,7 @@ onMounted(() => {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-gray-400">
+      <div v-else class="text-zinc-400">
         You have no completed quests.
       </div>
     </div>

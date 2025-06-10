@@ -74,8 +74,8 @@ onMounted(() => {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-gray-300">Not Started</h1>
-      <p class="text-lg mb-6 text-gray-400">
+      <h1 class="text-3xl font-bold mb-4 text-zinc-300">Not Started</h1>
+      <p class="text-lg mb-6 text-zinc-400">
         Below are all the quests that are not started.
       </p>
 
@@ -86,7 +86,7 @@ onMounted(() => {
           :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
-          <h3 class="text-xl font-semibold text-gray-300">{{ quest.title }}</h3>
+          <h3 class="text-xl font-semibold text-zinc-300">{{ quest.title }}</h3>
           <p class="text-white-300 text-sm mt-2 mb-4">{{ quest.description }}</p>
           <div class="mt-auto flex justify-end">
             <NuxtLink
@@ -95,7 +95,7 @@ onMounted(() => {
             >
               <Button
                 variant="default"
-                class="bg-gray-500 text-white rounded hover:bg-gray-400"
+                class="bg-zinc-500 text-white rounded hover:bg-zinc-400"
               >
                 View Details
               </Button>
@@ -105,7 +105,7 @@ onMounted(() => {
       </div>
 
       <!-- If still loading and no quests yet -->
-      <div v-else-if="loading" class="text-gray-400">
+      <div v-else-if="loading" class="text-zinc-400">
         Loading Not Started quests...
       </div>
 
@@ -115,7 +115,7 @@ onMounted(() => {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-gray-400">
+      <div v-else class="text-zinc-400">
         You have no not started quests.
       </div>
     </div>

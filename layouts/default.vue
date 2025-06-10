@@ -21,10 +21,10 @@ const handleLogout = () => {
 
 <template>
   <div
-    class="bg-gradient-to-br from-gray-900 via-gray-800 to-black min-h-screen text-gray-100 font-sans"
+    class="bg-gradient-to-br from-zinc-900 via-zinc-800 to-black min-h-screen text-zinc-100 font-sans"
   >
     <header
-      class="px-6 py-4 border-b border-gray-700 flex justify-between items-center"
+      class="px-6 py-4 border-b border-zinc-700 flex justify-between items-center"
     >
       <NuxtLink to="/" class="text-xl font-bold text-white hover:text-sky-300">
         Dev Irl

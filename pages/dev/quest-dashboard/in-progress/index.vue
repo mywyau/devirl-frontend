@@ -77,7 +77,7 @@ onMounted(() => {
 const inReviewSuccess = ref(false);
 const inReviewError = ref(false);
 
-// If you need to implement a handler later, you can do:
+// Update Status of Quest
 async function handleUpdateQuestStatus(questId: string) {
   if (!safeUserId.value) {
     inReviewError.value = true;
@@ -157,7 +157,7 @@ async function handleUpdateQuestStatus(questId: string) {
       </div>
 
       <!-- If still loading and no quests yet -->
-      <div v-else-if="loading" class="text-gray-400">
+      <div v-else-if="loading" class="text-zinc-400">
         Loading Not Started quests...
       </div>
 
@@ -167,7 +167,7 @@ async function handleUpdateQuestStatus(questId: string) {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-gray-400">You have no quests in progress.</div>
+      <div v-else class="text-zinc-400">You have no quests in progress.</div>
     </div>
   </NuxtLayout>
 </template>

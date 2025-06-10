@@ -14,6 +14,7 @@ import {
 import { useAuthUser } from "@/composables/useAuthUser";
 import { Button } from "@/components/ui/button/variants";
 import { useCookie } from "nuxt/app";
+import { getStatusTextColour } from "@/service/QuestStatusService"
 
 const userType = useCookie("user_type"); // reads cookie on client and SSR
 
@@ -91,29 +92,40 @@ async function handleAcceptQuest() {
 
 const reportSuccess = ref(false);
 const reportError = ref(false);
+
 </script>
 
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-4xl mx-auto text-white">
-      <h1 class="text-3xl font-bold mb-6">Quest Details</h1>
+      <h1 class="text-3xl font-bold mb-6 text-pink-300">Quest Details</h1>
 
-      <div v-if="isLoading" class="text-gray-400">Loading quest...</div>
+      <div v-if="isLoading" class="text-zinc-400">Loading quest...</div>
       <div v-else-if="error" class="text-red-500">{{ error }}</div>
       <div
         v-else
         class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow"
       >
-        <h2 class="text-2xl font-semibold text-indigo-300 mb-2">
+        <h2
+          :class="`text-2xl font-semibold mb-2 ${getStatusTextColour(
+            result?.status?.toString()
+          )}`"
+        >
           {{ result?.title }}
         </h2>
-        <p class="mb-4 text-gray-300">{{ result?.description }}</p>
+
+        <p class="mb-4 text-zinc-300">
+          {{ result?.description }}
+        </p>
 
         <div>
           <span class="font-semibold">Status: </span>
-          <span class="text-yellow-300 capitalize">{{
-            result?.status.toString()
-          }}</span>
+
+          <span 
+            :class="`font-semibold mb-4 ${getStatusTextColour(result?.status?.toString())}`"
+          >
+            {{ result?.status.toString() }}
+          </span>
         </div>
 
         <div

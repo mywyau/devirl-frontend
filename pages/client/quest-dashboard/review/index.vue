@@ -1,10 +1,13 @@
 <!-- src/pages/ClientSubmittedQuests.vue -->
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
 import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuestsByStatus } from "@/controllers/QuestBackendController";
+import {
+  streamAllQuestsByStatus,
+  updateQuestStatusRequest,
+} from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
+import { computed, onMounted, ref, watch } from "vue";
 
 // User session
 const { data: user, pending: authPending } = useAuthUser();
@@ -16,7 +19,7 @@ const error = ref<string | null>(null);
 const loading = ref<boolean>(true);
 
 // Fetch not-started quests stream
-async function fetchNotStartedQuests() {
+async function fetchAllQuestsInReview() {
   const userId = safeUserId.value;
   if (!userId) {
     error.value = "Not authenticated.";
@@ -60,15 +63,57 @@ onMounted(() => {
       (pending) => {
         if (!pending) {
           stop();
-          fetchNotStartedQuests();
+          fetchAllQuestsInReview();
         }
       },
       { immediate: true }
     );
   } else {
-    fetchNotStartedQuests();
+    fetchAllQuestsInReview();
   }
 });
+
+const completedSuccess = ref(false);
+const completedError = ref(false);
+
+// Update Status of Quest
+async function handleUpdateQuestToCompleted(questId: string) {
+  if (!safeUserId.value) {
+    completedError.value = true;
+    return;
+  }
+  try {
+    // On the client, credentials: "include" is enough to send the cookie
+    await updateQuestStatusRequest(safeUserId.value, questId, {
+      questStatus: "Completed",
+    });
+    completedSuccess.value = true;
+  } catch (err) {
+    completedError.value = true;
+    console.error(err);
+  }
+}
+
+const failedSuccess = ref(false);
+const failedError = ref(false);
+
+// Update Status of Quest
+async function handleUpdateQuestToFailed(questId: string) {
+  if (!safeUserId.value) {
+    failedError.value = true;
+    return;
+  }
+  try {
+    // On the client, credentials: "include" is enough to send the cookie
+    await updateQuestStatusRequest(safeUserId.value, questId, {
+      questStatus: "Failed",
+    });
+    failedSuccess.value = true;
+  } catch (err) {
+    failedError.value = true;
+    console.error(err);
+  }
+}
 </script>
 
 <template>
@@ -79,6 +124,33 @@ onMounted(() => {
         Below are all the quests in review.
       </p>
 
+      <!-- ← New: Feedback messages go here, outside of the quests‐list logic -->
+      <div
+        v-if="completedSuccess"
+        class="mb-4 p-3 bg-green-600 text-white rounded"
+      >
+        Successfully moved quest to Completed!
+      </div>
+      <div
+        v-else-if="completedError"
+        class="mb-4 p-3 bg-red-600 text-white rounded"
+      >
+        Unable to move quest to Completed.
+      </div>
+
+      <div
+        v-if="failedSuccess"
+        class="mb-4 p-3 bg-green-600 text-white rounded"
+      >
+        Successfully moved quest to Failed!
+      </div>
+      <div
+        v-else-if="failedError"
+        class="mb-4 p-3 bg-red-600 text-white rounded"
+      >
+        Unable to move quest to Failed.
+      </div>
+
       <!-- Show quests immediately when available -->
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div
@@ -87,25 +159,40 @@ onMounted(() => {
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
           <h3 class="text-xl font-semibold text-blue-300">{{ quest.title }}</h3>
-          <p class="text-white-300 text-sm mt-2 mb-4">{{ quest.description }}</p>
-          <div class="mt-auto flex justify-end">
+
+          <p class="text-white-300 text-sm mt-2 mb-4">
+            {{ quest.description }}
+          </p>
+
+          <div class="mt-auto flex flex-nowrap justify-end gap-3 overflow-auto">
             <NuxtLink
               :to="`/quest/${quest.questId}`"
-              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
+              class="bg-indigo-400 text-white rounded hover:bg-indigo-300 px-4 py-2 text-sm inline-block"
             >
-              <Button
-                variant="default"
-                class="bg-blue-500 text-white rounded hover:bg-blue-400"
-              >
-                View Details
-              </Button>
+              View Details
             </NuxtLink>
+
+            <Button
+              variant="secondary"
+              class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 text-sm"
+              @click="handleUpdateQuestToCompleted(quest.questId)"
+            >
+              Complete Quest
+            </Button>
+
+            <Button
+              variant="secondary"
+              class="bg-red-500 text-white rounded hover:bg-red-400 px-4 py-2 text-sm"
+              @click="handleUpdateQuestToFailed(quest.questId)"
+            >
+              Fail Quest
+            </Button>
           </div>
         </div>
       </div>
 
       <!-- If still loading and no quests yet -->
-      <div v-else-if="loading" class="text-gray-400">
+      <div v-else-if="loading" class="text-zinc-400">
         Loading quests in review...
       </div>
 
@@ -115,9 +202,7 @@ onMounted(() => {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-gray-400">
-        You have no quests in review.
-      </div>
+      <div v-else class="text-zinc-400">You have no quests in review.</div>
     </div>
   </NuxtLayout>
 </template>

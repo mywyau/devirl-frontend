@@ -61,11 +61,11 @@ async function fetchQuests() {
         All Available Open Quests
       </h1>
 
-      <div v-if="authPending || loading" class="text-gray-500">
+      <div v-if="authPending || loading" class="text-zinc-500">
         Loading quests...
       </div>
       <div v-else-if="error" class="text-red-500">{{ error }}</div>
-      <div v-else-if="quests.length === 0" class="text-gray-400">
+      <div v-else-if="quests.length === 0" class="text-zinc-400">
         No quests available yet.
       </div>
 

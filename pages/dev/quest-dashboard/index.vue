@@ -23,7 +23,7 @@ const statuses = [
             </h1>
           </div>
 
-          <p class="text-gray-400 text-base">
+          <p class="text-zinc-400 text-base">
             Track your progress and dive into each category below.
           </p>
 
