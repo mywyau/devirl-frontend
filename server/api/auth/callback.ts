@@ -1,7 +1,7 @@
 import { createError, defineEventHandler, getQuery, sendRedirect, setCookie } from "h3";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/server/utils/sessionOptions";
-import { useRuntimeConfig } from "#imports";
+// import { useRuntimeConfig } from "#imports";
 import { exchangeCodeForToken, getUserInfo } from "@/server/utils/auth0";
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
@@ -10,19 +10,15 @@ import { UserDataSchema } from "@/types/schema/UserDataSchema";
 
 export default defineEventHandler(async (event) => {
   const { code } = getQuery(event);
-  const runtimeConf = useRuntimeConfig();
+  // const runtimeConf = useRuntimeConfig();
   const isProd = process.env.NODE_ENV === "production";
 
   if (!code || typeof code !== "string") {
     throw createError({ statusCode: 400, statusMessage: "Missing code" });
   }
 
-  // console.log("auth0Domain", runtimeConf.public.auth0Domain)
-  // console.log("auth0ClientId", runtimeConf.public.auth0ClientId)
-  // console.log("auth0CallbackUrl", runtimeConf.public.auth0CallbackUrl)
-  // console.log("devIrlFrontendBaseUrl", runtimeConf.public.devIrlFrontendBaseUrl)
-
-  const redirectUri = runtimeConf.public.auth0CallbackUrl!;
+  // const redirectUri = runtimeConf.public.auth0CallbackUrl!;
+  const redirectUri = process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL!;
   const { access_token } = await exchangeCodeForToken(code, redirectUri);
   const user = await getUserInfo(access_token);
   const userId = user?.sub;
