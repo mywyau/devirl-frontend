@@ -13,7 +13,7 @@ defineProps<{
       class="flex flex-col items-center justify-center min-h-screen text-white px-4"
     >
       <h1 class="text-5xl font-bold mb-4 text-red-400">Oops!</h1>
-      <p class="text-xl mb-6 text-gray-300">
+      <p class="text-xl mb-6 text-zinc-300">
         Something went wrong. Please try again later.
       </p>
 

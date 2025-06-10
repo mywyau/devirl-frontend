@@ -81,7 +81,7 @@ async function handleUpdateQuest() {
         <CardContent class="p-6 space-y-6">
           <div>
             <h1 class="text-3xl font-bold">Edit Quest</h1>
-            <p class="text-gray-400 text-base">
+            <p class="text-zinc-400 text-base">
               Update the details of your posted quest.
             </p>
           </div>
@@ -107,7 +107,7 @@ async function handleUpdateQuest() {
                 required
                 class="w-full px-4 py-2 rounded bg-white/10 text-white/80 border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
               />
-              <p class="mt-1 text-sm text-gray-400">Max 100 characters</p>
+              <p class="mt-1 text-sm text-zinc-400">Max 100 characters</p>
             </div>
 
             <div>

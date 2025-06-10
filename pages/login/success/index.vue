@@ -35,14 +35,14 @@ onMounted(async () => {
 
 <template>
   <div
-    class="min-h-screen flex items-center justify-center bg-gray-900 text-white p-8"
+    class="min-h-screen flex items-center justify-center bg-zinc-900 text-white p-8"
   >
-    <div class="max-w-md w-full space-y-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+    <div class="max-w-md w-full space-y-6 bg-zinc-800 p-6 rounded-lg shadow-lg">
       <h1 class="text-3xl font-bold text-center">
         🎉 Welcome, {{ user?.name || "Guest" }}!
       </h1>
 
-      <p class="text-center text-gray-400">You've successfully logged in.</p>
+      <p class="text-center text-zinc-400">You've successfully logged in.</p>
 
       <div v-if="user" class="text-center space-y-2">
         <img

@@ -57,7 +57,7 @@ const updateRole = async () => {
 <template>
   <NuxtLayout>
     <div class="min-h-screen flex items-center justify-center px-4">
-      <div class="max-w-md w-full bg-white rounded-2xl border border-gray-300 shadow-lg p-8 space-y-6">
+      <div class="max-w-md w-full bg-white rounded-2xl border border-zinc-300 shadow-lg p-8 space-y-6">
         <h1 class="text-3xl font-semibold text-center text-black">
           Complete Your Signup
         </h1>
@@ -80,29 +80,29 @@ const updateRole = async () => {
               <SelectTrigger
                 id="role-select"
                 data-testid="role-select-trigger"
-                class="w-full flex justify-between items-center rounded-lg border border-gray-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+                class="w-full flex justify-between items-center rounded-lg border border-zinc-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
               >
                 <SelectValue placeholder="Choose one…" />
               </SelectTrigger>
 
               <SelectContent
                 data-testid="role-select-content"
-                class="w-full bg-white rounded-lg border border-gray-400"
+                class="w-full bg-white rounded-lg border border-zinc-400"
               >
-                <SelectLabel class="px-4 py-2 text-xs font-medium text-gray-500">
+                <SelectLabel class="px-4 py-2 text-xs font-medium text-zinc-500">
                   Roles
                 </SelectLabel>
                 <SelectItem
                   value="Client"
                   data-testid="role-select-item-Client"
-                  class="w-full px-4 py-2 text-black hover:bg-gray-100"
+                  class="w-full px-4 py-2 text-black hover:bg-zinc-100"
                 >
                   Client
                 </SelectItem>
                 <SelectItem
                   value="Dev"
                   data-testid="role-select-item-Dev"
-                  class="w-full px-4 py-2 text-black hover:bg-gray-100"
+                  class="w-full px-4 py-2 text-black hover:bg-zinc-100"
                 >
                   Dev
                 </SelectItem>
@@ -113,7 +113,7 @@ const updateRole = async () => {
           <Button
             type="submit"
             :disabled="!role"
-            class="w-full bg-black hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-600 text-white"
+            class="w-full bg-black hover:bg-zinc-800 disabled:bg-zinc-300 disabled:text-zinc-600 text-white"
           >
             Continue
           </Button>

@@ -77,7 +77,7 @@ async function handleSubmit() {
             placeholder="Write a short, punchy title like 'Fix the broken login page'"
             class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
-          <p class="mt-1 text-sm text-gray-400">Max 100 characters</p>
+          <p class="mt-1 text-sm text-zinc-400">Max 100 characters</p>
         </div>
 
         <div>

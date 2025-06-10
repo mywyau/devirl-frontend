@@ -1,6 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import refreshSessionHandler from "@/server/api/auth/refresh-session";
-import { createEvent } from "h3";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("iron-session", () => ({
   getIronSession: vi.fn(),
@@ -58,7 +57,7 @@ describe("refreshSessionHandler", () => {
       "statusCode",
       401
     );
-    
+
     await expect(refreshSessionHandler(event)).rejects.toHaveProperty(
       "statusMessage",
       "User not authenticated"

@@ -99,8 +99,8 @@ async function handleupdateQuestStatus(questId: string) {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-gray-200">Not Started</h1>
-      <p class="text-lg mb-6 text-gray-300">
+      <h1 class="text-3xl font-bold mb-4 text-zinc-200">Not Started</h1>
+      <p class="text-lg mb-6 text-zinc-300">
         Below are all the quests that are not started.
       </p>
 
@@ -157,7 +157,7 @@ async function handleupdateQuestStatus(questId: string) {
       </div>
 
       <!-- If still loading and no quests yet -->
-      <div v-else-if="loading" class="text-gray-400">
+      <div v-else-if="loading" class="text-zinc-400">
         Loading Not Started quests...
       </div>
 
@@ -175,7 +175,7 @@ async function handleupdateQuestStatus(questId: string) {
       </div> -->
 
       <!-- No data after loading -->
-      <div v-else class="text-gray-400">You have no not started quests.</div>
+      <div v-else class="text-zinc-400">You have no not started quests.</div>
     </div>
   </NuxtLayout>
 </template>

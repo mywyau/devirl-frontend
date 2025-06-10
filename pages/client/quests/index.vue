@@ -68,14 +68,14 @@ function refreshPage() {
       <h1 class="text-3xl font-bold mb-6 text-white">My Quests</h1>
 
       <!-- 1) SSR will show “Loading…” while it’s gathering the stream server‐side -->
-      <div v-if="isLoading" class="text-gray-500">Loading quests...</div>
+      <div v-if="isLoading" class="text-zinc-500">Loading quests...</div>
 
       <!-- 2) If there was an error collecting or validating the streamed data -->
       <div v-else-if="error" class="text-red-500">Failed to load quests.</div>
 
       <!-- 3) Otherwise, we have rawQuests.value as a fully‐hydrated array -->
       <div v-else>
-        <div v-if="rawQuests.length === 0" class="text-gray-400">
+        <div v-if="rawQuests.length === 0" class="text-zinc-400">
           No quests available yet.
         </div>
 
@@ -93,17 +93,7 @@ function refreshPage() {
               <span class="font-mono text-sm text-green-400">
                 💰 {{ quest.bounty || 0.0 }} ETH
               </span>
-              <!-- <NuxtLink
-                :to="`/client/quest/${quest.questId}`"
-                class="text-blue-400 hover:underline hover:text-blue-300"
-              >
-                <Button
-                  variant="default"
-                  class="bg-blue-500 text-white rounded hover:bg-blue-400"
-                >
-                  View Quest →
-                </Button>
-              </NuxtLink> -->
+              
               <a
                 :href="`/client/quest/${quest.questId}`"
                  rel="external"

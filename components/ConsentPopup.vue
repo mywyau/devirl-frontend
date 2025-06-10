@@ -10,7 +10,7 @@
         <div class="flex gap-4 justify-end">
           <button
             @click="setConsent(false)"
-            class="px-4 py-2 text-sm bg-gray-700 hover:bg-gray-600 rounded"
+            class="px-4 py-2 text-sm bg-zinc-700 hover:bg-zinc-600 rounded"
           >
             Reject
           </button>

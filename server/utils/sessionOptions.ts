@@ -1,6 +1,6 @@
 // ./server/utils/sessionOptions
 
-import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
+import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes but fails in unit tests considering going back to .env or some other config file
 const runtimeConf = useRuntimeConfig();
 
 const sessionSecret = runtimeConf.public.sessionSecret
