@@ -61,10 +61,10 @@ export async function storeSession(event: any, user: any): Promise<string> {
   );
   session.user = user;
   await session.save();
-  console.log(
-    "[callback] Set-Cookie header:",
-    event.node.res.getHeader("Set-Cookie")
-  );
+  // console.log(
+  //   "[callback] Set-Cookie header:",
+  //   event.node.res.getHeader("Set-Cookie")
+  // );
   return getSessionCookieHeader(event.node.res.getHeader("Set-Cookie"));
 }
 
@@ -104,7 +104,7 @@ export async function fetchUserType(
     );
     return userData?.userType ?? null;
   } catch (err) {
-    console.log(`[callback.ts] User not found in backend: ${err}`);
+    // console.log(`[callback.ts] User not found in backend: ${err}`);
     return null;
   }
 }
@@ -125,9 +125,9 @@ export async function syncSessionToBackend(
       }
     );
   } catch (err) {
-    console.log(
-      `[callback.ts] Auth session not synced in backend cache from db: ${err}`
-    );
+    // console.log(
+    //   `[callback.ts] Auth session not synced in backend cache from db: ${err}`
+    // );
   }
 }
 

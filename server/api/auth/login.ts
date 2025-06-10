@@ -8,18 +8,8 @@ const auth0ClientId = runtimeConf.public.auth0ClientId;
 const auth0CallbackUrl = runtimeConf.public.auth0CallbackUrl;
 
 export default defineEventHandler(async (event) => {
-  console.log("[auth0/login] Runtime config values:", {
-    auth0Domain,
-    auth0ClientId,
-    auth0CallbackUrl,
-  });
 
   if (!auth0Domain || !auth0ClientId || !auth0CallbackUrl) {
-    console.log("[auth0/login] Missing Auth0 env vars", {
-      auth0Domain,
-      auth0ClientId,
-      auth0CallbackUrl,
-    });
     throw createError({
       statusCode: 500,
       statusMessage: "Missing Auth0 env vars",

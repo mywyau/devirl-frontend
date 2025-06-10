@@ -2,9 +2,9 @@
 
 import { ofetch } from 'ofetch'
 
-console.log("url", `https://${process.env.NUXT_PUBLIC_AUTH0_DOMAIN}/oauth/token`)
-console.log("client id", `${process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID}`)
-console.log("secret", `${process.env.AUTH0_CLIENT_SECRET}`)
+// console.log("url", `https://${process.env.NUXT_PUBLIC_AUTH0_DOMAIN}/oauth/token`)
+// console.log("client id", `${process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID}`)
+// console.log("secret", `${process.env.AUTH0_CLIENT_SECRET}`)
 
 export async function exchangeCodeForToken(code: string, redirectUri: string) {
   const res = await fetch(`https://${process.env.NUXT_PUBLIC_AUTH0_DOMAIN}/oauth/token`, {
