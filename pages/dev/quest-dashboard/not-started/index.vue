@@ -125,9 +125,9 @@ async function handleupdateQuestStatus(questId: string) {
           :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
-          <h3 class="text-xl font-semibold text-indigo-300">
+          <h2 class="text-xl font-semibold text-indigo-300">
             {{ quest.title }}
-          </h3>
+          </h2>
           <p class="text-white-300 text-sm mt-2 mb-4">
             {{ quest.description }}
           </p>

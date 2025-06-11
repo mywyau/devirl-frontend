@@ -158,20 +158,20 @@ async function handleUpdateQuestToFailed(questId: string) {
           :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
-          <h3 class="text-xl font-semibold text-blue-300">{{ quest.title }}</h3>
+          <h2 class="text-xl font-semibold text-blue-300">{{ quest.title }}</h2>
 
           <p class="text-white-300 text-sm mt-2 mb-4">
             {{ quest.description }}
           </p>
 
-          <div class="mt-auto flex flex-nowrap justify-end gap-3 overflow-auto">
-            <NuxtLink
-              :to="`/quest/${quest.questId}`"
-              class="bg-indigo-400 text-white rounded hover:bg-indigo-300 px-4 py-2 text-sm inline-block"
-            >
-              View Details
-            </NuxtLink>
+          <NuxtLink
+            :to="`/quest/${quest.questId}`"
+            class="text-indigo-300 rounded hover:text-indigo-200 hover:underline text-sm"
+          >
+            View Details
+          </NuxtLink>
 
+          <div class="mt-auto flex flex-nowrap justify-end gap-3 overflow-auto">
             <Button
               variant="secondary"
               class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 text-sm"

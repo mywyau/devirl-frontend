@@ -1,10 +1,9 @@
 <!-- src/pages/ClientCompletedQuests.vue -->
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
-import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
 import { streamAllQuestsByStatus } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
+import { computed, onMounted, ref, watch } from "vue";
 
 // User session
 const { data: user, pending: authPending } = useAuthUser();
@@ -86,21 +85,19 @@ onMounted(() => {
           :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
-          <h3 class="text-xl font-semibold text-green-300">{{ quest.title }}</h3>
-          <p class="text-white-300 text-sm mt-2 mb-4">{{ quest.description }}</p>
-          <div class="mt-auto flex justify-end">
-            <NuxtLink
-              :to="`/quest/${quest.questId}`"
-              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
-            >
-              <Button
-                variant="default"
-                class="bg-green-500 text-white rounded hover:bg-green-400"
-              >
-                View Details
-              </Button>
-            </NuxtLink>
-          </div>
+          <h2 class="text-xl font-semibold text-green-300">
+            {{ quest.title }}
+          </h2>
+          <p class="text-white-300 text-sm mt-2 mb-4">
+            {{ quest.description }}
+          </p>
+
+          <NuxtLink
+            :to="`/quest/${quest.questId}`"
+            class="text-indigo-300 rounded hover:text-indigo-200 hover:underline text-sm"
+          >
+            View Details
+          </NuxtLink>
         </div>
       </div>
 
@@ -115,9 +112,7 @@ onMounted(() => {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-zinc-400">
-        You have no completed quests.
-      </div>
+      <div v-else class="text-zinc-400">You have no completed quests.</div>
     </div>
   </NuxtLayout>
 </template>

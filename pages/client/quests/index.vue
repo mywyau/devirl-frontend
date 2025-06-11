@@ -97,15 +97,11 @@ function refreshPage() {
               <a
                 :href="`/client/quest/${quest.questId}`"
                  rel="external"
-                class="text-blue-400 hover:underline hover:text-blue-300"
+                class="text-white hover:underline hover:text-sky-300"
               >
-                <Button
-                  variant="default"
-                  class="bg-blue-500 text-white rounded hover:bg-blue-400"
-                >
-                  View Quest →
-                </Button>
+                View Quest →
               </a>
+
             </div>
           </div>
         </div>

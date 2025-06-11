@@ -11,8 +11,8 @@ import {
   type GetUserData,
 } from "@/types/schema/UserDataSchema";
 import { onMounted, ref } from "vue";
-import { Button } from "~/components/ui/button/variants";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { Button } from "@/components/ui/button/variants";
+import { useAuthUser } from "@/composables/useAuthUser";
 
 // Reactive state
 const userProfile = ref<GetUserData | null>(null);
