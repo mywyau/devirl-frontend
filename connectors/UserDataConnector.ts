@@ -1,14 +1,20 @@
 // ./connectors/UserDataConnector.ts
 
 import { loadConfig } from "@/configuration/ConfigLoader";
-import { $fetch } from "ofetch";
 import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
+import { $fetch } from "ofetch";
 // import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
-import type { CreateUserData, UpdateUserType, UpdateUserData } from "@/types/schema/UserDataSchema";
-import { CreateUserDataSchema, UpdateUserTypeSchema, UpdateUserDataSchema } from "@/types/schema/UserDataSchema";
+import type {
+  CreateUserData,
+  UpdateUserData,
+  UpdateUserType,
+} from "@/types/schema/UserDataSchema";
+import { useRequestHeaders } from "nuxt/app";
 
 const config = loadConfig();
 const baseUrl = `${config.devQuestBackend.baseUrl}/`;
+
+
 
 const endpoints = {
   get: (id: string) => `${baseUrl}user/data/${encodeURIComponent(id)}`,
@@ -20,9 +26,10 @@ const endpoints = {
     `${baseUrl}user/data/delete/${encodeURIComponent(id)}`,
 };
 
-export async function fetchUserData(userId: string) {
+export async function fetchUserData(userId: string, headers: Record<string, string> | undefined) {
   const res = await $fetch(endpoints.get(userId), {
     credentials: "include",
+    headers, // forward cookies
   });
 
   const parsed = GetUserDataSchema.safeParse(res);
@@ -34,10 +41,7 @@ export async function fetchUserData(userId: string) {
   return parsed.data;
 }
 
-export async function createUserData(
-  userId: string,
-  payload: CreateUserData
-) {
+export async function createUserData(userId: string, payload: CreateUserData) {
   return await $fetch(endpoints.create(userId), {
     method: "POST",
     credentials: "include",
@@ -45,10 +49,7 @@ export async function createUserData(
   });
 }
 
-export async function updateUserData(
-  userId: string,
-  payload: UpdateUserData
-) {
+export async function updateUserData(userId: string, payload: UpdateUserData) {
   return await $fetch(endpoints.update(userId), {
     method: "PUT",
     credentials: "include",

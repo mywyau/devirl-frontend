@@ -1,10 +1,10 @@
 // ./server/api/auth/logout.ts
 
-import { loadConfig } from "~/configuration/ConfigLoader";
-import { sessionOptions } from "~/server/utils/sessionOptions"; // ✅ import the shared options
 import { defineEventHandler, sendRedirect, setCookie } from "h3";
 import { getIronSession } from "iron-session";
 import { $fetch } from "ofetch";
+import { loadConfig } from "~/configuration/ConfigLoader";
+import { sessionOptions } from "~/server/utils/sessionOptions"; // ✅ import the shared options
 
 import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
 
@@ -59,12 +59,6 @@ export default defineEventHandler(async (event) => {
     maxAge: 0, // ← removes the cookie
   });
 
-  // ✅ Redirect to Auth0 logout endpoint
-  // const {
-  //   NUXT_PUBLIC_AUTH0_DOMAIN,
-  //   NUXT_PUBLIC_AUTH0_CLIENT_ID,
-  //   NUXT_PUBLIC_BASE_URL,
-  // } = process.env;
 
   if (!auth0Domain || !auth0ClientId) {
     throw new Error("Missing Auth0 environment variables");
@@ -77,6 +71,7 @@ export default defineEventHandler(async (event) => {
     new URLSearchParams({
       client_id: auth0ClientId,
       returnTo,
+      // federated: "true", //this fully logs out of google, works but overkill, rely on prompt: "login" when user logs in.
     }).toString();
 
   return sendRedirect(event, auth0LogoutUrl);

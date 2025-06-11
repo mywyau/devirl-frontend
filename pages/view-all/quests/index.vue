@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { streamAllQuests } from "@/controllers/QuestBackendController";
+import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref } from "vue";
 import { useAuthUser } from "~/composables/useAuthUser";
-import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 
 const quests = ref<QuestPartial[]>([]);
 const error = ref<string | null>(null);
@@ -70,25 +70,23 @@ async function fetchQuests() {
       </div>
 
       <div class="grid gap-6" v-else>
-        <div
-          v-for="quest in quests"
-          :key="quest.questId"
-          class="border p-4 rounded-xl shadow bg-white/5"
-        >
+        <div v-for="quest in quests" :key="quest.questId" class="p-4 rounded-xl shadow bg-white/10">
           <h2 class="text-xl font-semibold text-indigo-300">{{ quest.title }}</h2>
-          <div class="mt-2 text-sm text-teal-400">
+          <div class="text-sm text-teal-400 font-semibold mt-2">
             {{ quest.status }}
           </div>
-          <div class="mt-4 flex justify-between items-center">
-            <span class="font-mono text-sm text-green-400"
-              >💰 £{{ quest.bounty || 0.0 }}</span
-            >
-            <NuxtLink
-              :to="`/quest/${quest.questId}`"
-              class="text-white hover:underline hover:text-sky-300"
-            >
-              View Quest →
-            </NuxtLink>
+          <div class="mt-4 flex items-center">
+            <span class="font-mono text-sm text-green-400">💰 £{{ quest.bounty || 0.0 }}</span>
+
+            <div class="flex space-x-4 ml-auto">
+              <NuxtLink :to="`/quest/estimation/${quest.questId}`"
+                class="text-white hover:underline hover:text-teal-300">
+                Estimations
+              </NuxtLink>
+              <NuxtLink :to="`/quest/${quest.questId}`" class="text-white hover:underline hover:text-teal-300">
+                Details
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </div>

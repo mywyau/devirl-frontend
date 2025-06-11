@@ -13,13 +13,13 @@ defineProps<{
       class="flex flex-col items-center justify-center min-h-screen text-white px-4"
     >
       <h1 class="text-5xl font-bold mb-4 text-red-400">Oops!</h1>
-      <p class="text-xl mb-6 text-zinc-300">
+      <p class="text-xl mb-6 text-zinc-100">
         Something went wrong. Please try again later.
       </p>
 
       <NuxtLink
         to="/"
-        class="bg-cyan-500 hover:bg-blue-400 text-white px-6 py-2 rounded"
+        class="bg-teal-500 hover:bg-teal-400 text-white px-6 py-2 rounded"
       >
         Back to Home
       </NuxtLink>

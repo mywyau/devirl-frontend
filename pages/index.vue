@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import { useValidatedRuntimeConfig } from "@/configuration/useValidatedRuntimeConfig";
-const runtimeConf = useValidatedRuntimeConfig();
+// import { useValidatedRuntimeConfig } from "@/configuration/useValidatedRuntimeConfig";
+// const runtimeConf = useValidatedRuntimeConfig();
 
 const isProd = process.env.NODE_ENV === "production";
 console.debug("[isProd] ", isProd);

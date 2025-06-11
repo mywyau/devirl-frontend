@@ -86,12 +86,12 @@ onMounted(() => {
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
         >
           <h2 class="text-xl font-semibold text-red-300">{{ quest.title }}</h2>
-          <p class="text-white-300 text-sm mt-2 mb-4">
+          <p class="text-white text-sm mt-2 mb-4">
             {{ quest.description }}
           </p>
 
           <NuxtLink
-            :to="`/quest/${quest.questId}`"
+            :to="`/client/quest/${quest.questId}`"
             class="text-indigo-300 rounded hover:text-indigo-200 hover:underline text-sm"
           >
             View Details
