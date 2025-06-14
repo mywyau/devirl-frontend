@@ -3,7 +3,7 @@
 import { createQuest } from "@/controllers/QuestBackendController"; // <- updated import
 import type { CreateQuestPayload } from "@/types/quests";
 import { ref } from "vue";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { useAuthUser } from "@/composables/useAuthUser";
 
 
 // Form data
@@ -78,6 +78,15 @@ async function handleSubmit() {
           </label>
           <textarea id="quest-description" v-model="questCreatePayload.description" rows="4"
             placeholder="What needs to be done? Be as clear and helpful as possible."
+            class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"></textarea>
+        </div>
+
+        <div>
+          <label for="quest-description" class="block mb-1 text-sm font-medium text-white">
+            Acceptance Criteria (required)
+          </label>
+          <textarea id="quest-description" v-model="questCreatePayload.acceptance" rows="4"
+            placeholder="Add some base acceptance criteria to help the dev achieve the goal"
             class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"></textarea>
         </div>
 
