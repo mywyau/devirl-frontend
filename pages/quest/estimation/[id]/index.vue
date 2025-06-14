@@ -15,6 +15,10 @@ const levelOptions = [
     { value: "Steel", label: "Steel" },
     { value: "Mithril", label: "Mithril" },
     { value: "Adamantite", label: "Adamantite" },
+    { value: "Runic", label: "Runic" },
+    { value: "Ruinous", label: "Ruinous" },
+    { value: "Demon", label: "Demon" },
+    { value: "Aether", label: "Aether" },
 ];
 
 

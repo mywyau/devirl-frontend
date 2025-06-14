@@ -72,9 +72,12 @@ async function fetchQuests() {
       <div class="grid gap-6" v-else>
         <div v-for="quest in quests" :key="quest.questId" class="p-4 rounded-xl shadow bg-white/10">
           <h2 class="text-xl font-semibold text-indigo-300">{{ quest.title }}</h2>
-          <div class="text-sm text-teal-400 font-semibold mt-2">
-            {{ quest.status }}
+
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-sm text-teal-400 font-semibold mt-2">{{ quest.status }}</span>
+            <span class="text-base text-zinc-400">Mithril</span>
           </div>
+
           <div class="mt-4 flex items-center">
             <span class="font-mono text-sm text-green-400">💰 £{{ quest.bounty || 0.0 }}</span>
 

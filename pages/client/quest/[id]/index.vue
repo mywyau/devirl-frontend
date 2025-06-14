@@ -156,7 +156,7 @@ async function handleDeleteQuest() {
             </Button>
           </a>
 
-          <a :href="`/client/quest/reward/add`" rel="external" class="text-white">
+          <a :href="`/client/quest/reward/add/${questId}`" rel="external" class="text-white">
             <Button variant="secondary" class="bg-emerald-500 text-white rounded hover:bg-emerald-400">
               Add a Reward
             </Button>
