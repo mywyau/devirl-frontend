@@ -15,6 +15,10 @@ const levelOptions = [
     { value: "Steel", label: "Steel" },
     { value: "Mithril", label: "Mithril" },
     { value: "Adamantite", label: "Adamantite" },
+    { value: "Runic", label: "Runic" },
+    { value: "Ruinous", label: "Ruinous" },
+    { value: "Demon", label: "Demon" },
+    { value: "Aether", label: "Aether" },
 ];
 
 
@@ -54,7 +58,7 @@ function submitEstimation() {
                 <label for="difficulty" class="block mb-2 text-sm font-semibold">Your Difficulty Estimate</label>
 
                 <select v-model="level" class="w-full rounded bg-zinc-900 border border-zinc-700 p-2 text-white">
-                    <option disabled value="" selected hidden>Choose difficulty tier</option>
+                    <option disabled value="">Choose difficulty tier</option>
                     <option v-for="opt in levelOptions" :key="opt.value" :value="opt.value">
                         {{ opt.label }}
                     </option>
