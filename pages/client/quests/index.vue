@@ -5,9 +5,8 @@ import { useRouter } from "vue-router";
 
 import { streamAllQuestsForUser } from "@/controllers/QuestBackendController";
 // import { QuestPartial } from "@/types/quests";
-import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
-import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
+import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 
 // 1) Resolve the logged‐in user (SSR will forward the cookie via useAuthUser)
 const { data: user } = await useAuthUser();
@@ -65,7 +64,7 @@ function refreshPage() {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold mb-6 text-white">My Quests</h1>
+      <h1 class="text-3xl font-bold mb-6 text-pink-300">My Quests</h1>
 
       <!-- 1) SSR will show “Loading…” while it’s gathering the stream server‐side -->
       <div v-if="isLoading" class="text-zinc-500">Loading quests...</div>
@@ -80,26 +79,20 @@ function refreshPage() {
         </div>
 
         <div class="grid gap-6">
-          <div
-            v-for="quest in rawQuests"
-            :key="quest.questId"
-            class="border p-4 rounded-xl shadow hover:shadow-md transition bg-white/5 text-white border border-white/10"
-          >
-            <h2 class="text-xl font-semibold">{{ quest.title }}</h2>
-            <div class="mt-2 text-sm text-yellow-400">
+          <div v-for="quest in rawQuests" :key="quest.questId"
+            class="p-4 rounded-xl bg-white/10">
+            <h2 class="text-xl text-indigo-300 font-semibold">{{ quest.title }}</h2>
+            <div class="text-sm text-yellow-400 mt-2">
               Status: {{ quest.status }}
             </div>
             <div class="mt-4 flex justify-between items-center">
               <span class="font-mono text-sm text-green-400">
                 💰 {{ quest.bounty || 0.0 }} ETH
               </span>
-              
-              <a
-                :href="`/client/quest/${quest.questId}`"
-                 rel="external"
-                class="text-white hover:underline hover:text-sky-300"
-              >
-                View Quest →
+
+              <a :href="`/client/quest/${quest.questId}`" rel="external"
+                class="text-white hover:underline hover:text-teal-300">
+                Details
               </a>
 
             </div>

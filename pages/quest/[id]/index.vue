@@ -102,15 +102,8 @@ const reportError = ref(false);
 
       <div v-if="isLoading" class="text-zinc-400">Loading quest...</div>
       <div v-else-if="error" class="text-red-500">{{ error }}</div>
-      <div
-        v-else
-        class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow"
-      >
-        <h2
-          :class="`text-2xl font-semibold mb-2 ${getStatusTextColour(
-            result?.status?.toString()
-          )}`"
-        >
+      <div v-else class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow">
+        <h2 class="text-2xl font-semibold mb-2 text-indigo-300">
           {{ result?.title }}
         </h2>
 
@@ -121,32 +114,20 @@ const reportError = ref(false);
         <div>
           <span class="font-semibold">Status: </span>
 
-          <span 
-            :class="`font-semibold mb-4 ${getStatusTextColour(result?.status?.toString())}`"
-          >
+          <span :class="`font-semibold mb-4 ${getStatusTextColour(result?.status?.toString())}`">
             {{ result?.status.toString() }}
           </span>
         </div>
 
-        <div
-          v-if="result?.status.toString() === 'Open'"
-          class="mt-6 flex gap-4"
-        >
-          <Button
-            variant="secondary"
-            class="bg-red-500 text-white rounded hover:bg-red-400"
-            @click=""
-          >
-            Report Quest
+        <div v-if="result?.status.toString() === 'Open'" class="mt-6 flex gap-4">
+
+          <Button v-if="userType === 'Dev'" variant="secondary"
+            class="bg-green-500 text-white rounded hover:bg-green-400" @click="handleAcceptQuest">
+            Accept Quest
           </Button>
 
-          <Button
-            v-if="userType === 'Dev'"
-            variant="secondary"
-            class="bg-green-500 text-white rounded hover:bg-green-400"
-            @click="handleAcceptQuest"
-          >
-            Accept Quest
+          <Button variant="secondary" class="bg-red-500 text-white rounded hover:bg-red-400" @click="">
+            Report Quest
           </Button>
         </div>
 

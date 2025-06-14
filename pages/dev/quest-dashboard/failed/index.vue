@@ -74,8 +74,8 @@ onMounted(() => {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-red-400">Failed</h1>
-      <p class="text-lg mb-6 text-red-300">
+      <h1 class="text-3xl font-bold mb-4 text-red-300">Failed</h1>
+      <p class="text-lg mb-6 text-red-400/80">
         Below are all the quests that are failed.
       </p>
 
@@ -89,12 +89,12 @@ onMounted(() => {
           <h2 class="text-xl font-semibold text-red-300">
             {{ quest.title }}
           </h2>
-          <p class="text-white-300 text-sm mt-2 mb-4">
+          <p class="text-white text-sm mt-2 mb-4">
             {{ quest.description }}
           </p>
           <div class="mt-auto flex justify-end">
             <NuxtLink
-              :to="`/quest/${quest.questId}`"
+              :to="`/dev/quest/${quest.questId}`"
               class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
             >
               <Button

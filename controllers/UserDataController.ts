@@ -11,8 +11,8 @@ import type { CreateUserData, UpdateUserType, UpdateUserData } from "@/types/sch
 import { CreateUserDataSchema, UpdateUserTypeSchema, UpdateUserDataSchema } from "@/types/schema/UserDataSchema";
 
 
-export async function getUser(userId: string) {
-  return await fetchUserData(userId)
+export async function getUser(userId: string, headers: Record<string, string> | undefined) {
+  return await fetchUserData(userId, headers)
 }
 
 export async function createUser(userId: string, payload: CreateUserData) {

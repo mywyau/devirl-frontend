@@ -15,7 +15,7 @@ const statuses = [
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto text-white">
-      <Card class="bg-white/5 border-white/10 text-white">
+      <Card class="bg-white/10 text-white">
         <CardContent class="p-6 space-y-6">
           <div class="flex items-center justify-between mb-4">
             <h1 class="text-4xl font-extrabold tracking-tight">
@@ -23,7 +23,7 @@ const statuses = [
             </h1>
           </div>
 
-          <p class="text-zinc-400 text-base">
+          <p class="text-zinc-300 text-base">
             Track your progress and dive into each category below.
           </p>
 

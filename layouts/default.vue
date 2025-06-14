@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { useAuthUser } from "@/composables/useAuthUser";
 import { loadConfig } from "@/configuration/ConfigLoader";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { useCookie } from "nuxt/app";
 
 const { data: user, error } = useAuthUser();
 
@@ -20,64 +21,54 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <div
-    class="bg-gradient-to-br from-zinc-900 via-zinc-800 to-black min-h-screen text-zinc-100 font-sans"
-  >
-    <header
-      class="px-6 py-4 border-b border-zinc-700 flex justify-between items-center"
-    >
-      <NuxtLink to="/" class="text-xl font-bold text-white hover:text-sky-300">
+  <div class="bg-gradient-to-br from-zinc-900 via-zinc-800 to-black min-h-screen font-sans">
+    <header class="px-6 py-4 border-b border-zinc-700 flex justify-between items-center">
+      <NuxtLink to="/" class="text-xl font-bold text-white hover:text-teal-400">
         Dev Irl
       </NuxtLink>
 
       <nav class="space-x-6 flex items-center">
         <template v-if="user">
-          <NuxtLink to="/view-all/quests" class="hover:text-sky-300">
+          <NuxtLink to="/view-all/quests" class="text-white hover:text-green-400">
             View all quests
           </NuxtLink>
 
-          <NuxtLink
-            v-if="userType === 'Client'"
-            to="/client/quest-dashboard"
-            class="hover:text-sky-300"
-          >
+          <NuxtLink to="/hiscores" class="text-white hover:text-indigo-400">
+            Hiscores
+          </NuxtLink>
+
+          <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="text-white hover:text-indigo-400">
+            Skills
+          </NuxtLink>
+
+          <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard" class="text-white hover:text-blue-400">
             Client Quests Dashboard
           </NuxtLink>
 
-          <NuxtLink
-            v-if="userType === 'Dev'"
-            to="/dev/quest-dashboard"
-            class="hover:text-sky-300"
-          >
+          <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard" class="text-white hover:text-blue-400">
             Dev Quests Dashboard
           </NuxtLink>
 
-          <NuxtLink
-            v-if="userType === 'Dev'"
-            to="/dev/profile"
-            class="hover:text-sky-300"
-          >
+          <NuxtLink v-if="userType === 'Dev'" to="/dev/profile" class="text-white hover:text-blue-400">
             Dev Profile
           </NuxtLink>
 
-          <NuxtLink
-            v-if="userType === 'Client'"
-            to="/client/profile"
-            class="hover:text-sky-300"
-          >
+          <NuxtLink v-if="userType === 'Client'" to="/client/profile" class="text-white hover:text-blue-400">
             Client Profile
           </NuxtLink>
 
-          <a
-            href="#"
-            @click.prevent="handleLogout"
-            class="hover:text-red-400 text-base"
-            >Logout</a
-          >
+          <a href="#" @click.prevent="handleLogout" class="text-white hover:text-red-400 text-base">Logout</a>
         </template>
 
         <template v-else>
-          <a :href="loginUrl" class="hover:text-green-400 text-base"> Login </a>
+
+          <NuxtLink to="/hiscores" class="text-white hover:text-indigo-300">
+            Hiscores
+          </NuxtLink>
+
+          <a :href="loginUrl" class=" text-white hover:text-green-400 text-base">
+            Login
+          </a>
         </template>
       </nav>
     </header>

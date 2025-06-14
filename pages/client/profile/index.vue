@@ -99,9 +99,9 @@ onMounted(() => {
   <NuxtLayout>
     <div class="max-w-5xl mx-auto mt-16 p-6">
       <div class="flex flex-col md:flex-row gap-8">
-        <div class="flex-1 p-6 shadow-md rounded-2xl border">
-          <h1 class="text-2xl font-bold mb-6 text-center">
-            Client User Profile
+        <div class="flex-1 p-6 rounded-2xl border">
+          <h1 class="text-2xl text-white font-bold mb-6 text-center">
+            Your Profile
           </h1>
 
           <div v-if="isLoading">Loading...</div>
@@ -109,26 +109,26 @@ onMounted(() => {
             <div v-if="userProfile">
               <div class="space-y-4">
                 <ProfileItem
-                  textColor="text-zinc-400"
+                  textColor="text-zinc-300"
                   labelColor="text-white"
                   label="First Name"
                   :value="`${userProfile.firstName}`"
                 />
 
                 <ProfileItem
-                  textColor="text-zinc-400"
+                  textColor="text-zinc-300"
                   labelColor="text-white"
                   label="Last Name"
                   :value="`${userProfile.lastName}`"
                 />
                 <ProfileItem
-                  textColor="text-zinc-400"
+                  textColor="text-zinc-300"
                   labelColor="text-white"
                   label="Email"
                   :value="userProfile.email"
                 />
                 <ProfileItem
-                  textColor="text-zinc-400"
+                  textColor="text-zinc-300"
                   labelColor="text-white"
                   label="Role"
                   :value="userProfile.userType ?? '—'"

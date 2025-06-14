@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import { ref } from "vue";
 import { createQuest } from "@/controllers/QuestBackendController"; // <- updated import
 import type { CreateQuestPayload } from "@/types/quests";
+import { ref } from "vue";
 import { useAuthUser } from "~/composables/useAuthUser";
 
 
@@ -58,50 +58,32 @@ async function handleSubmit() {
 
 <template>
   <NuxtLayout>
-    <div class="p-6 max-w-4xl mx-auto text-white">
-      <h1 class="text-3xl font-bold mb-6">Create a New Quest</h1>
+    <div class="p-6 max-w-4xl mx-auto">
+      <h1 class="text-3xl text-green-300 font-bold mb-6">Create a New Quest</h1>
 
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div>
-          <label
-            for="quest-title"
-            class="block mb-1 text-sm font-medium text-white"
-          >
+          <label for="quest-title" class="block mb-1 text-sm font-medium text-white">
             Quest Title
           </label>
-          <input
-            id="quest-title"
-            v-model="questCreatePayload.title"
-            type="text"
-            required
+          <input id="quest-title" v-model="questCreatePayload.title" type="text" required
             placeholder="Write a short, punchy title like 'Fix the broken login page'"
-            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-          />
+            class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400" />
           <p class="mt-1 text-sm text-zinc-400">Max 100 characters</p>
         </div>
 
         <div>
-          <label
-            for="quest-description"
-            class="block mb-1 text-sm font-medium text-white"
-          >
-            Detailed Instructions (optional)
+          <label for="quest-description" class="block mb-1 text-sm font-medium text-white">
+            Description (optional)
           </label>
-          <textarea
-            id="quest-description"
-            v-model="questCreatePayload.description"
-            rows="4"
+          <textarea id="quest-description" v-model="questCreatePayload.description" rows="4"
             placeholder="What needs to be done? Be as clear and helpful as possible."
-            class="w-full px-4 py-2 rounded bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-          ></textarea>
+            class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"></textarea>
         </div>
 
         <div>
-          <button
-            type="submit"
-            class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded"
-            :disabled="isSubmitting"
-          >
+          <button type="submit" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded"
+            :disabled="isSubmitting">
             Create Quest
           </button>
         </div>

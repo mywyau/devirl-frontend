@@ -9,6 +9,9 @@ import {
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
 
+import { useRouter } from "vue-router";
+const router = useRouter();
+
 // User session
 const { data: user, pending: authPending } = useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
@@ -100,34 +103,31 @@ async function handleUpdateQuestStatus(questId: string) {
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
       <h1 class="text-3xl font-bold mb-4 text-blue-400">Review</h1>
-      <p class="text-lg mb-6 text-blue-400">
+      <p class="text-lg mb-6 text-blue-400/80">
         Below are all the quests that are in review.
       </p>
 
       <!-- Show quests immediately when available -->
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div
-          v-for="quest in quests"
-          :key="quest.questId"
-          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
-        >
+        <div v-for="quest in quests" :key="quest.questId"
+          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full">
           <h2 class="text-xl font-semibold text-blue-300">{{ quest.title }}</h2>
-          <p class="text-white-300 text-sm mt-2 mb-4">
+          <p class="text-white text-sm mt-2 mb-4">
             {{ quest.description }}
           </p>
 
+          <NuxtLink :to="`/dev/quest/${quest.questId}`"
+            class="text-indigo-300 rounded hover:text-indigo-200 hover:underline text-sm">
+            View Details
+          </NuxtLink>
+
           <div class="mt-auto flex justify-end space-x-3">
-            <NuxtLink
-              :to="`/quest/${quest.questId}`"
-              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
-            >
-              <Button
-                variant="default"
-                class="bg-indigo-400 text-white rounded hover:bg-indigo-300"
-              >
-                View Details
-              </Button>
-            </NuxtLink>
+
+            <Button variant="default" class="bg-teal-500 text-white rounded hover:bg-teal-400"
+              @click="router.push(`/dev/quest/submit/${quest.questId}`)">
+              Upload File
+            </Button>
+
           </div>
         </div>
       </div>

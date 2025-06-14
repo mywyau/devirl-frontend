@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { useAsyncData, useRequestHeaders } from "#imports";
 import { Button } from "@/components/ui/button/variants";
+import { getStatusTextColour } from "@/service/QuestStatusService";
 import { computed, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 
-import { getQuest, deleteQuest } from "@/controllers/QuestBackendController";
+
+import { deleteQuest, getQuest } from "@/controllers/QuestBackendController";
 import {
   QuestPartialSchema,
   type QuestPartial,
 } from "@/types/schema/QuestStatusSchema";
 
 import { useAuthUser } from "@/composables/useAuthUser";
+
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 // 1) Grab the route param
 const route = useRoute();
@@ -97,8 +102,8 @@ async function handleDeleteQuest() {
 
 <template>
   <NuxtLayout>
-    <div class="p-6 max-w-4xl mx-auto text-white">
-      <h1 class="text-3xl font-bold mb-6">Quest Details</h1>
+    <div class="p-6 max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-6 text-pink-300">Quest Details</h1>
 
       <!-- 1) SSR (and hydration) show “Loading…” until getQuest resolves -->
       <div v-if="isLoading" class="text-zinc-400">Loading quest…</div>
@@ -115,42 +120,36 @@ async function handleDeleteQuest() {
       </div>
 
       <!-- 4) Otherwise, render the quest that SSR fetched -->
-      <div
-        v-else
-        class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow"
-      >
-        <h2 class="text-2xl font-semibold text-indigo-300 mb-2">
+      <div v-else class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow">
+
+        <h2 :class="`text-2xl font-semibold ${getStatusTextColour(result?.status?.toString())} mb-2`">
           {{ result?.title }}
         </h2>
+
         <p class="mb-4 text-zinc-300">{{ result?.description }}</p>
 
         <div>
-          <span class="font-semibold">Status: </span>
-          <span class="text-yellow-300 capitalize">{{
+          <span class="text-white font-semibold">Status: </span>
+
+          <span :class="`capitalize ${getStatusTextColour(result?.status?.toString())}`">{{
             result?.status.toString()
           }}</span>
         </div>
 
         <div class="mt-6 flex gap-4">
-          <a
-            :href="`/client/quest/edit/${questId}`"
-            rel="external"
-            class="text-white"
-          >
-            <Button
-              variant="secondary"
-              class="bg-yellow-500 text-white rounded hover:bg-yellow-400"
-            >
+          <Button variant="default" class="bg-teal-500 text-white rounded hover:bg-teal-400"
+            @click="router.push(`/client/quest/download/${questId}`)">
+            Download File
+          </Button>
+
+          <a :href="`/client/quest/edit/${questId}`" rel="external" class="text-white">
+            <Button variant="secondary" class="bg-yellow-500 text-white rounded hover:bg-yellow-400">
               Edit quest
             </Button>
           </a>
 
           <!-- Delete button (client‐only interaction) -->
-          <Button
-            variant="secondary"
-            class="bg-red-600 text-white rounded hover:bg-red-500"
-            @click="handleDeleteQuest"
-          >
+          <Button variant="secondary" class="bg-red-600 text-white rounded hover:bg-red-500" @click="handleDeleteQuest">
             Delete quest
           </Button>
         </div>

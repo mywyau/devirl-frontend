@@ -1,12 +1,16 @@
 <!-- src/pages/ClientCompletedQuests.vue -->
 <script setup lang="ts">
-import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
-import {
-  streamAllQuestsByStatusDev
-} from "@/controllers/QuestBackendController";
+import { streamAllQuestsByStatusDev } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function goToRewards() {
+  router.push('/dev/rewards/claim');
+}
 
 // User session
 const { data: user, pending: authPending } = useAuthUser();
@@ -76,37 +80,55 @@ onMounted(() => {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-green-400">Completed</h1>
-      <p class="text-lg mb-6 text-green-300">
+      <h1 class="text-3xl font-bold mb-4 text-green-300">Completed</h1>
+      <p class="text-lg mb-6 text-green-400/80">
         Below are all the quests that are completed.
       </p>
 
       <!-- Show quests immediately when available -->
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div
-          v-for="quest in quests"
-          :key="quest.questId"
-          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
-        >
+        <div v-for="quest in quests" :key="quest.questId"
+          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full">
           <h2 class="text-xl font-semibold text-green-300">
             {{ quest.title }}
           </h2>
-          <p class="text-white-300 text-sm mt-2 mb-4">
+
+          <!-- <p class="text-white text-sm mt-2 mb-4">
             {{ quest.description }}
-          </p>
-          <div class="mt-auto flex justify-end">
-            <NuxtLink
-              :to="`/quest/${quest.questId}`"
-              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
-            >
-              <Button
-                variant="default"
-                class="bg-green-500 text-white rounded hover:bg-green-400"
-              >
+          </p> -->
+
+          <div class="mt-auto flex justify-between items-center pt-4 border-t border-white/10">
+            <button @click="goToRewards"
+              class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded transition-colors">
+              Claim Reward
+            </button>
+
+            <NuxtLink :to="`/dev/quest/${quest.questId}`">
+              <button
+                class="bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium px-4 py-2 rounded transition-colors">
+                View Details
+              </button>
+            </NuxtLink>
+          </div>
+
+
+          <!-- <div class="mt-auto flex">
+
+            <div class="mt-6 flex gap-4">
+              <button @click="goToRewards"
+                class="bg-emerald-500/90 hover:bg-emerald-400/90 text-white px-4 py-2 rounded">
+                Rewards
+              </button>
+            </div>
+
+            <NuxtLink :to="`/dev/quest/${quest.questId}`"
+              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline">
+              <Button variant="default" class="bg-green-500 text-white rounded hover:bg-green-400">
                 View Details
               </Button>
             </NuxtLink>
-          </div>
+          </div> -->
+
         </div>
       </div>
 

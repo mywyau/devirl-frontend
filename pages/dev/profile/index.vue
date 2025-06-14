@@ -1,165 +1,125 @@
-<!-- src/pages/DevUserProfile.vue -->
 <script setup lang="ts">
-import ProfileItem from "@/components/ui/profile/ProfileItem";
-import { deleteUser, getUser } from "@/controllers/UserDataController";
-import {
-  DeleteResponseSchema,
-  type DeleteResponse,
-} from "@/types/schema/ApiResponses";
-import {
-  GetUserDataSchema,
-  type GetUserData,
-} from "@/types/schema/UserDataSchema";
-import { onMounted, ref } from "vue";
 import { Button } from "@/components/ui/button/variants";
-import { useAuthUser } from "@/composables/useAuthUser";
+import ProfileItem from "@/components/ui/profile/ProfileItem";
+// import { useAuthUser } from "@/composables/useAuthUser";
+import { deleteUser, getUser } from "@/controllers/UserDataController";
+import type { AuthUser } from "@/types/AuthUser";
+import { DeleteResponseSchema, type DeleteResponse } from "@/types/schema/ApiResponses";
+import { GetUserDataSchema, type GetUserData } from "@/types/schema/UserDataSchema";
+import { useAsyncData, useFetch, useRequestHeaders } from "nuxt/app";
+import { computed, ref } from "vue";
 
-// Reactive state
-const userProfile = ref<GetUserData | null>(null);
-const userProfileError = ref<string>("");
-const isLoading = ref<boolean>(false);
+// Get authenticated user (must work in SSR)
+// const { data: authUser, error: authError } = await useAuthUser();
 
-const deleteResponse = ref<DeleteResponse | null>(null);
-const deleteError = ref<string>("");
-const isDeleting = ref<boolean>(false);
-const deleteSuccess = ref<string>("");
+const headers: Record<string, string> | undefined = useRequestHeaders(["cookie"]);
 
-// Authenticated user
-const { data: authUser, error: authError } = await useAuthUser();
-const userId = authUser.value?.sub;
 
-// Fetch user profile
-async function fetchUserProfile(id: string) {
-  userProfileError.value = "";
-  isLoading.value = true;
-  try {
-    const raw = await getUser(id);
-    const result = GetUserDataSchema.safeParse(raw);
-    if (!result.success) {
-      console.error("[DevUserProfile] Profile validation error:", result.error);
-      userProfileError.value = "Invalid user data from server.";
-      return;
-    }
-    userProfile.value = result.data;
-  } catch (e: any) {
-    console.error("[DevUserProfile] Fetch error:", e);
-    userProfileError.value = e?.data?.message || "Unable to load profile.";
-  } finally {
-    isLoading.value = false;
+const { data: authUser, error } = await useFetch<AuthUser | null>('/api/auth/session', {
+  headers: headers,
+  credentials: 'include',
+  transform: (res: any) => res.user ?? null,
+  default: () => null,
+});
+
+const userId = computed(() => authUser.value?.sub);
+
+console.log('userId on server:', userId.value);
+
+
+// Fetch profile using SSR-friendly asyncData
+const { data: userProfile, error: userProfileError, pending: isLoading } = await useAsyncData<GetUserData | null>(
+  "user-profile",
+  async () => {
+    if (!userId.value) return null;
+    const raw = await getUser(userId.value, headers);
+    const parsed = GetUserDataSchema.safeParse(raw);
+    if (!parsed.success) throw new Error("Invalid user data");
+    return parsed.data;
   }
-}
+);
 
-// Delete user profile
+// Delete user logic (still client-only)
+const deleteResponse = ref<DeleteResponse | null>(null);
+const deleteError = ref("");
+const isDeleting = ref(false);
+const deleteSuccess = ref("");
+
 async function handleDeleteUser() {
-
   deleteError.value = deleteSuccess.value = "";
   isDeleting.value = true;
-  if (!userId) {
+
+  if (!userId.value) {
     deleteError.value = "User ID not found.";
     isDeleting.value = false;
     return;
   }
 
   try {
-    const raw = await deleteUser(userId);
+    const raw = await deleteUser(userId.value);
     const parsed = DeleteResponseSchema.safeParse(raw);
     if (!parsed.success) {
-      console.error("[DevUserProfile] Delete validation error:", parsed.error);
-      deleteError.value = "Invalid response from server.";
+      deleteError.value = "Invalid server response.";
     } else {
+      deleteSuccess.value = parsed.data.message || "User deleted.";
       deleteResponse.value = parsed.data;
-      deleteSuccess.value = parsed.data.message || "User deleted successfully.";
-      userProfile.value = null;
     }
   } catch (e: any) {
-    console.error("[DevUserProfile] Delete error:", e);
-    deleteError.value = e?.data?.message || "Unable to delete user.";
+    deleteError.value = e?.data?.message || "Failed to delete user.";
   } finally {
     isDeleting.value = false;
   }
 }
-
-// Initialize
-onMounted(() => {
-  if (!userId) {
-    userProfileError.value = "User not authenticated.";
-    console.warn("[DevUserProfile] No user ID in session.");
-    return;
-  }
-  fetchUserProfile(userId);
-});
 </script>
 
 <template>
   <NuxtLayout>
-    <div class="max-w-5xl mx-auto mt-16 p-6">
-      <div class="flex flex-col md:flex-row gap-8">
-        <div class="flex-1 p-6 shadow-md rounded-2xl border">
-          <h1 class="text-2xl font-bold mb-6 text-center">Dev User Profile</h1>
+    <div class="max-w-6xl mx-auto mt-16 px-4 md:px-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-          <div v-if="isLoading">Loading...</div>
-          <div v-else>
-            <div v-if="userProfile">
-              <div class="space-y-4">
-                <ProfileItem
-                  textColor="text-zinc-400"
-                  labelColor="text-white"
-                  label="First Name"
-                  :value="`${userProfile.firstName}`"
-                />
+        <!-- Profile Info Card -->
+        <div class="p-6 rounded-2xl border border-zinc-700 shadow-lg">
+          <h2 class="text-3xl font-bold text-white mb-6 text-center">Your Profile</h2>
 
-                <ProfileItem
-                  textColor="text-zinc-400"
-                  labelColor="text-white"
-                  label="Last Name"
-                  :value="`${userProfile.lastName}`"
-                />
-                <ProfileItem
-                  textColor="text-zinc-400"
-                  labelColor="text-white"
-                  label="Email"
-                  :value="userProfile.email"
-                />
-                <ProfileItem
-                  textColor="text-zinc-400"
-                  labelColor="text-white"
-                  label="Role"
-                  :value="userProfile.userType ?? '—'"
-                />
-              </div>
+          <div v-if="isLoading" class="text-zinc-400 text-center">Loading...</div>
 
-              <Button
-                variant="secondary"
-                class="mt-6 bg-red-600 text-white rounded hover:bg-red-500"
-                :disabled="isDeleting"
-                @click="handleDeleteUser"
-              >
+          <div v-else-if="userProfile">
+            <div class="space-y-4">
+              <ProfileItem label="First Name" :value="userProfile.firstName" labelColor="text-white"
+                textColor="text-zinc-300" />
+              <ProfileItem label="Last Name" :value="userProfile.lastName" labelColor="text-white"
+                textColor="text-zinc-300" />
+              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-zinc-300" />
+              <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white"
+                textColor="text-zinc-300" />
+
+              <Button variant="secondary" class="w-full mt-6 bg-red-600 text-white hover:bg-red-500"
+                :disabled="isDeleting" @click="handleDeleteUser">
                 {{ isDeleting ? "Deleting..." : "Delete user profile" }}
               </Button>
 
-              <p
-                v-if="deleteError"
-                class="text-red-500 mt-4 text-center text-sm"
-              >
-                {{ deleteError }}
-              </p>
-              <p
-                v-if="deleteSuccess"
-                class="text-green-600 mt-4 text-center text-sm"
-              >
-                {{ deleteSuccess }}
-              </p>
+              <p v-if="deleteError" class="text-red-500 mt-4 text-center text-sm">{{ deleteError }}</p>
+              <p v-if="deleteSuccess" class="text-green-500 mt-4 text-center text-sm">{{ deleteSuccess }}</p>
             </div>
+          </div>
 
-            <p
-              v-else-if="userProfileError"
-              class="text-red-500 mt-4 text-center text-sm"
-            >
-              {{ userProfileError }}
-            </p>
-            <p v-else class="text-zinc-600 mt-4 text-center text-sm">
-              No profile data available.
-            </p>
+          <div v-else-if="userProfileError" class="text-red-500 text-center">{{ userProfileError.message }}</div>
+          <div v-else class="text-zinc-500 text-center">No profile data available.</div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="bg-zinc-900/30 p-6 rounded-2xl border border-zinc-700 shadow-lg">
+          <h2 class="text-3xl font-bold text-white mb-6 text-center">Quick Links</h2>
+
+          <div v-if="userProfile">
+            <nav class="space-y-4">
+              <NuxtLink to="/profile/equipment"
+                class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Equipment</NuxtLink>
+              <NuxtLink to="/dev/skills"
+                class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Skills</NuxtLink>
+              <NuxtLink to="/dev/inventory"
+                class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Inventory</NuxtLink>
+            </nav>
           </div>
         </div>
       </div>

@@ -125,66 +125,44 @@ async function handleUpdateQuestToFailed(questId: string) {
       </p>
 
       <!-- ← New: Feedback messages go here, outside of the quests‐list logic -->
-      <div
-        v-if="completedSuccess"
-        class="mb-4 p-3 bg-green-600 text-white rounded"
-      >
+      <div v-if="completedSuccess" class="mb-4 p-3 bg-green-600 text-white rounded">
         Successfully moved quest to Completed!
       </div>
-      <div
-        v-else-if="completedError"
-        class="mb-4 p-3 bg-red-600 text-white rounded"
-      >
+      <div v-else-if="completedError" class="mb-4 p-3 bg-red-600 text-white rounded">
         Unable to move quest to Completed.
       </div>
 
-      <div
-        v-if="failedSuccess"
-        class="mb-4 p-3 bg-green-600 text-white rounded"
-      >
+      <div v-if="failedSuccess" class="mb-4 p-3 bg-green-600 text-white rounded">
         Successfully moved quest to Failed!
       </div>
-      <div
-        v-else-if="failedError"
-        class="mb-4 p-3 bg-red-600 text-white rounded"
-      >
+      <div v-else-if="failedError" class="mb-4 p-3 bg-red-600 text-white rounded">
         Unable to move quest to Failed.
       </div>
 
       <!-- Show quests immediately when available -->
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div
-          v-for="quest in quests"
-          :key="quest.questId"
-          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
-        >
+        <div v-for="quest in quests" :key="quest.questId"
+          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full">
           <h2 class="text-xl font-semibold text-blue-300">{{ quest.title }}</h2>
 
-          <p class="text-white-300 text-sm mt-2 mb-4">
+          <p class="text-white text-sm mt-2 mb-4">
             {{ quest.description }}
           </p>
 
-          <NuxtLink
-            :to="`/quest/${quest.questId}`"
-            class="text-indigo-300 rounded hover:text-indigo-200 hover:underline text-sm"
-          >
+          <NuxtLink :to="`/client/quest/${quest.questId}`"
+            class="text-indigo-300 rounded hover:text-indigo-200 hover:underline text-sm">
             View Details
           </NuxtLink>
 
           <div class="mt-auto flex flex-nowrap justify-end gap-3 overflow-auto">
-            <Button
-              variant="secondary"
-              class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 text-sm"
-              @click="handleUpdateQuestToCompleted(quest.questId)"
-            >
+
+            <Button variant="secondary" class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 text-sm"
+              @click="handleUpdateQuestToCompleted(quest.questId)">
               Complete Quest
             </Button>
 
-            <Button
-              variant="secondary"
-              class="bg-red-500 text-white rounded hover:bg-red-400 px-4 py-2 text-sm"
-              @click="handleUpdateQuestToFailed(quest.questId)"
-            >
+            <Button variant="secondary" class="bg-red-500 text-white rounded hover:bg-red-400 px-4 py-2 text-sm"
+              @click="handleUpdateQuestToFailed(quest.questId)">
               Fail Quest
             </Button>
           </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { z } from "zod";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { useAuthUser } from "@/composables/useAuthUser";
 import { updateUserType } from "@/controllers/RegistrationController";
 
 import type { UpdateUserType } from "@/types/schema/UserDataSchema";
@@ -57,8 +57,8 @@ const updateRole = async () => {
 <template>
   <NuxtLayout>
     <div class="min-h-screen flex items-center justify-center px-4">
-      <div class="max-w-md w-full bg-white rounded-2xl border border-zinc-300 shadow-lg p-8 space-y-6">
-        <h1 class="text-3xl font-semibold text-center text-black">
+      <div class="max-w-md w-full bg-white/20 rounded-2xl shadow-lg p-8 space-y-6">
+        <h1 class="text-3xl font-semibold text-center text-teal-400">
           Complete Your Signup
         </h1>
 
@@ -71,7 +71,7 @@ const updateRole = async () => {
 
         <form @submit.prevent="updateRole" class="space-y-6">
           <div class="flex flex-col space-y-2">
-            <label for="role-select" class="text-sm font-medium text-black">
+            <label for="role-select" class="text-sm font-medium text-white">
               Select Your Role
             </label>
 
@@ -80,7 +80,7 @@ const updateRole = async () => {
               <SelectTrigger
                 id="role-select"
                 data-testid="role-select-trigger"
-                class="w-full flex justify-between items-center rounded-lg border border-zinc-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-black"
+                class="w-full flex justify-between items-center rounded-lg border border-green-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-3 focus:ring-green"
               >
                 <SelectValue placeholder="Choose one…" />
               </SelectTrigger>
@@ -113,7 +113,7 @@ const updateRole = async () => {
           <Button
             type="submit"
             :disabled="!role"
-            class="w-full bg-black hover:bg-zinc-800 disabled:bg-zinc-300 disabled:text-zinc-600 text-white"
+            class="w-full bg-green-500 hover:bg-green-400 disabled:bg-zinc-300 disabled:text-zinc-800 text-white"
           >
             Continue
           </Button>
