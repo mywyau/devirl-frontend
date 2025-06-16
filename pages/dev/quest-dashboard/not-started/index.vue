@@ -132,6 +132,8 @@ async function handleupdateQuestStatus(questId: string) {
           <div class="mt-auto flex justify-end space-x-3">
 
             <Button variant="secondary" class="bg-yellow-500 text-white rounded hover:bg-yellow-400"
+              :id="`in-progress-${quest.questId}`"
+              :data-testid="`in-progress-${quest.questId}`"
               @click="handleupdateQuestStatus(quest.questId)">
               Move quest to In Progress
             </Button>
