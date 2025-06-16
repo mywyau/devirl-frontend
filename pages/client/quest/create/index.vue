@@ -1,16 +1,51 @@
 <script setup lang="ts">
 
+import { useAuthUser } from "@/composables/useAuthUser";
 import { createQuest } from "@/controllers/QuestBackendController"; // <- updated import
 import type { CreateQuestPayload } from "@/types/quests";
 import { ref } from "vue";
-import { useAuthUser } from "~/composables/useAuthUser";
+
+interface CreateQuestPayload {
+  rank: string,
+  title: string,
+  description: string,
+  acceptanceCriteria: string,
+}
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const rank = ref<string | null>(null);
+const notes = ref("");
+
+const rankOptions = [
+  { value: "Bronze", label: "Bronze" },
+  { value: "Iron", label: "Iron" },
+  { value: "Steel", label: "Steel" },
+  { value: "Mithril", label: "Mithril" },
+  { value: "Adamantite", label: "Adamantite" },
+  { value: "Runic", label: "Runic" },
+  { value: "Ruinous", label: "Ruinous" },
+  { value: "Demon", label: "Demon" },
+  { value: "Aether", label: "Aether" },
+];
 
 
 // Form data
-const questCreatePayload = ref<CreateQuestPayload>({
-  title: "",
-  description: "",
-});
+const questCreatePayload = ref<CreateQuestPayload>(
+  {
+    rank: "",
+    title: "",
+    description: "",
+    acceptanceCriteria: "",
+  }
+);
 
 const { data: user, error } = useAuthUser();
 
@@ -37,13 +72,24 @@ async function handleSubmit() {
   }
 
   try {
-    const result = await createQuest(userId, {
+    console.log("", {
       ...questCreatePayload.value,
-    });
+    })
+    const result = await createQuest(userId,
+      {
+        ...questCreatePayload.value,
+      }
+    );
 
     if (result) {
       submissionSuccess.value = true;
-      questCreatePayload.value = { title: "", description: "" };
+      questCreatePayload.value =
+      {
+        rank: "",
+        title: "",
+        description: "",
+        acceptanceCriteria: "",
+      };
     } else {
       submissionError.value = "Submission failed. Please try again.";
     }
@@ -62,6 +108,30 @@ async function handleSubmit() {
       <h1 class="text-3xl text-green-300 font-bold mb-6">Create a New Quest</h1>
 
       <form @submit.prevent="handleSubmit" class="space-y-6">
+
+        <div class="flex flex-col space-y-2">
+          <label for="rank-select" class="text-sm font-medium text-white">
+            Quest Tier
+          </label>
+
+          <Select v-model="questCreatePayload.rank">
+            <SelectTrigger id="rank-select"
+              class="w-full flex justify-between items-center rounded-lg border border-green-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-green-400">
+              <SelectValue placeholder="Choose rank" />
+            </SelectTrigger>
+
+            <SelectContent class="w-full bg-white rounded-lg border border-zinc-400">
+              <SelectLabel class="px-4 py-2 text-xs font-medium text-zinc-500">
+                Tiers
+              </SelectLabel>
+              <SelectItem v-for="opt in rankOptions" :key="opt.value" :value="opt.value"
+                class="w-full px-4 py-2 text-black hover:bg-zinc-100">
+                {{ opt.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         <div>
           <label for="quest-title" class="block mb-1 text-sm font-medium text-white">
             Quest Title
@@ -76,8 +146,17 @@ async function handleSubmit() {
           <label for="quest-description" class="block mb-1 text-sm font-medium text-white">
             Description (optional)
           </label>
-          <textarea id="quest-description" v-model="questCreatePayload.description" rows="4"
+          <textarea id="quest-description" v-model="questCreatePayload.description" rows="5"
             placeholder="What needs to be done? Be as clear and helpful as possible."
+            class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"></textarea>
+        </div>
+
+        <div>
+          <label for="acceptance-criteria" class="block mb-1 text-sm font-medium text-white">
+            Acceptance Criteria (required)
+          </label>
+          <textarea id="acceptance-criteria" v-model="questCreatePayload.acceptanceCriteria" rows="5"
+            placeholder="Add some acceptance criteria to help achieve the scope"
             class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"></textarea>
         </div>
 

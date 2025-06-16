@@ -103,12 +103,23 @@ const reportError = ref(false);
       <div v-if="isLoading" class="text-zinc-400">Loading quest...</div>
       <div v-else-if="error" class="text-red-500">{{ error }}</div>
       <div v-else class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow">
-        <h2 class="text-2xl font-semibold mb-2 text-indigo-300">
+
+        <h2 class="text-2xl font-semibold mb-2 text-indigo-300 underline">
           {{ result?.title }}
         </h2>
 
-        <p class="mb-4 text-zinc-300">
+        <h3 class="text-l font-semibold mb-2 text-zinc-300">
+          Description
+        </h3>
+        <p class="mb-4 text-zinc-400">
           {{ result?.description }}
+        </p>
+
+        <h3 class="text-l font-semibold mb-2 text-zinc-300">
+          Acceptance Criteria
+        </h3>
+        <p class="mb-4 text-zinc-400">
+          {{ result?.acceptanceCriteria }}
         </p>
 
         <div>

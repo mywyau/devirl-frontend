@@ -6,6 +6,7 @@ import { computed, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 
 
+
 import { deleteQuest, getQuest } from "@/controllers/QuestBackendController";
 import {
   QuestPartialSchema,
@@ -15,7 +16,13 @@ import {
 import { useAuthUser } from "@/composables/useAuthUser";
 
 import { useRouter } from "vue-router";
+
+
 const router = useRouter();
+
+function goToAddReward() {
+  router.push('/client/quest/reward/add');
+}
 
 // 1) Grab the route param
 const route = useRoute();
@@ -137,6 +144,7 @@ async function handleDeleteQuest() {
         </div>
 
         <div class="mt-6 flex gap-4">
+
           <Button variant="default" class="bg-teal-500 text-white rounded hover:bg-teal-400"
             @click="router.push(`/client/quest/download/${questId}`)">
             Download File
@@ -145,6 +153,12 @@ async function handleDeleteQuest() {
           <a :href="`/client/quest/edit/${questId}`" rel="external" class="text-white">
             <Button variant="secondary" class="bg-yellow-500 text-white rounded hover:bg-yellow-400">
               Edit quest
+            </Button>
+          </a>
+
+          <a :href="`/client/quest/reward/add/${questId}`" rel="external" class="text-white">
+            <Button variant="secondary" class="bg-emerald-500 text-white rounded hover:bg-emerald-400">
+              Add a Reward
             </Button>
           </a>
 

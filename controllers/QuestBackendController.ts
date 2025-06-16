@@ -3,16 +3,17 @@ import { loadConfig } from "@/configuration/ConfigLoader";
 import type { CreateQuestPayload } from "@/types/quests";
 import {
   QuestPartialSchema,
-  UpdateQuestStatusSchema,
   type QuestPartial,
   type QuestStatus,
-  type UpdateQuestStatus,
+  type UpdateQuestStatus
 } from "@/types/schema/QuestStatusSchema";
 import { $fetch } from "ofetch";
 
 export interface UpdateQuestPayload {
-  title?: string;
+  rank: string;
+  title: string;
   description?: string;
+  acceptanceCriteria: string;
 }
 
 export interface AcceptQuestPayload {
@@ -58,7 +59,6 @@ const streamQuestByStatusUrl = (
   `&page=${page}` +
   `&limit=${limit}`;
 
-
 const streamQuestByStatusDevUrl = (
   devId: string,
   questStatus: QuestStatus,
@@ -68,7 +68,7 @@ const streamQuestByStatusDevUrl = (
   `${baseUrl}quest/stream/dev/new/${encodeURIComponent(devId)}` +
   `?status=${questStatus.toString()}` +
   `&page=${page}` +
-  `&limit=${limit}`;  
+  `&limit=${limit}`;
 
 export interface FetchOptions {
   headers?: Record<string, string>;
@@ -306,7 +306,6 @@ export async function* streamAllQuestsByStatus(
     }
   }
 }
-
 
 // Stream quests filtered by status for devId
 export async function* streamAllQuestsByStatusDev(

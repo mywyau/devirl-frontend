@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { useAuthUser } from "@/composables/useAuthUser";
+
+interface CreateRewardPayload {
+  baseReward: "",
+  timeReward: "",
+  completionReward: "",
+  bonus: "",
+}
 
 // Form data
 const rewardCreatePayload = ref<CreateRewardPayload>({
