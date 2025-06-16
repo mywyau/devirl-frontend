@@ -75,7 +75,7 @@ async function fetchQuests() {
 
           <div class="flex justify-between items-center mb-1">
             <span class="text-sm text-teal-400 font-semibold mt-2">{{ quest.status }}</span>
-            <span class="text-base text-zinc-400">Mithril</span>
+            <span class="text-base text-zinc-400">{{quest.rank}}</span>
           </div>
 
           <div class="mt-4 flex items-center">

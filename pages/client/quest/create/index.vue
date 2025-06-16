@@ -5,6 +5,13 @@ import { createQuest } from "@/controllers/QuestBackendController"; // <- update
 import type { CreateQuestPayload } from "@/types/quests";
 import { ref } from "vue";
 
+interface CreateQuestPayload {
+  rank: string,
+  title: string,
+  description: string,
+  acceptanceCriteria: string,
+}
+
 import {
   Select,
   SelectContent,
@@ -14,10 +21,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const tier = ref<string | null>(null);
+const rank = ref<string | null>(null);
 const notes = ref("");
 
-const levelOptions = [
+const rankOptions = [
   { value: "Bronze", label: "Bronze" },
   { value: "Iron", label: "Iron" },
   { value: "Steel", label: "Steel" },
@@ -33,7 +40,7 @@ const levelOptions = [
 // Form data
 const questCreatePayload = ref<CreateQuestPayload>(
   {
-    tier: "",
+    rank: "",
     title: "",
     description: "",
     acceptanceCriteria: "",
@@ -65,15 +72,20 @@ async function handleSubmit() {
   }
 
   try {
-    const result = await createQuest(userId, {
+    console.log("", {
       ...questCreatePayload.value,
-    });
+    })
+    const result = await createQuest(userId,
+      {
+        ...questCreatePayload.value,
+      }
+    );
 
     if (result) {
       submissionSuccess.value = true;
       questCreatePayload.value =
       {
-        tier: "",
+        rank: "",
         title: "",
         description: "",
         acceptanceCriteria: "",
@@ -98,21 +110,21 @@ async function handleSubmit() {
       <form @submit.prevent="handleSubmit" class="space-y-6">
 
         <div class="flex flex-col space-y-2">
-          <label for="role-select" class="text-sm font-medium text-white">
+          <label for="rank-select" class="text-sm font-medium text-white">
             Quest Tier
           </label>
 
-          <Select v-model="tier">
-            <SelectTrigger id="tier-select"
+          <Select v-model="questCreatePayload.rank">
+            <SelectTrigger id="rank-select"
               class="w-full flex justify-between items-center rounded-lg border border-green-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-green-400">
-              <SelectValue placeholder="Choose difficulty tier" />
+              <SelectValue placeholder="Choose rank" />
             </SelectTrigger>
 
             <SelectContent class="w-full bg-white rounded-lg border border-zinc-400">
               <SelectLabel class="px-4 py-2 text-xs font-medium text-zinc-500">
                 Tiers
               </SelectLabel>
-              <SelectItem v-for="opt in levelOptions" :key="opt.value" :value="opt.value"
+              <SelectItem v-for="opt in rankOptions" :key="opt.value" :value="opt.value"
                 class="w-full px-4 py-2 text-black hover:bg-zinc-100">
                 {{ opt.label }}
               </SelectItem>
@@ -140,11 +152,11 @@ async function handleSubmit() {
         </div>
 
         <div>
-          <label for="quest-description" class="block mb-1 text-sm font-medium text-white">
+          <label for="acceptance-criteria" class="block mb-1 text-sm font-medium text-white">
             Acceptance Criteria (required)
           </label>
-          <textarea id="quest-description" v-model="questCreatePayload.acceptance" rows="5"
-            placeholder="Add some base acceptance criteria to help the dev achieve the goal"
+          <textarea id="acceptance-criteria" v-model="questCreatePayload.acceptanceCriteria" rows="5"
+            placeholder="Add some acceptance criteria to help achieve the scope"
             class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"></textarea>
         </div>
 

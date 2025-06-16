@@ -18,8 +18,10 @@ export const QuestPartialSchema = z.object({
   questId: z.string(),
   clientId: z.string(),
   devId: z.string().nullable().optional(),
+  rank: z.string(),
   title: z.string(),
   description: z.string().nullable().optional(),
+  acceptanceCriteria: z.string().nullable().optional(),
   status: QuestStatusSchema,
 });
 
