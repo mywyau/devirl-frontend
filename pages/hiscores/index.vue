@@ -1,57 +1,54 @@
 <script setup lang="ts">
 // Mocked user leaderboard data
 const leaderboard = [
-    {
-        name: "dev_alex",
-        totalLevel: 158,
-        totalXP: 1_320_000,
-    },
-    {
-        name: "review_queen",
-        totalLevel: 146,
-        totalXP: 1_180_000,
-    },
-    {
-        name: "code_monster",
-        totalLevel: 140,
-        totalXP: 1_090_000,
-    },
-    {
-        name: "fast_dev",
-        totalLevel: 132,
-        totalXP: 970_000,
-    },
-    {
-        name: "bug_hunter",
-        totalLevel: 129,
-        totalXP: 920_000,
-    },
+  {
+    name: "dev_alex",
+    totalLevel: 158,
+    totalXP: 1_320_000,
+  },
+  {
+    name: "review_queen",
+    totalLevel: 146,
+    totalXP: 1_180_000,
+  },
+  {
+    name: "code_monster",
+    totalLevel: 140,
+    totalXP: 1_090_000,
+  },
+  {
+    name: "fast_dev",
+    totalLevel: 132,
+    totalXP: 970_000,
+  },
+  {
+    name: "bug_hunter",
+    totalLevel: 129,
+    totalXP: 920_000,
+  },
 ]
 
 const skillLinks = [
-    "questing",
-    "reviewing",
-    "collaboration",
-    "communication",
-    "testing"
+  "questing",
+  "reviewing",
+  "testing"
 ]
 
 const languageLinks = [
-    "python",
-    "scala",
-    "java",
-    "typescript",
-    "ruby",
-    "rust",
-    "sql",
-    "c#"
+  "c_sharp",
+  "java",
+  "python",
+  "rust",
+  "scala",
+  "sql",
+  "typescript",
 ]
 
 </script>
 <template>
   <NuxtLayout>
     <div class="max-w-7xl mx-auto p-6 flex gap-10 text-white">
-      
+
       <!-- Left Sidebar -->
       <aside class="w-64 shrink-0">
         <div class="mb-8">
@@ -59,7 +56,7 @@ const languageLinks = [
           <ul class="space-y-2">
             <li v-for="skill in skillLinks" :key="skill">
               <NuxtLink :to="`/hiscores/skills/${skill}`"
-                        class="block px-3 py-2 rounded hover:bg-rose-400/60 text-sm text-white/90 hover:text-white">
+                class="block px-3 py-2 rounded hover:bg-rose-400/60 text-sm text-white/90 hover:text-white">
                 {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
               </NuxtLink>
             </li>
@@ -71,7 +68,7 @@ const languageLinks = [
           <ul class="space-y-2">
             <li v-for="lang in languageLinks" :key="lang">
               <NuxtLink :to="`/hiscores/languages/${lang}`"
-                        class="block px-3 py-2 rounded hover:bg-lime-400/60 text-sm text-white/90 hover:text-white">
+                class="block px-3 py-2 rounded hover:bg-lime-400/60 text-sm text-white/90 hover:text-white">
                 {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
               </NuxtLink>
             </li>
