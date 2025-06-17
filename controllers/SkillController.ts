@@ -46,6 +46,7 @@ export async function getHiscoreSkill(
   opts?: FetchOptions
 ): Promise<SkillData[]> {
   const res = await $fetch(getHiscoreSkillUrl(skill), {
+    method: "GET",
     credentials: "include",
     headers: opts?.headers,
   });
@@ -57,6 +58,4 @@ export async function getHiscoreSkill(
   }
 
   return parsed.data;
-}
-
 }

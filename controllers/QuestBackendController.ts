@@ -80,6 +80,7 @@ export async function getQuest(
   opts?: FetchOptions
 ): Promise<QuestPartial> {
   const res = await $fetch(getQuestUrl(userId, questId), {
+    method: "GET",
     credentials: "include",
     headers: opts?.headers,
   });

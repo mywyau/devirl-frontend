@@ -77,14 +77,15 @@ const languageLinks = [
       </aside>
 
       <!-- Main Content -->
-      <main class="flex-1">
+      <div class="flex-1">
+
         <h1 class="text-3xl font-bold mb-6 text-center">Hiscores</h1>
 
         <table class="w-full table-auto text-left border-collapse mb-10">
           <thead class="border-b border-white/10 text-zinc-300">
             <tr>
               <th class="py-2">Rank</th>
-              <th class="py-2">Dev</th>
+              <th class="py-2">Username</th>
               <th class="py-2">Total Level</th>
               <th class="py-2">Total XP</th>
             </tr>
@@ -98,7 +99,9 @@ const languageLinks = [
             </tr>
           </tbody>
         </table>
-      </main>
+      </div>
+
+
     </div>
   </NuxtLayout>
 </template>

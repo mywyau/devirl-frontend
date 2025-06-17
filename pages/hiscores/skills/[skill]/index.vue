@@ -22,39 +22,84 @@ const {
 
 const titleCase = (str: string) =>
     str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+
+const skillLinks = [
+    "questing",
+    "reviewing",
+    "testing"
+]
+
+const languageLinks = [
+    "c_sharp",
+    "java",
+    "python",
+    "rust",
+    "scala",
+    "sql",
+    "typescript",
+]
+
+
 </script>
 
 <template>
     <NuxtLayout>
-        <div class="max-w-3xl mx-auto p-6">
-            <h1 class="text-3xl font-bold text-center text-white mb-6">
-                {{ titleCase(skillId) }} Highscores
-            </h1>
 
-            <div v-if="pending" class="text-center text-zinc-400">Loading...</div>
-            <div v-else-if="fetchError" class="text-center text-red-500">Failed to load highscores.</div>
-            <table v-else class="w-full table-auto text-left border-collapse">
-                <thead class="border-b border-white/10 text-zinc-300">
-                    <tr>
-                        <th class="py-2">Rank</th>
-                        <th class="py-2">Dev</th>
-                        <th class="py-2">Level</th>
-                        <th class="py-2">XP</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        v-for="(dev, i) in skillData"
-                        :key="`${dev.devId}-${dev.skill}`"
-                        class="border-b border-white/5 text-white"
-                    >
-                        <td class="py-2">{{ i + 1 }}</td>
-                        <td class="py-2 font-medium text-indigo-300">{{ dev.username }}</td>
-                        <td class="py-2">{{ dev.level }}</td>
-                        <td class="py-2">{{ dev.xp.toLocaleString() }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="max-w-7xl mx-auto p-6 flex gap-10 text-white">
+            <!-- Left Sidebar -->
+            <aside class="w-64 shrink-0">
+                <div class="mb-8">
+                    <h2 class="text-lg font-bold mb-2">Skill Hiscores</h2>
+                    <ul class="space-y-2">
+                        <li v-for="skill in skillLinks" :key="skill">
+                            <NuxtLink :to="`/hiscores/skills/${skill}`"
+                                class="block px-3 py-2 rounded hover:bg-rose-400/60 text-sm text-white/90 hover:text-white">
+                                {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
+                            </NuxtLink>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-bold mb-2">Language Hiscores</h2>
+                    <ul class="space-y-2">
+                        <li v-for="lang in languageLinks" :key="lang">
+                            <NuxtLink :to="`/hiscores/languages/${lang}`"
+                                class="block px-3 py-2 rounded hover:bg-lime-400/60 text-sm text-white/90 hover:text-white">
+                                {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
+                            </NuxtLink>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="flex-1">
+
+                <h1 class="text-3xl font-bold mb-6 text-center">{{ titleCase(skillId) }}</h1>
+
+                <table class="w-full table-auto text-left border-collapse mb-10">
+                    <thead class="border-b border-white/10 text-zinc-300">
+                        <tr>
+                            <th class="py-2">Rank</th>
+                            <th class="py-2">Username</th>
+                            <th class="py-2">Total Level</th>
+                            <th class="py-2">Total XP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(dev, i) in skillData" :key="`${dev.devId}-${dev.skill}`"
+                            class="border-b border-white/5 text-white">
+                            <td class="py-2">{{ i + 1 }}</td>
+                            <td class="py-2 font-medium text-indigo-300">{{ dev.username }}</td>
+                            <td class="py-2">{{ dev.level }}</td>
+                            <td class="py-2">{{ dev.xp.toLocaleString() }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </NuxtLayout>
 </template>
