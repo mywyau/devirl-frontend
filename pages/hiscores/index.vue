@@ -35,7 +35,6 @@ const skillLinks = [
 ]
 
 const languageLinks = [
-  "c_sharp",
   "java",
   "python",
   "rust",

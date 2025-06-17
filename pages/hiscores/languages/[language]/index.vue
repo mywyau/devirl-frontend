@@ -4,16 +4,16 @@ import { useAsyncData } from 'nuxt/app';
 import { useRoute } from 'vue-router';
 
 const route = useRoute()
-const languagesId = route.params.languages?.toString() || 'Rip no langauge found - error'
+const languageId = route.params.language?.toString() || 'Rip no langauge found - error'
 
-// Fetch languages data via useAsyncData (runs on server, then hydrates)
+// Fetch language data via useAsyncData (runs on server, then hydrates)
 const {
-    data: languagesData,
+    data: languageData,
     pending,
     error: fetchError,
 } = await useAsyncData(
-    `hiscore-${languagesId}`,
-    () => getHiscoreLanguage(languagesId),
+    `hiscore-${languageId}`,
+    () => getHiscoreLanguage(languageId),
     {
         server: true,
         default: () => [],
@@ -24,14 +24,13 @@ const titleCase = (str: string) =>
     str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
 
-const languagesLinks = [
+const skillLinks = [
     "questing",
     "reviewing",
     "testing"
 ]
 
 const languageLinks = [
-    "c_sharp",
     "java",
     "python",
     "rust",
@@ -50,12 +49,12 @@ const languageLinks = [
             <!-- Left Sidebar -->
             <aside class="w-64 shrink-0">
                 <div class="mb-8">
-                    <h2 class="text-lg font-bold mb-2">Language Hiscores</h2>
+                    <h2 class="text-lg font-bold mb-2">Skill Hiscores</h2>
                     <ul class="space-y-2">
-                        <li v-for="languages in languagesLinks" :key="languages">
-                            <NuxtLink :to="`/hiscores/languagess/${languages}`"
+                        <li v-for="skill in skillLinks" :key="skill">
+                            <NuxtLink :to="`/hiscores/skills/${skill}`"
                                 class="block px-3 py-2 rounded hover:bg-rose-400/60 text-sm text-white/90 hover:text-white">
-                                {{ languages.charAt(0).toUpperCase() + languages.slice(1) }}
+                                {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
                             </NuxtLink>
                         </li>
                     </ul>
@@ -77,7 +76,7 @@ const languageLinks = [
             <!-- Main Content -->
             <div class="flex-1">
 
-                <h1 class="text-3xl font-bold mb-6 text-center">{{ titleCase(languagesId) }}</h1>
+                <h1 class="text-3xl font-bold mb-6 text-center">{{ titleCase(languageId) }}</h1>
 
                 <table class="w-full table-auto text-left border-collapse mb-10">
                     <thead class="border-b border-white/10 text-zinc-300">
@@ -89,7 +88,7 @@ const languageLinks = [
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(dev, i) in languagesData" :key="`${dev.devId}-${dev.languages}`"
+                        <tr v-for="(dev, i) in languageData" :key="`${dev.devId}-${dev.language}`"
                             class="border-b border-white/5 text-white">
                             <td class="py-2">{{ i + 1 }}</td>
                             <td class="py-2 font-medium text-indigo-300">{{ dev.username }}</td>
