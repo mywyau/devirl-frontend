@@ -46,7 +46,8 @@ const languageLinks = [
 </script>
 <template>
   <NuxtLayout>
-    <div class="max-w-7xl mx-auto p-6 flex gap-10 text-white">
+
+    <div class="w-full max-w-screen-2xl mx-auto px-4 pt-10 pr-2 pl-2 flex gap-10 text-white min-h-screen">
 
       <!-- Left Sidebar -->
       <aside class="w-64 shrink-0">
@@ -55,7 +56,7 @@ const languageLinks = [
           <ul class="space-y-2">
             <li v-for="skill in skillLinks" :key="skill">
               <NuxtLink :to="`/hiscores/skills/${skill}`"
-                class="block px-3 py-2 rounded hover:bg-rose-400/60 text-sm text-white/90 hover:text-white">
+                class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                 {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
               </NuxtLink>
             </li>
@@ -67,7 +68,7 @@ const languageLinks = [
           <ul class="space-y-2">
             <li v-for="lang in languageLinks" :key="lang">
               <NuxtLink :to="`/hiscores/languages/${lang}`"
-                class="block px-3 py-2 rounded hover:bg-lime-400/60 text-sm text-white/90 hover:text-white">
+                class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                 {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
               </NuxtLink>
             </li>
@@ -80,24 +81,27 @@ const languageLinks = [
 
         <h1 class="text-3xl font-bold mb-6 text-center">Hiscores</h1>
 
-        <table class="w-full table-auto text-left border-collapse mb-10">
-          <thead class="border-b border-white/10 text-zinc-300">
-            <tr>
-              <th class="py-2">Rank</th>
-              <th class="py-2">Username</th>
-              <th class="py-2">Total Level</th>
-              <th class="py-2">Total XP</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(dev, i) in leaderboard" :key="dev.name" class="border-b border-white/5">
-              <td class="py-2">{{ i + 1 }}</td>
-              <td class="py-2 text-indigo-300 font-medium">{{ dev.name }}</td>
-              <td class="py-2">{{ dev.totalLevel }}</td>
-              <td class="py-2">{{ dev.totalXP.toLocaleString() }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="w-full max-w-4xl mx-auto">
+
+          <table class="w-full table-auto text-left border-collapse mb-10">
+            <thead class="border-b border-white/10 text-white">
+              <tr>
+                <th class="py-2">Rank</th>
+                <th class="py-2">Username</th>
+                <th class="py-2">Total Level</th>
+                <th class="py-2">Total XP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(dev, i) in leaderboard" :key="dev.name" class="border-b border-white/5">
+                <td class="py-2">{{ i + 1 }}</td>
+                <td class="py-2 text-indigo-300 font-medium">{{ dev.name }}</td>
+                <td class="py-2">{{ dev.totalLevel }}</td>
+                <td class="py-2">{{ dev.totalXP.toLocaleString() }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
 

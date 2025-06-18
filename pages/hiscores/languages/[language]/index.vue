@@ -45,7 +45,8 @@ const languageLinks = [
 <template>
     <NuxtLayout>
 
-        <div class="max-w-7xl mx-auto p-6 flex gap-10 text-white">
+        <div class="w-full max-w-screen-2xl mx-auto px-4 pt-10 pr-2 pl-2 flex gap-10 text-white min-h-screen">
+
             <!-- Left Sidebar -->
             <aside class="w-64 shrink-0">
                 <div class="mb-8">
@@ -53,7 +54,7 @@ const languageLinks = [
                     <ul class="space-y-2">
                         <li v-for="skill in skillLinks" :key="skill">
                             <NuxtLink :to="`/hiscores/skills/${skill}`"
-                                class="block px-3 py-2 rounded hover:bg-rose-400/60 text-sm text-white/90 hover:text-white">
+                                class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                                 {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
                             </NuxtLink>
                         </li>
@@ -62,10 +63,14 @@ const languageLinks = [
 
                 <div>
                     <h2 class="text-lg font-bold mb-2">Language Hiscores</h2>
+
                     <ul class="space-y-2">
                         <li v-for="lang in languageLinks" :key="lang">
                             <NuxtLink :to="`/hiscores/languages/${lang}`"
-                                class="block px-3 py-2 rounded hover:bg-lime-400/60 text-sm text-white/90 hover:text-white">
+                                class="block px-3 py-2 rounded text-sm text-white/90 hover:text-white" :class="{
+                                    'bg-indigo-500/70 text-white font-semibold': lang === languageId,
+                                    'hover:bg-teal-400/60': lang !== languageId
+                                }">
                                 {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
                             </NuxtLink>
                         </li>
@@ -76,27 +81,29 @@ const languageLinks = [
             <!-- Main Content -->
             <div class="flex-1">
 
-                <h1 class="text-3xl font-bold mb-6 text-center">{{ titleCase(languageId) }}</h1>
+                <h1 class="text-3xl text-blue-400 font-bold mb-6 text-center">{{ titleCase(languageId) }}</h1>
 
-                <table class="w-full table-auto text-left border-collapse mb-10">
-                    <thead class="border-b border-white/10 text-zinc-300">
-                        <tr>
-                            <th class="py-2">Rank</th>
-                            <th class="py-2">Username</th>
-                            <th class="py-2">Total Level</th>
-                            <th class="py-2">Total XP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(dev, i) in languageData" :key="`${dev.devId}-${dev.language}`"
-                            class="border-b border-white/5 text-white">
-                            <td class="py-2">{{ i + 1 }}</td>
-                            <td class="py-2 font-medium text-indigo-300">{{ dev.username }}</td>
-                            <td class="py-2">{{ dev.level }}</td>
-                            <td class="py-2">{{ dev.xp.toLocaleString() }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="w-full max-w-4xl mx-auto">
+                    <table class="w-full table-auto text-left border-collapse mb-10">
+                        <thead class="border-b border-white/10 text-white">
+                            <tr>
+                                <th class="py-2">Rank</th>
+                                <th class="py-2">Username</th>
+                                <th class="py-2">Total Level</th>
+                                <th class="py-2">Total XP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(dev, i) in languageData" :key="`${dev.devId}-${dev.language}`"
+                                class="border-b border-white/5 text-white">
+                                <td class="py-2">{{ i + 1 }}</td>
+                                <td class="py-2 font-medium text-indigo-300">{{ dev.username }}</td>
+                                <td class="py-2">{{ dev.level }}</td>
+                                <td class="py-2">{{ dev.xp.toLocaleString() }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>

@@ -112,14 +112,14 @@ async function handleDeleteUser() {
           <h2 class="text-3xl font-bold text-white mb-6 text-center">Quick Links</h2>
 
           <div v-if="userProfile">
-            <nav class="space-y-4">
+            <!-- <nav class="space-y-4">
               <NuxtLink to="/profile/equipment"
                 class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Equipment</NuxtLink>
               <NuxtLink to="/dev/skills"
                 class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Skills</NuxtLink>
               <NuxtLink to="/dev/inventory"
                 class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Inventory</NuxtLink>
-            </nav>
+            </nav> -->
           </div>
         </div>
       </div>
