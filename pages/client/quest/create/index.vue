@@ -2,14 +2,16 @@
 
 import { useAuthUser } from "@/composables/useAuthUser";
 import { createQuest } from "@/controllers/QuestBackendController"; // <- updated import
-import type { CreateQuestPayload } from "@/types/quests";
+// import type { CreateQuestPayload } from "@/types/quests";
 import { ref } from "vue";
+
 
 interface CreateQuestPayload {
   rank: string,
   title: string,
   description: string,
   acceptanceCriteria: string,
+  tags: string[]; // <-- Add this
 }
 
 import {
@@ -36,14 +38,27 @@ const rankOptions = [
   { value: "Aether", label: "Aether" },
 ];
 
+const languageOptions = [
+  "Python",
+  "Go",
+  "TypeScript",
+  "Scala",
+  "Rust",
+  "JavaScript",
+  "Sql",
+  "Ruby",
+  "C#",
+  "Haskell",
+];
 
-// Form data
+
 const questCreatePayload = ref<CreateQuestPayload>(
   {
     rank: "",
     title: "",
     description: "",
     acceptanceCriteria: "",
+    tags: [],
   }
 );
 
@@ -58,11 +73,23 @@ const isSubmitting = ref(false);
 const submissionSuccess = ref(false);
 const submissionError = ref<string | null>(null);
 
-// Submission handler
+
 async function handleSubmit() {
-  isSubmitting.value = true;
-  submissionSuccess.value = false;
+  // ✅ Always clear error first
   submissionError.value = null;
+  submissionSuccess.value = false;
+
+  const payload = {
+    ...questCreatePayload.value,
+    tags: [...questCreatePayload.value.tags], // unwrap Proxy
+  };
+
+  if (payload.tags.length === 0) {
+    submissionError.value = "Please select at least one tag.";
+    return;
+  }
+
+  isSubmitting.value = true;
 
   const userId = user.value?.sub;
   if (!userId) {
@@ -71,24 +98,21 @@ async function handleSubmit() {
     return;
   }
 
+  console.log("Final payload being sent:");
+  console.log(JSON.stringify(payload, null, 2));
+
+
   try {
-    console.log("", {
-      ...questCreatePayload.value,
-    })
-    const result = await createQuest(userId,
-      {
-        ...questCreatePayload.value,
-      }
-    );
+    const result = await createQuest(userId, payload);
 
     if (result) {
       submissionSuccess.value = true;
-      questCreatePayload.value =
-      {
+      questCreatePayload.value = {
         rank: "",
         title: "",
         description: "",
         acceptanceCriteria: "",
+        tags: [],
       };
     } else {
       submissionError.value = "Submission failed. Please try again.";
@@ -100,6 +124,7 @@ async function handleSubmit() {
     isSubmitting.value = false;
   }
 }
+
 </script>
 
 <template>
@@ -107,9 +132,16 @@ async function handleSubmit() {
     <div class="p-6 max-w-4xl mx-auto">
       <h1 class="text-3xl text-green-300 font-bold mb-6">Create a New Quest</h1>
 
-      <form @submit.prevent="handleSubmit" class="space-y-6">
+      <form @submit.prevent="handleSubmit" class="">
 
-        <div class="flex flex-col space-y-2">
+        <p v-if="submissionSuccess" class="mb-10 text-green-400">
+          Quest created successfully!
+        </p>
+
+        <p v-if="submissionError" class="mb-10 text-red-400">{{ submissionError }}</p>
+
+
+        <div class="flex flex-col mb-6">
           <label for="rank-select" class="text-sm font-medium text-white">
             Quest Tier
           </label>
@@ -132,7 +164,12 @@ async function handleSubmit() {
           </Select>
         </div>
 
-        <div>
+        <div class="mb-10">
+          <label class="text-sm text-white mb-2 block">Tag Languages</label>
+          <TagSelector v-model="questCreatePayload.tags" :options="languageOptions" />
+        </div>
+
+        <div class="mt-10 mb-6">
           <label for="quest-title" class="block mb-1 text-sm font-medium text-white">
             Quest Title
           </label>
@@ -142,7 +179,7 @@ async function handleSubmit() {
           <p class="mt-1 text-sm text-zinc-400">Max 100 characters</p>
         </div>
 
-        <div>
+        <div class="mb-6">
           <label for="quest-description" class="block mb-1 text-sm font-medium text-white">
             Description (optional)
           </label>
@@ -151,7 +188,7 @@ async function handleSubmit() {
             class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"></textarea>
         </div>
 
-        <div>
+        <div class="mb-6">
           <label for="acceptance-criteria" class="block mb-1 text-sm font-medium text-white">
             Acceptance Criteria (required)
           </label>
@@ -160,18 +197,16 @@ async function handleSubmit() {
             class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"></textarea>
         </div>
 
-        <div>
+        <div class="mt-10">
           <button type="submit" class="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded"
             :disabled="isSubmitting">
             Create Quest
           </button>
         </div>
 
-        <p v-if="submissionSuccess" class="text-green-400">
-          Quest created successfully!
-        </p>
-        <p v-if="submissionError" class="text-red-400">{{ submissionError }}</p>
+
       </form>
+
     </div>
   </NuxtLayout>
 </template>

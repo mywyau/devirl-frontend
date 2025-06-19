@@ -85,13 +85,15 @@ async function handleDeleteUser() {
 
           <div v-else-if="userProfile">
             <div class="space-y-4">
-              <ProfileItem label="First Name" :value="userProfile.firstName" labelColor="text-white"
-                textColor="text-zinc-300" />
-              <ProfileItem label="Last Name" :value="userProfile.lastName" labelColor="text-white"
-                textColor="text-zinc-300" />
-              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-zinc-300" />
+              <ProfileItem label="First Name" labelColor="text-white" textColor="text-blue-400"
+                :value="userProfile.firstName" />
+              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-blue-400"
+                :value="userProfile.lastName" />
+              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-blue-400" />
+              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white"
+                textColor="text-blue-400" />
               <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white"
-                textColor="text-zinc-300" />
+                textColor="text-blue-400" />
 
               <Button variant="secondary" class="w-full mt-6 bg-red-600 text-white hover:bg-red-500"
                 :disabled="isDeleting" @click="handleDeleteUser">

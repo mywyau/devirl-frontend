@@ -150,20 +150,22 @@ async function handleDeleteQuest() {
             Download File
           </Button>
 
-          <a :href="`/client/quest/edit/${questId}`" rel="external" class="text-white">
+
+
+          <a v-if=" result?.status.toString() == `Open`" :href="`/client/quest/edit/${questId}`" rel="external" class="text-white">
             <Button variant="secondary" class="bg-yellow-500 text-white rounded hover:bg-yellow-400">
               Edit quest
             </Button>
           </a>
 
-          <a :href="`/client/quest/reward/add/${questId}`" rel="external" class="text-white">
+          <a v-if=" result?.status.toString() == `Open`" :href="`/client/quest/reward/add/${questId}`" rel="external" class="text-white">
             <Button variant="secondary" class="bg-emerald-500 text-white rounded hover:bg-emerald-400">
               Add a Reward
             </Button>
           </a>
 
           <!-- Delete button (client‐only interaction) -->
-          <Button variant="secondary" class="bg-red-600 text-white rounded hover:bg-red-500" @click="handleDeleteQuest">
+          <Button v-if=" result?.status.toString() == `Open`" variant="secondary" class="bg-red-600 text-white rounded hover:bg-red-500" @click="handleDeleteQuest">
             Delete quest
           </Button>
         </div>

@@ -1,6 +1,5 @@
 // controllers/QuestBackendController.ts
 import { loadConfig } from "@/configuration/ConfigLoader";
-import type { CreateQuestPayload } from "@/types/quests";
 import {
   QuestPartialSchema,
   type QuestPartial,
@@ -8,6 +7,14 @@ import {
   type UpdateQuestStatus
 } from "@/types/schema/QuestStatusSchema";
 import { $fetch } from "ofetch";
+
+interface CreateQuestPayload {
+  rank: string,
+  title: string,
+  description: string,
+  acceptanceCriteria: string,
+  tags: string[]; // <-- Add this
+}
 
 export interface UpdateQuestPayload {
   rank: string;

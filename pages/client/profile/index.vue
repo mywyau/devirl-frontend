@@ -11,8 +11,8 @@ import {
   type GetUserData,
 } from "@/types/schema/UserDataSchema";
 import { onMounted, ref } from "vue";
-import { Button } from "~/components/ui/button/variants";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { Button } from "@/components/ui/button/variants";
+import { useAuthUser } from "@/composables/useAuthUser";
 
 // Reactive state
 const userProfile = ref<GetUserData | null>(null);
@@ -108,63 +108,38 @@ onMounted(() => {
           <div v-else>
             <div v-if="userProfile">
               <div class="space-y-4">
-                <ProfileItem
-                  textColor="text-zinc-300"
-                  labelColor="text-white"
-                  label="First Name"
-                  :value="`${userProfile.firstName}`"
-                />
+                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="First Name"
+                  :value="`${userProfile.firstName}`" />
 
-                <ProfileItem
-                  textColor="text-zinc-300"
-                  labelColor="text-white"
-                  label="Last Name"
-                  :value="`${userProfile.lastName}`"
-                />
-                <ProfileItem
-                  textColor="text-zinc-300"
-                  labelColor="text-white"
-                  label="Email"
-                  :value="userProfile.email"
-                />
-                <ProfileItem
-                  textColor="text-zinc-300"
-                  labelColor="text-white"
-                  label="Role"
-                  :value="userProfile.userType ?? '—'"
-                />
+                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="Last Name"
+                  :value="`${userProfile.lastName}`" />
+
+                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="Username"
+                  :value="userProfile.username" />
+
+                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="Email"
+                  :value="userProfile.email" />
+                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="Role"
+                  :value="userProfile.userType ?? '—'" />
               </div>
 
-              <Button
-                variant="secondary"
-                class="mt-6 bg-red-600 text-white rounded hover:bg-red-500"
-                :disabled="isDeleting"
-                @click="handleDeleteUser"
-              >
+              <Button variant="secondary" class="mt-6 bg-red-600 text-white rounded hover:bg-red-500"
+                :disabled="isDeleting" @click="handleDeleteUser">
                 {{ isDeleting ? "Deleting..." : "Delete user profile" }}
               </Button>
 
-              <p
-                v-if="deleteError"
-                class="text-red-500 mt-4 text-center text-sm"
-              >
+              <p v-if="deleteError" class="text-red-500 mt-4 text-center text-sm">
                 {{ deleteError }}
               </p>
-              <p
-                v-if="deleteSuccess"
-                class="text-green-600 mt-4 text-center text-sm"
-              >
+              <p v-if="deleteSuccess" class="text-green-600 mt-4 text-center text-sm">
                 {{ deleteSuccess }}
               </p>
             </div>
 
-            <p
-              v-else-if="userProfileError"
-              class="text-red-500 mt-4 text-center text-sm"
-            >
+            <p v-else-if="userProfileError" class="text-red-500 mt-4 text-center text-sm">
               {{ userProfileError }}
             </p>
-            <p v-else class="text-zinc-600 mt-4 text-center text-sm">
+            <p v-else class="text-blue-400 mt-4 text-center text-sm">
               No profile data available.
             </p>
           </div>
