@@ -1,13 +1,21 @@
 // controllers/QuestBackendController.ts
 import { loadConfig } from "@/configuration/ConfigLoader";
-import type { CreateQuestPayload } from "@/types/quests";
 import {
+  CreateQuestSchema,
   QuestPartialSchema,
   type QuestPartial,
   type QuestStatus,
   type UpdateQuestStatus
 } from "@/types/schema/QuestStatusSchema";
 import { $fetch } from "ofetch";
+
+interface CreateQuestPayload {
+  rank: string,
+  title: string,
+  description: string,
+  acceptanceCriteria: string,
+  tags: string[]; // <-- Add this
+}
 
 export interface UpdateQuestPayload {
   rank: string;
@@ -80,6 +88,7 @@ export async function getQuest(
   opts?: FetchOptions
 ): Promise<QuestPartial> {
   const res = await $fetch(getQuestUrl(userId, questId), {
+    method: "GET",
     credentials: "include",
     headers: opts?.headers,
   });
@@ -92,7 +101,7 @@ export async function getQuest(
   return parsed.data;
 }
 
-export async function createQuest(userId: string, payload: CreateQuestPayload) {
+export async function createQuest(userId: string, payload: CreateQuestSchema) {
   return await $fetch(createQuestUrl(userId), {
     method: "POST",
     credentials: "include",

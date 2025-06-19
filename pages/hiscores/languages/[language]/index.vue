@@ -1,47 +1,111 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { getHiscoreLanguage } from '@/controllers/LanguageController';
+import { useAsyncData } from 'nuxt/app';
+import { useRoute } from 'vue-router';
 
 const route = useRoute()
-const language = route.params.language?.toString() || 'questing'
+const languageId = route.params.language?.toString() || 'Rip no langauge found - error'
 
-// Mock leaderboard data
-const leaderboard = [
-    { name: "dev_alex", level: 52, xp: 122000 },
-    { name: "coder_rae", level: 49, xp: 113000 },
-    { name: "bug_hunter", level: 47, xp: 101200 },
-    { name: "review_queen", level: 44, xp: 92500 },
-    { name: "speedster", level: 40, xp: 81000 },
-]
+// Fetch language data via useAsyncData (runs on server, then hydrates)
+const {
+    data: languageData,
+    pending,
+    error: fetchError,
+} = await useAsyncData(
+    `hiscore-${languageId}`,
+    () => getHiscoreLanguage(languageId),
+    {
+        server: true,
+        default: () => [],
+    }
+);
 
 const titleCase = (str: string) =>
-    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+
+const skillLinks = [
+    "questing",
+    "reviewing",
+    "testing"
+]
+
+const languageLinks = [
+    "java",
+    "python",
+    "rust",
+    "scala",
+    "sql",
+    "typescript",
+]
+
+
 </script>
 
 <template>
     <NuxtLayout>
-        <div class="max-w-3xl mx-auto p-6">
-            <h1 class="text-3xl font-bold text-center text-white mb-6">
-                {{ titleCase(language) }}
-            </h1>
 
-            <table class="w-full table-auto text-left border-collapse">
-                <thead class="border-b border-white/10 text-zinc-300">
-                    <tr>
-                        <th class="py-2">Rank</th>
-                        <th class="py-2">Dev</th>
-                        <th class="py-2">Level</th>
-                        <th class="py-2">XP</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(dev, i) in leaderboard" :key="dev.name" class="border-b border-white/5 text-white">
-                        <td class="py-2">{{ i + 1 }}</td>
-                        <td class="py-2 font-medium text-indigo-300">{{ dev.name }}</td>
-                        <td class="py-2">{{ dev.level }}</td>
-                        <td class="py-2">{{ dev.xp.toLocaleString() }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="w-full max-w-screen-2xl mx-auto px-4 pt-10 pr-2 pl-2 flex gap-10 text-white min-h-screen">
+
+            <!-- Left Sidebar -->
+            <aside class="w-64 shrink-0">
+                <div class="mb-8">
+                    <h2 class="text-lg font-bold mb-2">Skill Hiscores</h2>
+                    <ul class="space-y-2">
+                        <li v-for="skill in skillLinks" :key="skill">
+                            <NuxtLink :to="`/hiscores/skills/${skill}`"
+                                class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
+                                {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
+                            </NuxtLink>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-bold mb-2">Language Hiscores</h2>
+
+                    <ul class="space-y-2">
+                        <li v-for="lang in languageLinks" :key="lang">
+                            <NuxtLink :to="`/hiscores/languages/${lang}`"
+                                class="block px-3 py-2 rounded text-sm text-white/90 hover:text-white" :class="{
+                                    'bg-indigo-500/70 text-white font-semibold': lang === languageId,
+                                    'hover:bg-teal-400/60': lang !== languageId
+                                }">
+                                {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
+                            </NuxtLink>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="flex-1">
+
+                <h1 class="text-3xl text-blue-400 font-bold mb-6 text-center">{{ titleCase(languageId) }}</h1>
+
+                <div class="w-full max-w-4xl mx-auto">
+                    <table class="w-full table-auto text-left border-collapse mb-10">
+                        <thead class="border-b border-white/10 text-white">
+                            <tr>
+                                <th class="py-2">Rank</th>
+                                <th class="py-2">Username</th>
+                                <th class="py-2">Total Level</th>
+                                <th class="py-2">Total XP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(dev, i) in languageData" :key="`${dev.devId}-${dev.language}`"
+                                class="border-b border-white/5 text-white">
+                                <td class="py-2">{{ i + 1 }}</td>
+                                <td class="py-2 font-medium text-indigo-300">{{ dev.username }}</td>
+                                <td class="py-2">{{ dev.level }}</td>
+                                <td class="py-2">{{ dev.xp.toLocaleString() }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </NuxtLayout>
 </template>

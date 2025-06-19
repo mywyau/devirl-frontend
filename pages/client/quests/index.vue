@@ -101,7 +101,7 @@ function refreshPage() {
 
         <div class="mt-6">
           <button @click="refreshPage" class="text-white underline text-sm">
-            Refresh (hard reload)
+            Refresh
           </button>
         </div>
       </div>

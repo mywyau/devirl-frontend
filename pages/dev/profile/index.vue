@@ -85,13 +85,15 @@ async function handleDeleteUser() {
 
           <div v-else-if="userProfile">
             <div class="space-y-4">
-              <ProfileItem label="First Name" :value="userProfile.firstName" labelColor="text-white"
-                textColor="text-zinc-300" />
-              <ProfileItem label="Last Name" :value="userProfile.lastName" labelColor="text-white"
-                textColor="text-zinc-300" />
-              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-zinc-300" />
+              <ProfileItem label="First Name" labelColor="text-white" textColor="text-blue-400"
+                :value="userProfile.firstName" />
+              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-blue-400"
+                :value="userProfile.lastName" />
+              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-blue-400" />
+              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white"
+                textColor="text-blue-400" />
               <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white"
-                textColor="text-zinc-300" />
+                textColor="text-blue-400" />
 
               <Button variant="secondary" class="w-full mt-6 bg-red-600 text-white hover:bg-red-500"
                 :disabled="isDeleting" @click="handleDeleteUser">
@@ -112,14 +114,14 @@ async function handleDeleteUser() {
           <h2 class="text-3xl font-bold text-white mb-6 text-center">Quick Links</h2>
 
           <div v-if="userProfile">
-            <nav class="space-y-4">
+            <!-- <nav class="space-y-4">
               <NuxtLink to="/profile/equipment"
                 class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Equipment</NuxtLink>
               <NuxtLink to="/dev/skills"
                 class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Skills</NuxtLink>
               <NuxtLink to="/dev/inventory"
                 class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Inventory</NuxtLink>
-            </nav>
+            </nav> -->
           </div>
         </div>
       </div>

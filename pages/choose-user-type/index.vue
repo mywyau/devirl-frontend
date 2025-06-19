@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { z } from "zod";
 import { useAuthUser } from "@/composables/useAuthUser";
 import { updateUserType } from "@/controllers/RegistrationController";
+import { ref } from "vue";
+import { z } from "zod";
 
 import type { UpdateUserType } from "@/types/schema/UserDataSchema";
 import { UpdateUserTypeSchema } from "@/types/schema/UserDataSchema";
@@ -10,20 +10,27 @@ import { UpdateUserTypeSchema } from "@/types/schema/UserDataSchema";
 import { Button } from "@/components/ui/button";
 import {
   Select,
-  SelectTrigger,
   SelectContent,
   SelectItem,
-  SelectValue,
   SelectLabel,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 
-const role = ref<string>("");
+// const role = ref<string>("");
+
+const userTypeForm = ref({
+  username: "",
+  userType: "",
+});
+
 const userTypeSuccess = ref(false);
 const userTypeError = ref("");
 
 const { data: user } = useAuthUser();
 
 const updateRole = async () => {
+
   userTypeError.value = "";
   userTypeSuccess.value = false;
 
@@ -34,7 +41,16 @@ const updateRole = async () => {
   }
 
   try {
-    const payload: UpdateUserType = UpdateUserTypeSchema.parse({ userType: role.value });
+
+    console.log(userTypeForm.value.username)
+    console.log(userTypeForm.value.userType)
+
+    const payload: UpdateUserType = UpdateUserTypeSchema.parse(
+      {
+        username: userTypeForm.value.username,
+        userType: userTypeForm.value.userType
+      }
+    );
     await updateUserType(safeUserId, payload);
 
     userTypeSuccess.value = true;
@@ -70,51 +86,48 @@ const updateRole = async () => {
         </div>
 
         <form @submit.prevent="updateRole" class="space-y-6">
+
+          <div>
+            <label for="username" class="block mb-1 text-sm font-medium text-white">
+              Username
+            </label>
+            <!-- Username input -->
+            <input id="username" v-model="userTypeForm.username" type="text" required placeholder="Create your username"
+              class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400" />
+            <p class="mt-1 text-sm text-zinc-400">Max 20 characters</p>
+          </div>
+
           <div class="flex flex-col space-y-2">
             <label for="role-select" class="text-sm font-medium text-white">
               Select Your Role
             </label>
 
-            <Select v-model="role">
+            <Select v-model="userTypeForm.userType">
               <!-- Give the trigger a stable test ID -->
-              <SelectTrigger
-                id="role-select"
-                data-testid="role-select-trigger"
-                class="w-full flex justify-between items-center rounded-lg border border-green-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-3 focus:ring-green"
-              >
+              <SelectTrigger id="role-select" data-testid="role-select-trigger"
+                class="w-full flex justify-between items-center rounded-lg border border-green-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-3 focus:ring-green">
                 <SelectValue placeholder="Choose one…" />
               </SelectTrigger>
 
-              <SelectContent
-                data-testid="role-select-content"
-                class="w-full bg-white rounded-lg border border-zinc-400"
-              >
+              <SelectContent data-testid="role-select-content"
+                class="w-full bg-white rounded-lg border border-zinc-400">
                 <SelectLabel class="px-4 py-2 text-xs font-medium text-zinc-500">
                   Roles
                 </SelectLabel>
-                <SelectItem
-                  value="Client"
-                  data-testid="role-select-item-Client"
-                  class="w-full px-4 py-2 text-black hover:bg-zinc-100"
-                >
+                <SelectItem value="Client" data-testid="role-select-item-Client"
+                  class="w-full px-4 py-2 text-black hover:bg-zinc-100">
                   Client
                 </SelectItem>
-                <SelectItem
-                  value="Dev"
-                  data-testid="role-select-item-Dev"
-                  class="w-full px-4 py-2 text-black hover:bg-zinc-100"
-                >
+                <SelectItem value="Dev" data-testid="role-select-item-Dev"
+                  class="w-full px-4 py-2 text-black hover:bg-zinc-100">
                   Dev
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <Button
-            type="submit"
-            :disabled="!role"
-            class="w-full bg-green-500 hover:bg-green-400 disabled:bg-zinc-300 disabled:text-zinc-800 text-white"
-          >
+          <Button type="submit" :disabled="!userTypeForm.username || !userTypeForm.userType"
+            class="w-full bg-green-500 hover:bg-green-400 disabled:bg-zinc-300 disabled:text-zinc-800 text-white">
             Continue
           </Button>
         </form>

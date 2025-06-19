@@ -15,6 +15,7 @@ export const UserDataSchema = z.object({
 export type UserData = z.infer<typeof UserDataSchema>;
 
 export const UpdateUserTypeSchema = z.object({
+  username:  z.string(),
   userType: UserTypeSchema,
 });
 
@@ -24,6 +25,7 @@ export type UpdateUserType = z.infer<typeof UpdateUserTypeSchema>;
 export const GetUserDataSchema = z.object({
   userId: z.string(),
   email: z.string(),
+  username: z.string(),
   firstName: z.string(),
   lastName: z.string(),
   userType: UserTypeSchema.optional(),
