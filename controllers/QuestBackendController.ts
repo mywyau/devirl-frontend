@@ -3,6 +3,7 @@ import { loadConfig } from "@/configuration/ConfigLoader";
 import {
   CreateQuestSchema,
   QuestPartialSchema,
+  type CompleteQuestPayload,
   type QuestPartial,
   type QuestStatus,
   type UpdateQuestStatus
@@ -43,6 +44,9 @@ const updateQuestUrl = (userId: string, questId: string) =>
 
 const updateQuestStatusUrl = (userId: string, questId: string) =>
   `${baseUrl}quest/update/status/${encodeURIComponent(userId)}/${questId}`;
+
+const completeQuestUrl = (userId: string, questId: string) =>
+  `${baseUrl}quest/update/complete/award/xp/${encodeURIComponent(userId)}/${questId}`;
 
 const acceptQuestUrl = (userId: string) =>
   `${baseUrl}quest/accept/quest/${encodeURIComponent(userId)}`;
@@ -115,6 +119,18 @@ export async function updateQuest(
   payload: UpdateQuestPayload
 ) {
   return await $fetch(updateQuestUrl(userId, questId), {
+    method: "PUT",
+    credentials: "include",
+    body: payload,
+  });
+}
+
+export async function completeQuestRequest(
+  userId: string,
+  questId: string,
+  payload: CompleteQuestPayload
+) {
+  return await $fetch(completeQuestUrl(userId, questId), {
     method: "PUT",
     credentials: "include",
     body: payload,

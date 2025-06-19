@@ -5,6 +5,7 @@ import { useAuthUser } from "@/composables/useAuthUser";
 import {
   streamAllQuestsByStatus,
   updateQuestStatusRequest,
+  completeQuestRequest,
 } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
@@ -77,14 +78,15 @@ const completedSuccess = ref(false);
 const completedError = ref(false);
 
 // Update Status of Quest
-async function handleUpdateQuestToCompleted(questId: string) {
+async function handleUpdateQuestToCompleted(questId: string, rank: string) {
   if (!safeUserId.value) {
     completedError.value = true;
     return;
   }
   try {
     // On the client, credentials: "include" is enough to send the cookie
-    await updateQuestStatusRequest(safeUserId.value, questId, {
+    await completeQuestRequest(safeUserId.value, questId, {
+      rank: rank,
       questStatus: "Completed",
     });
     completedSuccess.value = true;
@@ -157,7 +159,7 @@ async function handleUpdateQuestToFailed(questId: string) {
           <div class="mt-auto flex flex-nowrap justify-end gap-3 overflow-auto">
 
             <Button variant="secondary" class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 text-sm"
-              @click="handleUpdateQuestToCompleted(quest.questId)">
+              @click="handleUpdateQuestToCompleted(quest.questId, quest.rank)">
               Complete Quest
             </Button>
 
