@@ -2,7 +2,7 @@
 import { streamAllQuests } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref } from "vue";
-import { useAuthUser } from "~/composables/useAuthUser";
+import { useAuthUser } from "@/composables/useAuthUser";
 
 const quests = ref<QuestPartial[]>([]);
 const error = ref<string | null>(null);
@@ -71,33 +71,40 @@ async function fetchQuests() {
 
       <div class="grid gap-6" v-else>
         <div v-for="quest in quests" :key="quest.questId" class="p-4 rounded-xl shadow bg-white/10">
+
           <h2 class="text-xl font-semibold text-indigo-300">{{ quest.title }}</h2>
 
           <div class="flex justify-between items-center mb-1">
-            <span class="text-sm text-teal-400 font-semibold mt-2">{{ quest.status }}</span>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <span v-for="tag in quest.tags" :key="tag" class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
+                {{ tag }}
+              </span>
+            </div>
             <span class="text-base text-zinc-400">{{ quest.rank }}</span>
           </div>
 
+
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-sm text-teal-400 font-semibold mt-2">{{ quest.status }}</span>
+          </div>
+
           <div class="mt-4 flex items-center">
+
             <span class="font-mono text-sm text-green-400">💰 £{{ quest.bounty || 0.0 }}</span>
 
             <div class="flex space-x-4 ml-auto">
-              <NuxtLink 
-                :to="`/quest/estimation/${quest.questId}`" 
-                :id="`estimation-link-${quest.questId}`"
+              <NuxtLink :to="`/quest/estimation/${quest.questId}`" :id="`estimation-link-${quest.questId}`"
                 :data-testid="`estimation-link-${quest.questId}`"
-                 class="text-white hover:underline hover:text-teal-300">
+                class="text-white hover:underline hover:text-teal-300">
                 Estimations
               </NuxtLink>
-              <NuxtLink 
-                :to="`/quest/${quest.questId}`" 
-                :id="`details-link-${quest.questId}`"
-                :data-testid="`details-link-${quest.questId}`"
-                class="text-white hover:underline hover:text-teal-300">
+              <NuxtLink :to="`/quest/${quest.questId}`" :id="`details-link-${quest.questId}`"
+                :data-testid="`details-link-${quest.questId}`" class="text-white hover:underline hover:text-teal-300">
                 Details
               </NuxtLink>
             </div>
           </div>
+
         </div>
       </div>
     </div>

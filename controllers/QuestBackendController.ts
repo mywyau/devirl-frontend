@@ -1,6 +1,7 @@
 // controllers/QuestBackendController.ts
 import { loadConfig } from "@/configuration/ConfigLoader";
 import {
+  CreateQuestSchema,
   QuestPartialSchema,
   type QuestPartial,
   type QuestStatus,
@@ -100,7 +101,7 @@ export async function getQuest(
   return parsed.data;
 }
 
-export async function createQuest(userId: string, payload: CreateQuestPayload) {
+export async function createQuest(userId: string, payload: CreateQuestSchema) {
   return await $fetch(createQuestUrl(userId), {
     method: "POST",
     credentials: "include",

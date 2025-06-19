@@ -2,17 +2,16 @@
 
 import { useAuthUser } from "@/composables/useAuthUser";
 import { createQuest } from "@/controllers/QuestBackendController"; // <- updated import
-// import type { CreateQuestPayload } from "@/types/quests";
+import { CreateQuestSchema } from "@/types/schema/QuestStatusSchema";
 import { ref } from "vue";
 
-
-interface CreateQuestPayload {
-  rank: string,
-  title: string,
-  description: string,
-  acceptanceCriteria: string,
-  tags: string[]; // <-- Add this
-}
+// interface CreateQuestPayload {
+//   rank: string,
+//   title: string,
+//   description: string,
+//   acceptanceCriteria: string,
+//   tags: string[]; // <-- Add this
+// }
 
 import {
   Select,
@@ -52,7 +51,7 @@ const languageOptions = [
 ];
 
 
-const questCreatePayload = ref<CreateQuestPayload>(
+const questCreatePayload = ref<CreateQuestSchema>(
   {
     rank: "",
     title: "",
@@ -102,26 +101,34 @@ async function handleSubmit() {
   console.log(JSON.stringify(payload, null, 2));
 
 
-  try {
-    const result = await createQuest(userId, payload);
+  const parsed = CreateQuestSchema.safeParse(payload)
 
-    if (result) {
-      submissionSuccess.value = true;
-      questCreatePayload.value = {
-        rank: "",
-        title: "",
-        description: "",
-        acceptanceCriteria: "",
-        tags: [],
-      };
-    } else {
-      submissionError.value = "Submission failed. Please try again.";
-    }
-  } catch (err) {
-    console.error(err);
-    submissionError.value = "An unexpected error occurred.";
-  } finally {
+  if (!parsed.success) {
+    submissionError.value = "Validation error: " + JSON.stringify(parsed.error.format());
     isSubmitting.value = false;
+    return;
+  } else {
+    try {
+      const result = await createQuest(userId, parsed.data);
+
+      if (result) {
+        submissionSuccess.value = true;
+        questCreatePayload.value = {
+          rank: "",
+          title: "",
+          description: "",
+          acceptanceCriteria: "",
+          tags: [],
+        };
+      } else {
+        submissionError.value = "Submission failed. Please try again.";
+      }
+    } catch (err) {
+      console.error(err);
+      submissionError.value = "An unexpected error occurred.";
+    } finally {
+      isSubmitting.value = false;
+    }
   }
 }
 
@@ -165,7 +172,7 @@ async function handleSubmit() {
         </div>
 
         <div class="mb-10">
-          <label class="text-sm text-white mb-2 block">Tag Languages</label>
+          <label class="text-sm text-white mb-2 block">Add Language Tags</label>
           <TagSelector v-model="questCreatePayload.tags" :options="languageOptions" />
         </div>
 
