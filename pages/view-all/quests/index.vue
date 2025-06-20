@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { useAuthUser } from "@/composables/useAuthUser";
 import { streamAllQuests } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
-import { computed, onMounted, ref } from "vue";
-import { useAuthUser } from "@/composables/useAuthUser";
+import { useCookie } from "nuxt/app";
+import { computed, onMounted, ref, watch } from "vue";
+
+const userType = useCookie("user_type"); // reads cookie on client and SSR
 
 const quests = ref<QuestPartial[]>([]);
 const error = ref<string | null>(null);
@@ -93,7 +96,10 @@ async function fetchQuests() {
             <span class="font-mono text-sm text-green-400">💰 £{{ quest.bounty || 0.0 }}</span>
 
             <div class="flex space-x-4 ml-auto">
-              <NuxtLink :to="`/quest/estimation/${quest.questId}`" :id="`estimation-link-${quest.questId}`"
+              <NuxtLink 
+                v-if="userType == 'Dev'"
+                :to="`/quest/estimation/${quest.questId}`" 
+                :id="`estimation-link-${quest.questId}`"
                 :data-testid="`estimation-link-${quest.questId}`"
                 class="text-white hover:underline hover:text-teal-300">
                 Estimations
