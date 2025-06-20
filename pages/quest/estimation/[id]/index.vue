@@ -1,13 +1,23 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { useAuthUser } from "@/composables/useAuthUser";
+import { createEstimate } from "@/controllers/EstimateController"; // <- updated import
+import { getQuest } from "@/controllers/QuestBackendController";
+import { CreateEstimateSchema, type CreateEstimate } from "@/types/schema/EstimateSchema";
+import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
+import { useRoute } from "nuxt/app";
+import { computed, onMounted, ref } from "vue";
 
-const questId = "abc123";
-const questTitle = "Implement OAuth Login Flow";
-const questDescription =
-    "Set up secure OAuth login using Auth0 and integrate it with the backend session system.";
+// 1) Grab the route param
+const route = useRoute();
+const questIdFromRoute = route.params.id as string;
+
+// 2) Resolve the logged-in user (top-level await)
+const { data: user, error: userError } = await useAuthUser();
+const safeUserId = computed(() => user.value?.sub ?? null);
+
 
 const level = ref<string | null>(null);
-const notes = ref("");
+const comments = ref("");
 
 const levelOptions = [
     { value: "Bronze", label: "Bronze" },
@@ -23,34 +33,132 @@ const levelOptions = [
 
 
 const pastEstimates = [
-    { user: "dev_rogue", level: "Bronze", notes: "Some edge cases, moderate effort." },
-    { user: "senior_mage", level: "Mithril", notes: "Security concerns, needs testing." },
-    { user: "code_knight", level: "Adamantite", notes: "Straightforward with Auth0 SDK." },
+    { username: "dev_rogue", level: "Bronze", comments: "Some edge cases, moderate effort." },
+    { username: "senior_mage", level: "Mithril", comments: "Security concerns, needs testing." },
+    { username: "code_knight", level: "Adamantite", comments: "Straightforward with Auth0 SDK." },
 ];
 
-function submitEstimation() {
-    if (!level.value) return;
-    const selected = levelOptions.find((opt) => opt.value === level.value);
-    console.log("Submitting estimation:", {
-        questId,
-        level: selected?.value,
-        label: selected?.label,
-        notes: notes.value,
-    });
-    // Send this payload to your backend
+const isSubmitting = ref(false);
+const submissionSuccess = ref(false);
+const submissionError = ref<string | null>(null);
+
+const estimateCreatePayload = ref<CreateEstimate>(
+    {
+        questId: "",
+        rank: "",
+        comments: "",
+    }
+);
+
+async function submitEstimation() {
+
+    // ✅ Always clear error first
+    submissionError.value = null;
+    submissionSuccess.value = false;
+
+    const payload = {
+        questId: questIdFromRoute,
+        rank: level.value!,
+        comments: comments.value
+    };
+
+    // if (payload.tags.length === 0) {
+    //     submissionError.value = "Please select at least one tag.";
+    //     return;
+    // }
+
+    isSubmitting.value = true;
+
+    const userId = user.value?.sub;
+    if (!userId) {
+        submissionError.value = "User ID not available.";
+        isSubmitting.value = false;
+        return;
+    }
+
+    console.log("Final payload being sent:");
+    console.log(JSON.stringify(payload, null, 2));
+
+
+    const parsed = CreateEstimateSchema.safeParse(payload)
+
+    if (!parsed.success) {
+        submissionError.value = "Validation error: " + JSON.stringify(parsed.error.format());
+        isSubmitting.value = false;
+        return;
+    } else {
+        try {
+            const result = await createEstimate(userId, parsed.data);
+
+            if (result) {
+                submissionSuccess.value = true;
+                estimateCreatePayload.value = {
+                    questId: "",
+                    rank: "",
+                    comments: ""
+                };
+            } else {
+                submissionError.value = "Submission failed. Please try again.";
+            }
+        } catch (err) {
+            console.error(err);
+            submissionError.value = "An unexpected error occurred.";
+        } finally {
+            isSubmitting.value = false;
+        }
+    }
 }
+
+const retrievedQuestData = ref<QuestPartial | null>(null);
+const isLoading = ref(false);
+const error = ref<string | null>(null);
+
+onMounted(async () => {
+    isLoading.value = true;
+    try {
+        retrievedQuestData.value = await getQuest(safeUserId.value || "userId not found", questIdFromRoute);
+        console.debug(`[Estimation Page][getQuest]${retrievedQuestData.value}`);
+    } catch (e) {
+        console.error(e);
+        error.value = "[Estimation Page] Failed to load quest.";
+    } finally {
+        isLoading.value = false;
+    }
+});
+
+// function submitEstimation() {
+//     if (!level.value) return;
+//     const selected = levelOptions.find((opt) => opt.value === level.value);
+//     console.log(
+//         "Submitting estimation:",
+//         {
+//             estimateId: estimateId,
+//             questId: questIdFromRoute,
+//             rank: selected?.value,
+//             comments: comments.value,
+//         }
+//     );
+//     // Send this payload to your backend
+// }
 
 </script>
 
 <template>
     <NuxtLayout>
         <div class="max-w-3xl mx-auto py-12 px-6 text-white">
-            <h1 class="text-3xl font-bold mb-4">Estimate Quest Difficulty</h1>
+            <h1 class="text-3xl font-bold mb-4">Estimate Estimate Difficulty</h1>
 
-            <!-- Quest Details -->
+            <div v-if="submissionSuccess" class="text-green-400 mb-4">
+                ✅ Estimate submitted successfully!
+            </div>
+            <div v-if="submissionError" class="text-red-400 mb-4">
+                ⚠️ {{ submissionError }}
+            </div>
+
+            <!-- Estimate Details -->
             <div class="bg-teal-300/70 p-6 rounded-xl mb-6">
-                <h2 class="text-black text-xl font-semibold">{{ questTitle }}</h2>
-                <p class="text-black mt-2">{{ questDescription }}</p>
+                <h2 class="text-black text-xl font-semibold">{{ retrievedQuestData?.title }}</h2>
+                <p class="text-black mt-2">{{ retrievedQuestData?.description }}</p>
             </div>
 
             <!-- Form -->
@@ -65,8 +173,8 @@ function submitEstimation() {
                 </select>
 
 
-                <label for="notes" class="block mt-4 mb-2 text-sm font-semibold">Optional Notes</label>
-                <textarea id="notes" v-model="notes"
+                <label for="comments" class="block mt-4 mb-2 text-sm font-semibold">Comments</label>
+                <textarea id="comments" v-model="comments"
                     class="w-full rounded bg-zinc-900 border border-zinc-700 p-2 text-white" rows="4"
                     placeholder=" Thoughts, considerations, or reasoning behind your estimate..."></textarea>
 
@@ -84,10 +192,10 @@ function submitEstimation() {
                     <li v-for="(est, i) in pastEstimates" :key="i"
                         class="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="font-bold">{{ est.user }}</span>
+                            <span class="font-bold">{{ est.username }}</span>
                             <span class="text-sm text-zinc-400">{{ est.level }}</span>
                         </div>
-                        <p class="text-zinc-300 text-sm">{{ est.notes }}</p>
+                        <p class="text-zinc-300 text-sm">{{ est.comments }}</p>
                     </li>
                 </ul>
             </div>
