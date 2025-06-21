@@ -8,8 +8,6 @@ import { sessionOptions } from "~/server/utils/sessionOptions"; // ✅ import th
 
 import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
 
-// import { useRuntimeConfig } from "nuxt/app";
-
 const runtimeConf = useRuntimeConfig();
 
 const auth0Domain = runtimeConf.public.auth0Domain;

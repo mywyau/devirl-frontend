@@ -4,18 +4,6 @@ import {
   QuestStatusSchema,
 } from "../../types/schema/QuestStatusSchema";
 
-// export const QuestPartialSchema = z.object({
-//   questId: z.string(),
-//   clientId: z.string(),
-//   devId: z.string().nullable().optional(),
-//   rank: z.string(),
-//   title: z.string(),
-//   description: z.string().nullable().optional(),
-//   acceptanceCriteria: z.string().nullable().optional(),
-//   status: QuestStatusSchema,
-//   tags: z.array(z.string()).min(1, "At least one tag is required"),
-// });
-
 describe("QuestStatusSchema", () => {
   it("accepts valid status values", () => {
     expect(() => QuestStatusSchema.parse("NotStarted")).not.toThrow();
