@@ -1,6 +1,20 @@
-import { describe, it, expect } from "vitest";
-import { QuestPartialSchema, QuestStatusSchema } from "@/types/schema/QuestStatusSchema";
+import { describe, expect, it } from "vitest";
+import {
+  QuestPartialSchema,
+  QuestStatusSchema,
+} from "../../types/schema/QuestStatusSchema";
 
+// export const QuestPartialSchema = z.object({
+//   questId: z.string(),
+//   clientId: z.string(),
+//   devId: z.string().nullable().optional(),
+//   rank: z.string(),
+//   title: z.string(),
+//   description: z.string().nullable().optional(),
+//   acceptanceCriteria: z.string().nullable().optional(),
+//   status: QuestStatusSchema,
+//   tags: z.array(z.string()).min(1, "At least one tag is required"),
+// });
 
 describe("QuestStatusSchema", () => {
   it("accepts valid status values", () => {
@@ -16,12 +30,17 @@ describe("QuestStatusSchema", () => {
 });
 
 describe("QuestPartialSchema", () => {
+
   const validData = {
-    clientId: "user123",
     questId: "quest456",
+    clientId: "user123",
+    devId: "dev123",
+    rank: "Iron",
     title: "Slay the Dragon",
     description: "Defeat the fire-breathing beast.",
+    acceptanceCriteria: "bring my his head.",
     status: "InProgress",
+    tags: ["Python", "Typescript"],
   };
 
   it("validates correct quest data", () => {
@@ -30,8 +49,14 @@ describe("QuestPartialSchema", () => {
   });
 
   it("accepts null or undefined description", () => {
-    const result1 = QuestPartialSchema.safeParse({ ...validData, description: null });
-    const result2 = QuestPartialSchema.safeParse({ ...validData, description: undefined });
+    const result1 = QuestPartialSchema.safeParse({
+      ...validData,
+      description: null,
+    });
+    const result2 = QuestPartialSchema.safeParse({
+      ...validData,
+      description: undefined,
+    });
 
     expect(result1.success).toBe(true);
     expect(result2.success).toBe(true);
@@ -46,13 +71,15 @@ describe("QuestPartialSchema", () => {
 
     const result = QuestPartialSchema.safeParse(invalid);
     expect(result.success).toBe(false);
-    expect(result.error.issues.some(issue => issue.path.includes("clientId"))).toBe(true);
+    expect(result.error.issues.some((issue) => issue.path.includes("clientId"))).toBe(true);
   });
 
   it("fails when status is invalid", () => {
     const invalid = { ...validData, status: "Paused" };
     const result = QuestPartialSchema.safeParse(invalid);
     expect(result.success).toBe(false);
-    expect(result.error.issues.some(issue => issue.path.includes("status"))).toBe(true);
+    expect(
+      result.error.issues.some((issue) => issue.path.includes("status"))
+    ).toBe(true);
   });
 });

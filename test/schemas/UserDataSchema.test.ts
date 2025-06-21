@@ -4,7 +4,7 @@ import {
   UserDataSchema,
   UpdateUserTypeSchema,
   GetUserDataSchema,
-} from "@/types/schema/UserDataSchema";
+} from "../../types/schema/UserDataSchema";
 
 describe("UserTypeSchema", () => {
   it("accepts valid values", () => {
@@ -51,7 +51,10 @@ describe("UserDataSchema", () => {
 
 describe("UpdateUserTypeSchema", () => {
   it("passes with valid userType", () => {
-    const result = UpdateUserTypeSchema.safeParse({ userType: "Dev" });
+    const result = UpdateUserTypeSchema.safeParse({ 
+      username: "Goku",
+      userType: "Dev"
+     });
     expect(result.success).toBe(true);
   });
 
@@ -70,8 +73,9 @@ describe("GetUserDataSchema", () => {
   const base = {
     userId: "u123",
     email: "a@b.com",
+    username: "goku",
     firstName: "Alice",
-    lastName: "Smith",
+    lastName: "Smith"
   };
 
   it("passes with all required fields", () => {

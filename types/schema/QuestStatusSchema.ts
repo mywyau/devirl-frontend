@@ -47,7 +47,6 @@ export const CreateQuestSchema = z.object({
 
 export type CreateQuestSchema = z.infer<typeof CreateQuestSchema>;
 
-
 export const CompleteQuestSchema = z.object({
   rank: z.string(),
   questStatus: QuestStatusSchema,

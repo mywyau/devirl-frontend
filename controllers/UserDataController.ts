@@ -1,18 +1,23 @@
 // controllers/UserDataController.ts
 
 import {
-  fetchUserData,
   createUserData,
+  deleteUserData,
+  fetchUserData,
   updateUserData,
   updateUserDataType,
-  deleteUserData,
 } from "@/connectors/UserDataConnector";
-import type { CreateUserData, UpdateUserType, UpdateUserData } from "@/types/schema/UserDataSchema";
-import { CreateUserDataSchema, UpdateUserTypeSchema, UpdateUserDataSchema } from "@/types/schema/UserDataSchema";
+import type {
+  CreateUserData,
+  UpdateUserData,
+  UpdateUserType,
+} from "@/types/schema/UserDataSchema";
 
-
-export async function getUser(userId: string, headers: Record<string, string> | undefined) {
-  return await fetchUserData(userId, headers)
+export async function getUser(
+  userId: string,
+  headers: Record<string, string> | undefined
+) {
+  return await fetchUserData(userId, headers);
 }
 
 export async function createUser(userId: string, payload: CreateUserData) {
