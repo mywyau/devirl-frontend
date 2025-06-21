@@ -6,7 +6,7 @@ import { sessionOptions } from "@/server/utils/sessionOptions";
 import type { UserData } from "@/types/schema/UserDataSchema";
 import { UserDataSchema } from "@/types/schema/UserDataSchema";
 import type { SessionData } from "@/types/SessionData";
-import { createError, getQuery, setCookie } from "h3";
+import { createError, setCookie } from "h3";
 import { getIronSession } from "iron-session";
 
 import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
@@ -30,8 +30,7 @@ export function getSessionCookieHeader(
 const isProd = process.env.NODE_ENV === "production";
 console.log("[isProd] CallbackHelpers ", isProd);
 
-export async function getAccessToken(code:string): Promise<string> {
-
+export async function getAccessToken(code: string): Promise<string> {
   if (!code) throw createError({ statusCode: 400, message: "Missing code" });
 
   const redirectUri = auth0CallbackUrl!;

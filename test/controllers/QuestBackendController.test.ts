@@ -1,10 +1,12 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  getQuest,
   createQuest,
-  updateQuest,
   deleteQuest,
-} from "@/controllers/QuestBackendController.ts";
+  getQuest,
+  updateQuest,
+} from "../../controllers/QuestBackendController.ts";
+
+import { type QuestPartial } from "../../types/schema/QuestStatusSchema";
 
 vi.mock("@/configuration/ConfigLoader", () => ({
   loadConfig: () => ({
@@ -13,7 +15,6 @@ vi.mock("@/configuration/ConfigLoader", () => ({
 }));
 
 vi.mock("ofetch", async () => {
-
   const actual = await vi.importActual("ofetch");
 
   return {
@@ -24,12 +25,26 @@ vi.mock("ofetch", async () => {
 
 import { $fetch } from "ofetch";
 
-const mockQuestPartial = {
-  clientId: "quest123",
+// questId: z.string(),
+//   clientId: z.string(),
+//   devId: z.string().nullable().optional(),
+//   rank: z.string(),
+//   title: z.string(),
+//   description: z.string().nullable().optional(),
+//   acceptanceCriteria: z.string().nullable().optional(),
+//   status: QuestStatusSchema,
+//   tags: z.array(z.string()).min(1, "At least one tag is required"),
+
+const mockQuestPartial: QuestPartial = {
   questId: "quest123",
+  clientId: "quest123",
+  devId: "devId123",
+  rank: "Iron",
   title: "Test Quest",
   description: "Some test description",
+  acceptanceCriteria: "Some acceptance criteria",
   status: "InProgress",
+  tags: ["Python", "Typescript", "Rust"],
 };
 
 describe("questBackend - getQuest", () => {
@@ -70,7 +85,6 @@ describe("questBackend - createQuest", () => {
 });
 
 describe("questBackend - deleteQuest", () => {
-
   it("succeeds if status is ok", async () => {
     ($fetch as any).mockResolvedValue({});
 
@@ -91,9 +105,14 @@ describe("questBackend - updateQuest", () => {
     const mockResponse = { success: true };
     ($fetch as any).mockResolvedValue(mockResponse);
 
-    const result = await updateQuest("user1", "quest1", {
+    const payload = {
+      rank: "Iron",
       title: "Updated Title",
-    });
+      description: "Updated Description",
+      acceptanceCriteria: "Updated Acceptance Criteria",
+    };
+
+    const result = await updateQuest("user1", "quest1", payload);
 
     expect(result).toEqual(mockResponse);
   });
@@ -101,8 +120,15 @@ describe("questBackend - updateQuest", () => {
   it("throws on failure", async () => {
     ($fetch as any).mockRejectedValue(new Error("Update failed"));
 
-    await expect(
-      updateQuest("user1", "quest1", { title: "New" })
-    ).rejects.toThrow("Update failed");
+    const payload = {
+      rank: "Iron",
+      title: "Updated Title",
+      description: "Updated Description",
+      acceptanceCriteria: "Updated Acceptance Criteria",
+    };
+
+    await expect(updateQuest("user1", "quest1", payload)).rejects.toThrow(
+      "Update failed"
+    );
   });
 });

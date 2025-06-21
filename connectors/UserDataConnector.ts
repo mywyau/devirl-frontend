@@ -1,20 +1,16 @@
 // ./connectors/UserDataConnector.ts
 
 import { loadConfig } from "@/configuration/ConfigLoader";
-import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
-import { $fetch } from "ofetch";
-// import type { CreateUserPayload, UpdateUserTypePayload } from "@/types/users";
 import type {
   CreateUserData,
   UpdateUserData,
   UpdateUserType,
 } from "@/types/schema/UserDataSchema";
-import { useRequestHeaders } from "nuxt/app";
+import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
+import { $fetch } from "ofetch";
 
 const config = loadConfig();
 const baseUrl = `${config.devQuestBackend.baseUrl}/`;
-
-
 
 const endpoints = {
   get: (id: string) => `${baseUrl}user/data/${encodeURIComponent(id)}`,
@@ -26,7 +22,10 @@ const endpoints = {
     `${baseUrl}user/data/delete/${encodeURIComponent(id)}`,
 };
 
-export async function fetchUserData(userId: string, headers: Record<string, string> | undefined) {
+export async function fetchUserData(
+  userId: string,
+  headers: Record<string, string> | undefined
+) {
   const res = await $fetch(endpoints.get(userId), {
     credentials: "include",
     headers, // forward cookies

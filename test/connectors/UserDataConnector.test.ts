@@ -21,17 +21,21 @@ import {
   createUserData,
   updateUserDataType,
   deleteUserData,
-} from "@/connectors/UserDataConnector";
+} from "../../connectors/UserDataConnector";
 
 describe("UserDataConnector", () => {
+
   const userId = "test-user";
+
   const validResponse = {
     userId: userId,
     email: "alice_smith@gmail.com",
+    username: "goku",
     firstName: "Alice",
     lastName: "Smith",
     userType: "Dev",
   };
+
 
   beforeEach(() => {
     vi.clearAllMocks();

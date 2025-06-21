@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getSessionCookieHeader } from "~/utils/CallbackHelpers";
+import { getSessionCookieHeader } from "../../utils/CallbackHelpers";
 
 describe("getSessionCookieHeader", () => {
   it("returns an empty string if input is undefined", () => {
