@@ -5,8 +5,6 @@ import { getStatusTextColour } from "@/service/QuestStatusService";
 import { computed, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 
-
-
 import { deleteQuest, getQuest } from "@/controllers/QuestBackendController";
 import {
   QuestPartialSchema,
@@ -15,14 +13,12 @@ import {
 
 import { useAuthUser } from "@/composables/useAuthUser";
 
+import { getEstimatesRequest } from "@/controllers/EstimateController";
+import type { GetEstimate } from "@/types/schema/EstimateSchema";
 import { useRouter } from "vue-router";
 
 
 const router = useRouter();
-
-function goToAddReward() {
-  router.push('/client/quest/reward/add');
-}
 
 // 1) Grab the route param
 const route = useRoute();
@@ -105,6 +101,27 @@ async function handleDeleteQuest() {
     console.error(err);
   }
 }
+
+const retrievedEstimates = ref<GetEstimate[] | null>(null);
+const isLoadingEstimates = ref(false);
+const errorEstimates = ref<string | null>(null);
+
+async function loadEstimates() {
+  isLoadingEstimates.value = true;
+  try {
+    retrievedEstimates.value = await getEstimatesRequest(
+      safeUserId.value || "userId not found",
+      questId
+    );
+    console.debug(`[Estimation Page][getEstimatesRequest]`, retrievedEstimates.value);
+  } catch (e) {
+    console.error(e);
+    errorEstimates.value = "Failed to load estimates and comments.";
+  } finally {
+    isLoadingEstimates.value = false;
+  }
+}
+
 </script>
 
 <template>
@@ -150,24 +167,47 @@ async function handleDeleteQuest() {
             Download File
           </Button>
 
+          <Button variant="secondary" class="bg-indigo-500 hover:bg-indigo-400 text-white rounded"
+            @click="loadEstimates">
+            Load Estimates
+          </Button>
 
-
-          <a v-if=" result?.status.toString() == `Open`" :href="`/client/quest/edit/${questId}`" rel="external" class="text-white">
+          <a v-if="result?.status.toString() == `Open`" :href="`/client/quest/edit/${questId}`" rel="external"
+            class="text-white">
             <Button variant="secondary" class="bg-yellow-500 text-white rounded hover:bg-yellow-400">
               Edit quest
             </Button>
           </a>
 
-          <a v-if=" result?.status.toString() == `Open`" :href="`/client/quest/reward/add/${questId}`" rel="external" class="text-white">
+          <a v-if="result?.status.toString() == `Open`" :href="`/client/quest/reward/add/${questId}`" rel="external"
+            class="text-white">
             <Button variant="secondary" class="bg-emerald-500 text-white rounded hover:bg-emerald-400">
               Add a Reward
             </Button>
           </a>
 
           <!-- Delete button (client‐only interaction) -->
-          <Button v-if=" result?.status.toString() == `Open`" variant="secondary" class="bg-red-600 text-white rounded hover:bg-red-500" @click="handleDeleteQuest">
+          <Button v-if="result?.status.toString() == `Open`" variant="secondary"
+            class="bg-red-600 text-white rounded hover:bg-red-500" @click="handleDeleteQuest">
             Delete quest
           </Button>
+        </div>
+
+        <!-- Past Reviews -->
+        <div v-if="errorEstimates" class="text-red-400">{{ errorEstimates }}</div>
+
+        <div class="mt-10" v-if="retrievedEstimates && retrievedEstimates.length > 0">
+          <h3 class="text-white text-lg font-semibold mb-4">Recent Estimations</h3>
+          <ul class="space-y-3">
+            <li v-for="(est, i) in retrievedEstimates" :key="i"
+              class="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-white font-bold">{{ est.username }}</span>
+                <span class="text-sm text-white">{{ est.rank }}</span>
+              </div>
+              <p class="text-zinc-300 text-sm">{{ est.comment }}</p>
+            </li>
+          </ul>
         </div>
 
         <p v-if="deleteSuccess" class="text-green-500 text-sm pt-4">
