@@ -5,14 +5,6 @@ import { createQuest } from "@/controllers/QuestBackendController"; // <- update
 import { CreateQuestSchema } from "@/types/schema/QuestStatusSchema";
 import { ref } from "vue";
 
-// interface CreateQuestPayload {
-//   rank: string,
-//   title: string,
-//   description: string,
-//   acceptanceCriteria: string,
-//   tags: string[]; // <-- Add this
-// }
-
 import {
   Select,
   SelectContent,
@@ -130,6 +122,7 @@ async function handleSubmit() {
       isSubmitting.value = false;
     }
   }
+
 }
 
 </script>
