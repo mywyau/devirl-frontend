@@ -21,14 +21,16 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-zinc-900 via-zinc-800 to-black min-h-screen font-sans">
-    <header class="px-6 py-4 border-b border-zinc-700 flex justify-between items-center">
+  <div
+    class="flex flex-col overflow-x-hidden bg-gradient-to-br from-zinc-900 via-zinc-800 to-black min-h-screen font-sans">
+    <header class="bg-zinc-950/90 px-6 py-4 border-b border-zinc-700 flex justify-between items-center">
       <NuxtLink to="/" class="text-xl font-bold text-white hover:text-teal-400">
         Dev Irl
       </NuxtLink>
 
       <nav class="space-x-6 flex items-center">
         <template v-if="user">
+
           <NuxtLink to="/view-all/quests" class="text-white hover:text-green-400">
             View all quests
           </NuxtLink>
@@ -42,19 +44,19 @@ const handleLogout = () => {
           </NuxtLink>
 
           <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard" class="text-white hover:text-blue-400">
-            Client Quests Dashboard
+            Dashboard
           </NuxtLink>
 
           <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard" class="text-white hover:text-blue-400">
-            Dev Quests Dashboard
+            Dashboard
           </NuxtLink>
 
           <NuxtLink v-if="userType === 'Dev'" to="/dev/profile" class="text-white hover:text-blue-400">
-            Dev Profile
+            Profile
           </NuxtLink>
 
           <NuxtLink v-if="userType === 'Client'" to="/client/profile" class="text-white hover:text-blue-400">
-            Client Profile
+            Profile
           </NuxtLink>
 
           <a href="#" @click.prevent="handleLogout" class="text-white hover:text-red-400 text-base">Logout</a>
@@ -73,8 +75,44 @@ const handleLogout = () => {
       </nav>
     </header>
 
-    <main class="p-4">
+    <main class="flex-grow">
       <slot />
     </main>
+
+    <footer class="bg-zinc-950/90 border-t border-zinc-800 px-6 py-6 text-sm text-zinc-400">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <h2 id="footer-dev-irl" class="text-white font-semibold text-base mb-1">Dev IRL</h2>
+          <p class="text-zinc-400 text-sm">Start your journey</p>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold text-base mb-1">Explore</h3>
+          <ul class="space-y-1">
+            <li>
+              <NuxtLink to="/faq" class="hover:text-white hover:underline">FAQ</NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold text-base mb-1">Company</h3>
+          <ul class="space-y-1">
+            <li><a href="mailto:team@devirl.com" class="hover:text-white hover:underline">Contact</a></li>
+            <li>
+              <NuxtLink to="/privacy-policy" class="hover:text-white hover:underline">Privacy Policy</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/terms-and-conditions" class="hover:text-white hover:underline">Terms of Service</NuxtLink>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center text-xs text-zinc-600">
+        © {{ new Date().getFullYear() }} Dev IRL. All rights reserved.
+      </div>
+    </footer>
+
   </div>
 </template>

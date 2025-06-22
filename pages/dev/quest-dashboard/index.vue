@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Button } from "@/components/ui/button/variants";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "~/components/ui/button/variants";
 
 const statuses = [
   { key: "not-started", label: "Not Started", color: "gray" },
@@ -19,7 +19,7 @@ const statuses = [
         <CardContent class="p-6 space-y-6">
           <div class="flex items-center justify-between mb-4">
             <h1 class="text-4xl font-extrabold tracking-tight">
-              Dev Quest Dashboard
+               Quest Dashboard
             </h1>
           </div>
 
@@ -30,19 +30,11 @@ const statuses = [
           <Separator />
 
           <div class="flex flex-wrap gap-3 mb-4">
-            <NuxtLink
-              v-for="status in statuses"
-              :key="status.key"
-              :to="`/dev/quest-dashboard/${status.key}`"
-            >
-              <Button
-                class="capitalize text-white"
-                :class="[
-                  // base color + hover
-                  `bg-${status.color}-500 hover:bg-${status.color}-400`,
-                ]"
-                variant="default"
-              >
+            <NuxtLink v-for="status in statuses" :key="status.key" :to="`/dev/quest-dashboard/${status.key}`">
+              <Button class="capitalize text-white" :class="[
+                // base color + hover
+                `bg-${status.color}-500 hover:bg-${status.color}-400`,
+              ]" variant="default">
                 <!-- {{ status.icon }} -->
                 {{ status.label }}
               </Button>

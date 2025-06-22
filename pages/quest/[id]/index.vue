@@ -104,7 +104,7 @@ const reportError = ref(false);
       <div v-else-if="error" class="text-red-500">{{ error }}</div>
       <div v-else class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow">
 
-        <h2 class="text-2xl font-semibold mb-2 text-indigo-300 underline">
+        <h2 :id="`quest-title`" class="text-2xl font-semibold mb-2 text-indigo-300 underline">
           {{ result?.title }}
         </h2>
 

@@ -116,7 +116,7 @@ async function handleupdateQuestStatus(questId: string) {
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div v-for="quest in quests" :key="quest.questId"
           class="text-white p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full">
-          <h2 class="text-xl font-semibold text-zinc-400">
+          <h2 id="quest-title" class="text-xl font-semibold text-zinc-400">
             {{ quest.title }}
           </h2>
           <p class="text-white text-sm mt-2 mb-4">

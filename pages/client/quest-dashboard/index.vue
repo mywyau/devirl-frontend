@@ -20,7 +20,7 @@ const statuses = [
           
           <div class="flex items-center justify-between mb-4">
             <h1 class="text-4xl font-extrabold tracking-tight">
-              Client Quest Dashboard
+              Quest Dashboard
             </h1>
           </div>
 
