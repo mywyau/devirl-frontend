@@ -44,19 +44,19 @@ const handleLogout = () => {
           </NuxtLink>
 
           <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard" class="text-white hover:text-blue-400">
-            Client Quests Dashboard
+            Dashboard
           </NuxtLink>
 
           <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard" class="text-white hover:text-blue-400">
-            Dev Quests Dashboard
+            Dashboard
           </NuxtLink>
 
           <NuxtLink v-if="userType === 'Dev'" to="/dev/profile" class="text-white hover:text-blue-400">
-            Dev Profile
+            Profile
           </NuxtLink>
 
           <NuxtLink v-if="userType === 'Client'" to="/client/profile" class="text-white hover:text-blue-400">
-            Client Profile
+            Profile
           </NuxtLink>
 
           <a href="#" @click.prevent="handleLogout" class="text-white hover:text-red-400 text-base">Logout</a>
@@ -83,21 +83,18 @@ const handleLogout = () => {
       <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <h2 class="text-white font-semibold text-base mb-1">Dev IRL</h2>
-          <p class="text-zinc-500 text-sm">Build your reputation. Complete real-world coding quests.</p>
+          <p class="text-zinc-400 text-sm">Start your journey</p>
         </div>
 
         <div>
           <h3 class="text-white font-semibold text-base mb-1">Explore</h3>
           <ul class="space-y-1">
             <li>
-              <NuxtLink to="/quests" class="hover:text-white">Quests</NuxtLink>
-            </li>
-            <li>
               <NuxtLink to="/faq" class="hover:text-white">FAQ</NuxtLink>
             </li>
-            <li>
+            <!-- <li>
               <NuxtLink to="/about" class="hover:text-white">About</NuxtLink>
-            </li>
+            </li> -->
           </ul>
         </div>
 
