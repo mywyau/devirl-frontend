@@ -82,7 +82,7 @@ const handleLogout = () => {
     <footer class="bg-zinc-950/90 border-t border-zinc-800 px-6 py-6 text-sm text-zinc-400">
       <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <h2 class="text-white font-semibold text-base mb-1">Dev IRL</h2>
+          <h2 id="footer-dev-irl" class="text-white font-semibold text-base mb-1">Dev IRL</h2>
           <p class="text-zinc-400 text-sm">Start your journey</p>
         </div>
 
@@ -90,23 +90,20 @@ const handleLogout = () => {
           <h3 class="text-white font-semibold text-base mb-1">Explore</h3>
           <ul class="space-y-1">
             <li>
-              <NuxtLink to="/faq" class="hover:text-white">FAQ</NuxtLink>
+              <NuxtLink to="/faq" class="hover:text-white hover:underline">FAQ</NuxtLink>
             </li>
-            <!-- <li>
-              <NuxtLink to="/about" class="hover:text-white">About</NuxtLink>
-            </li> -->
           </ul>
         </div>
 
         <div>
           <h3 class="text-white font-semibold text-base mb-1">Company</h3>
           <ul class="space-y-1">
-            <li><a href="mailto:team@devirl.com" class="hover:text-white">Contact</a></li>
+            <li><a href="mailto:team@devirl.com" class="hover:text-white hover:underline">Contact</a></li>
             <li>
-              <NuxtLink to="/privacy" class="hover:text-white">Privacy Policy</NuxtLink>
+              <NuxtLink to="/privacy-policy" class="hover:text-white hover:underline">Privacy Policy</NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/terms" class="hover:text-white">Terms of Service</NuxtLink>
+              <NuxtLink to="/terms-and-conditions" class="hover:text-white hover:underline">Terms of Service</NuxtLink>
             </li>
           </ul>
         </div>

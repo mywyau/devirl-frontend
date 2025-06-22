@@ -127,6 +127,7 @@ async function loadEstimates() {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-4xl mx-auto">
+
       <h1 class="text-3xl font-bold mb-6 text-pink-300">Quest Details</h1>
 
       <!-- 1) SSR (and hydration) show “Loading…” until getQuest resolves -->
@@ -146,7 +147,7 @@ async function loadEstimates() {
       <!-- 4) Otherwise, render the quest that SSR fetched -->
       <div v-else class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow">
 
-        <h2 :class="`text-2xl font-semibold ${getStatusTextColour(result?.status?.toString())} mb-2`">
+        <h2 :id="`quest-title`" :class="`text-2xl font-semibold ${getStatusTextColour(result?.status?.toString())} mb-2`">
           {{ result?.title }}
         </h2>
 
