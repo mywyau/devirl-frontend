@@ -33,11 +33,11 @@ function toggleTag(tag: string) {
 
 <template>
   <div class="space-y-2">
-    <input v-model="search" placeholder="Search languages..." class="w-full p-2 rounded border border-zinc-300" />
+    <input id="language-tag-selector" v-model="search" placeholder="Search languages..." class="w-full p-2 rounded border border-zinc-300" />
 
     <ul v-if="search.length > 0 && filteredOptions.length > 0"
       class="max-h-40 overflow-auto bg-white border border-zinc-200 rounded shadow">
-      <li v-for="opt in filteredOptions" :key="opt" @click="toggleTag(opt)"
+      <li :id="`language-opt-${opt.toLowerCase()}`" v-for="opt in filteredOptions" :key="opt" @click="toggleTag(opt)"
         class="px-4 py-2 hover:bg-green-100 cursor-pointer">
         {{ opt }}
       </li>

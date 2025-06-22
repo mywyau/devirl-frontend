@@ -140,7 +140,6 @@ async function handleSubmit() {
 
         <p v-if="submissionError" class="mb-10 text-red-400">{{ submissionError }}</p>
 
-
         <div class="flex flex-col mb-6">
           <label for="rank-select" class="text-sm font-medium text-white">
             Quest Tier

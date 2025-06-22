@@ -187,7 +187,7 @@ async function loadEstimates() {
           </a>
 
           <!-- Delete button (client‐only interaction) -->
-          <Button v-if="result?.status.toString() == `Open`" variant="secondary"
+          <Button v-if="result?.status.toString() == `Open` || result?.status.toString() == `Completed`" variant="secondary"
             class="bg-red-600 text-white rounded hover:bg-red-500" @click="handleDeleteQuest">
             Delete quest
           </Button>

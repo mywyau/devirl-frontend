@@ -21,14 +21,16 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <div class="bg-gradient-to-br from-zinc-900 via-zinc-800 to-black min-h-screen font-sans">
-    <header class="px-6 py-4 border-b border-zinc-700 flex justify-between items-center">
+  <div
+    class="flex flex-col overflow-x-hidden bg-gradient-to-br from-zinc-900 via-zinc-800 to-black min-h-screen font-sans">
+    <header class="bg-zinc-950/90 px-6 py-4 border-b border-zinc-700 flex justify-between items-center">
       <NuxtLink to="/" class="text-xl font-bold text-white hover:text-teal-400">
         Dev Irl
       </NuxtLink>
 
       <nav class="space-x-6 flex items-center">
         <template v-if="user">
+
           <NuxtLink to="/view-all/quests" class="text-white hover:text-green-400">
             View all quests
           </NuxtLink>
@@ -73,8 +75,50 @@ const handleLogout = () => {
       </nav>
     </header>
 
-    <main class="p-4">
+    <main class="flex-grow">
       <slot />
     </main>
+
+    <footer class="bg-zinc-950/90 border-t border-zinc-800 px-6 py-6 text-sm text-zinc-400">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <h2 class="text-white font-semibold text-base mb-1">Dev IRL</h2>
+          <p class="text-zinc-500 text-sm">Build your reputation. Complete real-world coding quests.</p>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold text-base mb-1">Explore</h3>
+          <ul class="space-y-1">
+            <li>
+              <NuxtLink to="/quests" class="hover:text-white">Quests</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/faq" class="hover:text-white">FAQ</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/about" class="hover:text-white">About</NuxtLink>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-white font-semibold text-base mb-1">Company</h3>
+          <ul class="space-y-1">
+            <li><a href="mailto:team@devirl.com" class="hover:text-white">Contact</a></li>
+            <li>
+              <NuxtLink to="/privacy" class="hover:text-white">Privacy Policy</NuxtLink>
+            </li>
+            <li>
+              <NuxtLink to="/terms" class="hover:text-white">Terms of Service</NuxtLink>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-6 text-center text-xs text-zinc-600">
+        © {{ new Date().getFullYear() }} Dev IRL. All rights reserved.
+      </div>
+    </footer>
+
   </div>
 </template>
