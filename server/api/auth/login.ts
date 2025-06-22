@@ -1,13 +1,25 @@
-import { useRuntimeConfig } from "#imports";
+// import { useRuntimeConfig } from "#imports";
 import { createError, defineEventHandler, sendRedirect } from "h3";
 
-const runtimeConf = useRuntimeConfig();
 
-const auth0Domain = runtimeConf.public.auth0Domain;
-const auth0ClientId = runtimeConf.public.auth0ClientId;
-const auth0CallbackUrl = runtimeConf.public.auth0CallbackUrl;
+// Old
+// const runtimeConf = useRuntimeConfig();
+
+// const auth0Domain = runtimeConf.public.auth0Domain;
+// const auth0ClientId = runtimeConf.public.auth0ClientId;
+// const auth0CallbackUrl = runtimeConf.public.auth0CallbackUrl;
+
+// new
+  // const auth0Domain = process.env.NUXT_PUBLIC_AUTH0_DOMAIN
+  // const auth0ClientId = process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID;
+  // const auth0CallbackUrl = process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL;
 
 export default defineEventHandler(async (event) => {
+
+  const auth0Domain = process.env.NUXT_PUBLIC_AUTH0_DOMAIN;
+  const auth0ClientId = process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID;
+  const auth0CallbackUrl = process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL;
+
   if (!auth0Domain || !auth0ClientId || !auth0CallbackUrl) {
     throw createError({
       statusCode: 500,

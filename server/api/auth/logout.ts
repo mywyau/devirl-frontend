@@ -6,15 +6,19 @@ import { $fetch } from "ofetch";
 import { loadConfig } from "~/configuration/ConfigLoader";
 import { sessionOptions } from "~/server/utils/sessionOptions"; // ✅ import the shared options
 
-import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
+// const runtimeConf = useRuntimeConfig();
 
-const runtimeConf = useRuntimeConfig();
+// const auth0Domain = runtimeConf.public.auth0Domain;
+// const auth0ClientId = runtimeConf.public.auth0ClientId;
 
-const auth0Domain = runtimeConf.public.auth0Domain;
-const auth0ClientId = runtimeConf.public.auth0ClientId;
-const auth0CallbackUrl = runtimeConf.public.auth0CallbackUrl;
+// const auth0Domain = process.env.NUXT_PUBLIC_AUTH0_DOMAIN;
+// const auth0ClientId = process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID;
 
 export default defineEventHandler(async (event) => {
+
+  const auth0Domain = process.env.NUXT_PUBLIC_AUTH0_DOMAIN;
+  const auth0ClientId = process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID;
+
   const config = loadConfig();
 
   const session = await getIronSession(event.node.req, event.node.res, {
@@ -58,7 +62,6 @@ export default defineEventHandler(async (event) => {
     secure: process.env.NODE_ENV === "production",
     maxAge: 0, // ← removes the cookie
   });
-
 
   if (!auth0Domain || !auth0ClientId) {
     throw new Error("Missing Auth0 environment variables");

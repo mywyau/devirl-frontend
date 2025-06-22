@@ -6,17 +6,19 @@ import { sessionOptions } from "@/server/utils/sessionOptions";
 import type { UserData } from "@/types/schema/UserDataSchema";
 import { UserDataSchema } from "@/types/schema/UserDataSchema";
 import type { SessionData } from "@/types/SessionData";
-import { createError, getQuery, setCookie } from "h3";
+import { createError, setCookie } from "h3";
 import { getIronSession } from "iron-session";
 
-import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
+// import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes
 
-const runtimeConf = useRuntimeConfig();
+// const runtimeConf = useRuntimeConfig();
 
 // const isProd = runtimeConf.public.auth0Domain;
-const auth0Domain = runtimeConf.public.auth0Domain;
-const auth0ClientId = runtimeConf.public.auth0ClientId;
-const auth0CallbackUrl = runtimeConf.public.auth0CallbackUrl;
+// const auth0Domain = runtimeConf.public.auth0Domain;
+// const auth0ClientId = runtimeConf.public.auth0ClientId;
+// const auth0CallbackUrl = runtimeConf.public.auth0CallbackUrl;
+
+const auth0CallbackUrl = process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL;
 
 export function getSessionCookieHeader(
   raw: string | string[] | number | undefined
@@ -30,8 +32,7 @@ export function getSessionCookieHeader(
 const isProd = process.env.NODE_ENV === "production";
 console.log("[isProd] CallbackHelpers ", isProd);
 
-export async function getAccessToken(code:string): Promise<string> {
-
+export async function getAccessToken(code: string): Promise<string> {
   if (!code) throw createError({ statusCode: 400, message: "Missing code" });
 
   const redirectUri = auth0CallbackUrl!;
@@ -61,10 +62,6 @@ export async function storeSession(event: any, user: any): Promise<string> {
   );
   session.user = user;
   await session.save();
-  // console.log(
-  //   "[callback] Set-Cookie header:",
-  //   event.node.res.getHeader("Set-Cookie")
-  // );
   return getSessionCookieHeader(event.node.res.getHeader("Set-Cookie"));
 }
 

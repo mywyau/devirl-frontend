@@ -1,9 +1,17 @@
 // ./server/utils/sessionOptions
 
-import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes but fails in unit tests considering going back to .env or some other config file
-const runtimeConf = useRuntimeConfig();
+// import { useRuntimeConfig } from "#imports"; // ✅ allowed in server routes but fails in unit tests considering going back to .env or some other config file
 
-const sessionSecret = runtimeConf.public.sessionSecret
+// export function getSessionSecret() {
+//   const runtimeConf = useRuntimeConfig();
+//   return runtimeConf.public.sessionSecret;
+// }
+
+// const runtimeConf = useRuntimeConfig();
+
+// const sessionSecret = runtimeConf.public.sessionSecret;
+
+const sessionSecret = process.env.SESSION_SECRET;
 
 const isProd = process.env.NODE_ENV === "production";
 
