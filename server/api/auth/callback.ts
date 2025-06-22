@@ -9,8 +9,8 @@ import { createUserNuxtServerToScalaServer } from "@/controllers/RegistrationCon
 import { UserDataSchema } from "@/types/schema/UserDataSchema";
 
 export default defineEventHandler(async (event) => {
+  
   const { code } = getQuery(event);
-  // const runtimeConf = useRuntimeConfig();
   const isProd = process.env.NODE_ENV === "production";
 
   if (!code || typeof code !== "string") {
