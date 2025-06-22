@@ -73,10 +73,12 @@ async function fetchQuests() {
       </div>
 
       <div class="grid gap-6" v-else>
-        <div v-for="quest in quests" :key="quest.questId" class="p-4 rounded-xl shadow bg-white/10">
+        <div v-for="(quest, index) in quests" :key="quest.questId" class="p-4 rounded-xl shadow bg-white/10">
 
-          <h2 class="text-xl font-semibold text-indigo-300">{{ quest.title }}</h2>
-
+          <h2 :id="`quest-title-${index}`" class="text-xl font-semibold text-indigo-300">
+            {{ quest.title }}
+          </h2>
+          
           <div class="flex justify-between items-center mb-1">
             <div class="flex flex-wrap gap-2 mt-2">
               <span v-for="tag in quest.tags" :key="tag" class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
@@ -96,11 +98,8 @@ async function fetchQuests() {
             <span class="font-mono text-sm text-green-400">💰 £{{ quest.bounty || 0.0 }}</span>
 
             <div class="flex space-x-4 ml-auto">
-              <NuxtLink 
-                v-if="userType == 'Dev'"
-                :to="`/quest/estimation/${quest.questId}`" 
-                :id="`estimation-link-${quest.questId}`"
-                :data-testid="`estimation-link-${quest.questId}`"
+              <NuxtLink v-if="userType == 'Dev'" :to="`/quest/estimation/${quest.questId}`"
+                :id="`estimation-link-${quest.questId}`" :data-testid="`estimation-link-${quest.questId}`"
                 class="text-white hover:underline hover:text-teal-300">
                 Estimations
               </NuxtLink>

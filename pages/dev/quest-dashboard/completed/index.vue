@@ -89,7 +89,7 @@ onMounted(() => {
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div v-for="quest in quests" :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full">
-          <h2 class="text-xl font-semibold text-green-300">
+          <h2 id="quest-title" class="text-xl font-semibold text-green-300">
             {{ quest.title }}
           </h2>
 
