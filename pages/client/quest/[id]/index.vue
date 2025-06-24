@@ -158,7 +158,7 @@ async function loadEstimates() {
 
           <span :class="`capitalize ${getStatusTextColour(result?.status?.toString())}`">{{
             result?.status.toString()
-          }}</span>
+            }}</span>
         </div>
 
         <div class="mt-6 flex gap-4">
@@ -192,6 +192,13 @@ async function loadEstimates() {
             class="bg-red-600 text-white rounded hover:bg-red-500" @click="handleDeleteQuest">
             Delete quest
           </Button>
+
+          <a v-if="result?.status.toString() == `Open`" :href="`/payment/${questId}`" rel="external"
+            class="text-white">
+            <Button variant="secondary" class="bg-emerald-500 text-white rounded hover:bg-emerald-400">
+              Make payment
+            </Button>
+          </a>
         </div>
 
         <!-- Past Reviews -->
