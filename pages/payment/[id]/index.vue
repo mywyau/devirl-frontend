@@ -13,9 +13,10 @@ const questIdFromRoute = route.params.id as string
 const { data: user } = await useAuthUser()
 const safeUserId = computed(() => user.value?.sub)
 
-// const developerStripeId = computed(() => user.value?.stripeId ?? '') // 👈 your backend must populate this
+const payementAmount = 3000
+const feeMultiplier = 1.025
 
-const amountCents = ref(3000)
+const amountCents = ref(Math.ceil(payementAmount * feeMultiplier))
 const error = ref(null)
 
 const redirectToStripeCheckout = async () => {
@@ -25,7 +26,6 @@ const redirectToStripeCheckout = async () => {
     error.value = 'Missing user ID or Stripe ID'
     return
   }
-
 
   try {
     const result = await $fetch(`${baseUrl}stripe/checkout/${encodeURIComponent(safeUserId.value)}/${questIdFromRoute}`, {
@@ -68,11 +68,6 @@ const redirectToStripeCheckout = async () => {
           Checkout
         </button>
       </form>
-
-      <!-- <div v-if="response" class="mt-6 bg-green-100 border border-green-400 text-green-800 rounded p-4">
-                <p class="font-semibold">Stripe client secret:</p>
-                <pre class="mt-2 break-all text-sm">{{ response.clientSecret }}</pre>
-            </div> -->
 
       <div v-if="error" class="mt-6 bg-red-100 border border-red-400 text-red-800 rounded p-4">
         <p class="font-semibold">Error:</p>

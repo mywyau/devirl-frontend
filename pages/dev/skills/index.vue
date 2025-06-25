@@ -1,59 +1,11 @@
 <script setup lang="ts">
+
 import { useAuthUser } from '@/composables/useAuthUser';
 import { getAllProfileSkillData } from '@/controllers/ProfileController';
 import { type ProfileData } from '@/types/schema/ProfileDataSchema';
 import { useAsyncData } from 'nuxt/app';
 import { computed } from 'vue';
 
-
-
-// const skills = [
-//   {
-//     name: "Questing",
-//     level: 50,
-//     xp: 120000,
-//     nextLevelXP: 200000,
-//   },
-//   {
-//     name: "Reviewing",
-//     level: 4,
-//     xp: 512,
-//     nextLevelXP: 620,
-//   },
-//   {
-//     name: "Testing",
-//     level: 4,
-//     xp: 200,
-//     nextLevelXP: 400,
-//   }
-// ]
-
-// const languages = [
-//   {
-//     name: "Java",
-//     level: 50,
-//     xp: 120000,
-//     nextLevelXP: 200000,
-//   },
-//   {
-//     name: "Python",
-//     level: 10,
-//     xp: 7899,
-//     nextLevelXP: 11899,
-//   },
-//   {
-//     name: "Scala",
-//     level: 30,
-//     xp: 100000,
-//     nextLevelXP: 120000,
-//   },
-//   {
-//     name: "Typescript",
-//     level: 21,
-//     xp: 50324,
-//     nextLevelXP: 69000,
-//   },
-// ]
 
 // 2) Resolve the logged-in user (top-level await)
 const { data: user, error: userError } = await useAuthUser();
@@ -76,8 +28,6 @@ const {
 const result = computed<ProfileData | null>(() => {
   return profileSkillData.value.find((d) => d.devId === safeUserId.value) ?? null;
 });
-
-
 
 </script>
 
@@ -124,7 +74,7 @@ const result = computed<ProfileData | null>(() => {
               <div class="bg-green-500 h-3" :style="{ width: progressPercent(data.skillXp, data.skillLevel) + '%' }">
               </div>
             </div> -->
-            
+
             <p class="text-zinc-200/90 text-xs mt-1">{{ data.languageXp }} / {{ 13000000 }} XP</p>
             <!-- <p class="text-zinc-200/90 text-xs mt-1">{{ data.languageXp }} XP</p> -->
           </div>
