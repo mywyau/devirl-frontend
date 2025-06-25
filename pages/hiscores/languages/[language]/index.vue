@@ -7,6 +7,7 @@ const route = useRoute()
 const languageId = route.params.language?.toString() || 'Rip no langauge found - error'
 
 // Fetch language data via useAsyncData (runs on server, then hydrates)
+
 const {
     data: languageData,
     pending,
@@ -31,12 +32,12 @@ const skillLinks = [
 ]
 
 const languageLinks = [
-    "java",
-    "python",
-    "rust",
-    "scala",
-    "sql",
-    "typescript",
+    "Java",
+    "Python",
+    "Rust",
+    "Scala",
+    "Sql",
+    "TypeScript",
 ]
 
 

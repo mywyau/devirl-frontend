@@ -2,15 +2,20 @@
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+function roundUpTo2DP(value: number): number {
+  return Math.ceil(value * 100) / 100
+}
 
 const platformFeePercent = 2.5 // e.g., 2.5%
+
 const fee = computed(() => {
-  return rewardAmount.value ? +(rewardAmount.value * (platformFeePercent / 100)).toFixed(2) : 0
+  return rewardAmount.value ? roundUpTo2DP(rewardAmount.value * (platformFeePercent / 100)) : 0
 })
 
 const totalToPay = computed(() => {
-  return rewardAmount.value ? +(rewardAmount.value + fee.value).toFixed(2) : 0
+  return rewardAmount.value ? roundUpTo2DP(rewardAmount.value + fee.value) : 0
 })
+
 
 const router = useRouter()
 

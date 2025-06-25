@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
 import {
+  completeQuestRequest,
   streamAllQuestsByStatus,
   updateQuestStatusRequest,
-  completeQuestRequest,
 } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
@@ -157,6 +157,14 @@ async function handleUpdateQuestToFailed(questId: string) {
           </NuxtLink>
 
           <div class="mt-auto flex flex-nowrap justify-end gap-3 overflow-auto">
+
+            <a :href="`/payment/${quest.questId}`" rel="external" class="text-white">
+              <Button :to="`/payment/${quest.questId}`" variant="secondary"
+                class="bg-indigo-500 text-white rounded hover:bg-indigo-400 px-4 py-2 text-sm"
+              >
+                Make Payment
+              </Button>
+            </a>
 
             <Button variant="secondary" class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 text-sm"
               @click="handleUpdateQuestToCompleted(quest.questId, quest.rank)">
