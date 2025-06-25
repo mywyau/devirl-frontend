@@ -104,7 +104,7 @@ onMounted(() => {
             Your Profile
           </h1>
 
-          <div v-if="isLoading">Loading...</div>
+          <div class="text-white" v-if="isLoading">Loading...</div>
           <div v-else>
             <div v-if="userProfile">
               <div class="space-y-4">
