@@ -26,7 +26,6 @@ const redirectToStripeCheckout = async () => {
     return
   }
 
-
   try {
     const result = await $fetch(`${baseUrl}stripe/checkout/${encodeURIComponent(safeUserId.value)}/${questIdFromRoute}`, {
       method: 'POST',

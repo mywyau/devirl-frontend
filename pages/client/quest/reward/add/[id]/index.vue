@@ -12,9 +12,7 @@ const totalToPay = computed(() => {
   return rewardAmount.value ? +(rewardAmount.value + fee.value).toFixed(2) : 0
 })
 
-
 const router = useRouter()
-
 
 // 1) Grab the route param
 const route = useRoute();
@@ -76,11 +74,7 @@ async function submitReward() {
       </div>
 
       <div v-if="rewardAmount && rewardAmount > 0" class="mt-4 mb-6 text-base text-zinc-300 space-y-">
-<<<<<<< Updated upstream
         <p><strong>Developer Reward:</strong> £{{ rewardAmount.toFixed(2) }}</p>
-=======
-        <p><strong>Reward to Developer:</strong> £{{ rewardAmount.toFixed(2) }}</p>
->>>>>>> Stashed changes
         <p><strong>Platform Fee ({{ platformFeePercent }}%):</strong> £{{ fee.toFixed(2) }}</p>
         <p class="text-green-300 font-semibold">
           <strong>Total:</strong> £{{ totalToPay.toFixed(2) }}
