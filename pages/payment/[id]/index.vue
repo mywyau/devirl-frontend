@@ -12,6 +12,7 @@ const questIdFromRoute = route.params.id as string
 
 const { data: user } = await useAuthUser()
 const safeUserId = computed(() => user.value?.sub)
+
 // const developerStripeId = computed(() => user.value?.stripeId ?? '') // 👈 your backend must populate this
 
 const amountCents = ref(3000)
@@ -32,7 +33,7 @@ const redirectToStripeCheckout = async () => {
       credentials: 'include',
       body: {
         // developerStripeId: developerStripeId.value || "mikey",
-        developerStripeId: "acct_1RdF3K00PNiuKiA4",
+        developerStripeId: "acct_1Rdaw5P6Ctxbgnqx",
         amountCents: amountCents.value,
       },
     })
