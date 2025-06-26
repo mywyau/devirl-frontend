@@ -1,21 +1,12 @@
 <script setup lang="ts">
-import { useAuthUser } from '@/composables/useAuthUser';
-import { loadConfig } from '@/configuration/ConfigLoader';
 import { computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
-
-const config = loadConfig()
-const baseUrl = `${config.devQuestBackend.baseUrl}/`
-
-
-const { data: user } = await useAuthUser()
-const safeUserId = computed(() => user.value?.sub)
+import { useRoute, useRouter } from 'vue-router';
 
 function roundUpTo2DP(value: number): number {
   return Math.ceil(value * 100) / 100
 }
 
-const platformFeePercent = 2.5 // e.g., 2.5%
+const platformFeePercent = 2.5 
 
 const fee = computed(() => {
   return rewardAmount.value ? roundUpTo2DP(rewardAmount.value * (platformFeePercent / 100)) : 0
@@ -26,15 +17,17 @@ const totalToPay = computed(() => {
 })
 
 
+const router = useRouter()
+
 // 1) Grab the route param
 const route = useRoute();
 const questIdFromRoute = route.params.id as string;
 
+
 // Get quest ID from route
 const questId = questIdFromRoute
-
-// const clientId = 'mock-client-id' // Replace with session/composable logic
-// const devId = 'mock-dev-id' // You might auto-fill this from quest data
+const clientId = 'mock-client-id' // Replace with session/composable logic
+const devId = 'mock-dev-id' // You might auto-fill this from quest data
 
 const rewardAmount = ref<number | null>(null)
 const success = ref(false)
@@ -47,25 +40,21 @@ async function submitReward() {
   }
 
   try {
-
-    const rewardCents = Math.round(rewardAmount.value * 100) // convert to cents/pence
-
-
-    await $fetch(`${baseUrl}reward/create/${encodeURIComponent(safeUserId.value)}`, {
+    // Mocked POST call
+    await $fetch('/api/rewards/add', {
       method: 'POST',
-      credentials: "include",
       body: {
-        questId: questId,
-        rewardValue: rewardCents
+        quest_id: questId,
+        client_id: clientId,
+        dev_id: devId,
+        base_reward: rewardAmount.value
       }
     })
 
     success.value = true
     error.value = null
-
     // Optionally redirect
-    // setTimeout(() => router.push('/client/quests'), 2000)
-
+    setTimeout(() => router.push('/client/quests'), 2000)
   } catch (e: any) {
     error.value = 'Failed to save reward. Please try again.'
     console.error(e)

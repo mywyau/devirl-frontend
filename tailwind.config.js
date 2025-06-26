@@ -18,6 +18,18 @@ export default {
   ],
   theme: {
     extend: {
+      animation: {
+        shimmer: "shimmer 2s linear infinite",
+      },
+       keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+      },
+      backgroundSize: {
+        shimmer: '400% 100%',
+      },
       colors: {
         brand: {
           DEFAULT: "#6366F1",   // Indigo 500

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RewardDataSchema } from "./RewardSchema";
 
 // Zod schema
 export const QuestStatusSchema = z.enum([
@@ -53,3 +54,10 @@ export const CompleteQuestSchema = z.object({
 });
 
 export type CompleteQuestPayload = z.infer<typeof CompleteQuestSchema>;
+
+export const QuestWithRewardSchema = z.object({
+  quest: QuestPartialSchema,
+  reward: RewardDataSchema,
+});
+
+export type QuestWithReward = z.infer<typeof QuestWithRewardSchema>;
