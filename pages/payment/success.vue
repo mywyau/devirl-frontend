@@ -6,6 +6,7 @@ onMounted(() => {
     // Optional: trigger any backend logic or refresh state
     console.log('Payment successful')
 })
+
 </script>
 
 <template>

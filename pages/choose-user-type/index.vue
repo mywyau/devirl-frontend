@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { useAuthUser } from "@/composables/useAuthUser";
-import { updateUserType } from "@/controllers/RegistrationController";
-import { ref } from "vue";
-import { z } from "zod";
 
-import type { UpdateUserType } from "@/types/schema/UserDataSchema";
-import { UpdateUserTypeSchema } from "@/types/schema/UserDataSchema";
+import { useAuthUser } from "@/composables/useAuthUser";
+import { ref } from "vue";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// const role = ref<string>("");
+
+import { submitUserTypeUpdate } from "@/controllers/RegistrationController";
 
 const userTypeForm = ref({
   username: "",
@@ -35,39 +32,16 @@ const updateRole = async () => {
   userTypeSuccess.value = false;
 
   const safeUserId = user.value?.sub;
-  if (!safeUserId) {
-    userTypeError.value = "User ID is missing. Please log in again.";
-    return;
-  }
 
-  try {
+  const result = await submitUserTypeUpdate(safeUserId, userTypeForm.value);
 
-    console.log(userTypeForm.value.username)
-    console.log(userTypeForm.value.userType)
-
-    const payload: UpdateUserType = UpdateUserTypeSchema.parse(
-      {
-        username: userTypeForm.value.username,
-        userType: userTypeForm.value.userType
-      }
-    );
-    await updateUserType(safeUserId, payload);
-
+  if (result.success) {
     userTypeSuccess.value = true;
-
-    // Refresh server session so role changes propagate
-    await $fetch("/api/auth/refresh-session", {
-      method: "POST",
-      credentials: "include",
-    });
-  } catch (e: any) {
-    if (e instanceof z.ZodError) {
-      userTypeError.value = e.errors.map((err) => err.message).join(", ");
-    } else {
-      userTypeError.value = e.data?.message || "Something went wrong";
-    }
+  } else {
+    userTypeError.value = result.error || "Error when submitting registration details";
   }
 };
+
 </script>
 
 <template>

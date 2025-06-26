@@ -13,7 +13,7 @@ export const getFileMetaDataUrl = (questId: string) =>
 export const preSignedDownloadUrl = () => `${baseUrl}s3/presign-download`;
 
 export async function getFileMetaData(questId: string) {
-  console.log(getFileMetaDataUrl(questId));
+
   return await $fetch(getFileMetaDataUrl(questId), {
     method: "GET",
     credentials: "include",
