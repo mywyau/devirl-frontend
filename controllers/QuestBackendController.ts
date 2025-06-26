@@ -60,6 +60,10 @@ const getAllQuestUrlForUser = (userId: string) =>
 const streamAllQuestUrl = (userId: string) =>
   `${baseUrl}quest/stream/all/${encodeURIComponent(userId)}`;
 
+const streamAllQuestWithRewardUrl = (userId: string) =>
+  `${baseUrl}quest/reward/stream/${encodeURIComponent(userId)}`;
+
+
 const streamQuestByStatusUrl = (
   userId: string,
   questStatus: QuestStatus,
@@ -222,6 +226,53 @@ export async function* streamAllQuestsForUser(
 
 export async function* streamAllQuests(userId: string) {
   const res = await fetch(streamAllQuestUrl(userId), {
+    credentials: "include",
+  });
+
+  if (!res.ok || !res.body) {
+    throw new Error(`[streamAllQuests] Failed with status ${res.status}`);
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+
+    let newlineIndex;
+    while ((newlineIndex = buffer.indexOf("\n")) >= 0) {
+      const line = buffer.slice(0, newlineIndex).trim();
+      buffer = buffer.slice(newlineIndex + 1);
+
+      if (line) {
+        try {
+          yield JSON.parse(line);
+        } catch (err) {
+          console.error("[streamAllQuests] Failed to parse line:", line, err);
+        }
+      }
+    }
+  }
+
+  if (buffer.trim()) {
+    try {
+      yield JSON.parse(buffer.trim());
+    } catch (err) {
+      console.error(
+        "[streamAllQuests] Failed to parse final line:",
+        buffer,
+        err
+      );
+    }
+  }
+}
+
+export async function* streamAllQuestsReward(userId: string) {
+  const res = await fetch(streamAllQuestWithRewardUrl(userId), {
     credentials: "include",
   });
 

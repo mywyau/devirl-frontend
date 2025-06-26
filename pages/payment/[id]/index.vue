@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
 import { loadConfig } from '@/configuration/ConfigLoader';
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 
 const config = loadConfig()
@@ -13,11 +13,28 @@ const questIdFromRoute = route.params.id as string
 const { data: user } = await useAuthUser()
 const safeUserId = computed(() => user.value?.sub)
 
-const payementAmount = 3000
+const paymentAmount = ref(0)
 const feeMultiplier = 1.025
+const amountCents = computed(() => Math.ceil(paymentAmount.value * feeMultiplier))
+const amountDollars = computed(() => (amountCents.value / 100).toFixed(2))
+const error = ref<string | null>(null)
+const success = ref(false)
 
-const amountCents = ref(Math.ceil(payementAmount * feeMultiplier))
-const error = ref(null)
+onMounted(async () => {
+  try {
+    const result = await $fetch<{rewardValue: number}>(`${baseUrl}reward/${encodeURIComponent(safeUserId.value!)}/${questIdFromRoute}`, {
+      method: 'GET',
+      credentials: "include"
+    })
+
+    paymentAmount.value = result.rewardValue 
+    success.value = true
+    error.value = null
+  } catch (e: any) {
+    error.value = 'Failed to load reward. Please try again.'
+    console.error(e)
+  }
+})
 
 const redirectToStripeCheckout = async () => {
   error.value = null
@@ -28,11 +45,10 @@ const redirectToStripeCheckout = async () => {
   }
 
   try {
-    const result = await $fetch(`${baseUrl}stripe/checkout/${encodeURIComponent(safeUserId.value)}/${questIdFromRoute}`, {
+    const result = await $fetch<{ url: string }>(`${baseUrl}stripe/checkout/${encodeURIComponent(safeUserId.value)}/${questIdFromRoute}`, {
       method: 'POST',
       credentials: 'include',
       body: {
-        // developerStripeId: developerStripeId.value || "mikey",
         developerStripeId: "acct_1Rdaw5P6Ctxbgnqx",
         amountCents: amountCents.value,
       },
@@ -43,14 +59,12 @@ const redirectToStripeCheckout = async () => {
     }
 
     window.location.href = result.url
-  } catch (err) {
+  } catch (err: any) {
     console.error('Checkout error:', err)
     error.value = err?.message || 'Unexpected error during Stripe checkout'
   }
-
 }
 </script>
-
 
 <template>
   <NuxtLayout>
@@ -59,8 +73,7 @@ const redirectToStripeCheckout = async () => {
 
       <form @submit.prevent="redirectToStripeCheckout" class="space-y-6">
         <div>
-          <label class="block text-xl font-medium text-white pb-4">Amount (cents)</label>
-          <p class="block text-xl font-medium text-white">$ {{ amountCents }} </p>
+          <p class="block text-xl font-medium text-white">$ {{ amountDollars  }} </p>
         </div>
 
         <button type="submit"

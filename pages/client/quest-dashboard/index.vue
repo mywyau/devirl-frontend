@@ -51,7 +51,7 @@ const statuses = [
 
             <div class="ml-auto flex space-x-3">
               <NuxtLink
-                to="/client/quests"
+                to="/client/quests/view-all"
                 class="inline-flex items-center justify-center rounded-md bg-indigo-500 px-4 py-2 text-sm text-white hover:bg-indigo-400"
               >
                 View my quests

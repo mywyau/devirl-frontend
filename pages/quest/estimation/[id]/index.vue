@@ -6,6 +6,9 @@ import { CreateEstimateSchema, type CreateEstimate, type GetEstimate } from "@/t
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { useRoute } from "nuxt/app";
 import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 // 1) Grab the route param
 const route = useRoute();
@@ -15,8 +18,11 @@ const questIdFromRoute = route.params.id as string;
 const { data: user, error: userError } = await useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
 
+function refreshPage() {
+    router.go(0);
+}
 
-const level = ref<string | null>(null);
+const rank = ref<string | null>(null);
 const comment = ref("");
 
 const levelOptions = [
@@ -43,72 +49,13 @@ const estimateCreatePayload = ref<CreateEstimate>(
     }
 );
 
-// async function submitEstimation() {
-
-//     // ✅ Always clear error first
-//     submissionError.value = null;
-//     submissionSuccess.value = false;
-
-//     const payload = {
-//         questId: questIdFromRoute,
-//         rank: level.value!,
-//         comment: comment.value
-//     };
-
-//     // if (payload.tags.length === 0) {
-//     //     submissionError.value = "Please select at least one tag.";
-//     //     return;
-//     // }
-
-//     isSubmitting.value = true;
-
-//     const userId = user.value?.sub;
-//     if (!userId) {
-//         submissionError.value = "User ID not available.";
-//         isSubmitting.value = false;
-//         return;
-//     }
-
-//     console.log("Final payload being sent:");
-//     console.log(JSON.stringify(payload, null, 2));
-
-
-//     const parsed = CreateEstimateSchema.safeParse(payload)
-
-//     if (!parsed.success) {
-//         submissionError.value = "Validation error: " + JSON.stringify(parsed.error.format());
-//         isSubmitting.value = false;
-//         return;
-//     } else {
-//         try {
-//             const result = await createEstimate(userId, parsed.data);
-
-//             if (result) {
-//                 submissionSuccess.value = true;
-//                 estimateCreatePayload.value = {
-//                     questId: "",
-//                     rank: "",
-//                     comment: ""
-//                 };
-//             } else {
-//                 submissionError.value = "Submission failed. Please try again.";
-//             }
-//         } catch (err) {
-//             console.error(err);
-//             submissionError.value = "An unexpected error occurred.";
-//         } finally {
-//             isSubmitting.value = false;
-//         }
-//     }
-// }
-
 async function submitEstimation() {
     // Clear old state
     submissionError.value = null;
     submissionSuccess.value = false;
 
     // Local validations
-    if (!level.value) {
+    if (!rank.value) {
         submissionError.value = "Please select a difficulty tier.";
         return;
     }
@@ -120,7 +67,7 @@ async function submitEstimation() {
 
     const payload = {
         questId: questIdFromRoute,
-        rank: level.value!,
+        rank: rank.value!,
         comment: comment.value.trim(),
     };
 
@@ -147,13 +94,13 @@ async function submitEstimation() {
         if (result) {
             submissionSuccess.value = true;
             comment.value = "";
-            level.value = null;
+            rank.value = null;
         } else {
             submissionError.value = "Submission failed. Please try again.";
         }
     } catch (err) {
         console.error(err);
-        submissionError.value = "An unexpected error occurred.";
+        submissionError.value = "An unexpected error occurred or you have already made an estimate"; // double creation does not work hence error
     } finally {
         isSubmitting.value = false;
     }
@@ -182,14 +129,28 @@ onMounted(async () => {
     }
 
     try {
-        retrievedEstimates.value = await getEstimatesRequest(safeUserId.value || "userId not found", questIdFromRoute);
-        console.debug(`[Estimation Page][getEstimatesRequest]${retrievedQuestData.value}`);
-    } catch (e) {
+        const estimates = await getEstimatesRequest(safeUserId.value || "userId not found", questIdFromRoute);
+        if (Array.isArray(estimates)) {
+            retrievedEstimates.value = estimates;
+        } else {
+            // If the API responded with something unexpected but not an error
+            errorEstimates.value = "No estimates found.";
+            retrievedEstimates.value = [];
+        }
+    } catch (e: any) {
         console.error(e);
-        errorEstimates.value = "[Estimation Page] Failed to load estimates and comments.";
+        if (e?.response?.status === 404) {
+            errorEstimates.value = "No estimates found.";
+            retrievedEstimates.value = [];
+        } else {
+            errorEstimates.value = "[Estimation Page] Failed to load estimates and comments.";
+            console.log("[Estimation Page] Failed to load estimates and comments.");
+            retrievedEstimates.value = [];
+        }
     } finally {
         isLoadingEstimates.value = false;
     }
+
 });
 
 </script>
@@ -197,26 +158,34 @@ onMounted(async () => {
 <template>
     <NuxtLayout>
         <div class="max-w-3xl mx-auto py-12 px-6 text-white">
-            <h1 class="text-3xl font-bold mb-4">Estimate Estimate Difficulty</h1>
+
+            <div class="">
+                <h1 class="text-3xl font-bold mb-4">Estimate Difficulty</h1>
+            </div>
 
             <div v-if="submissionSuccess" class="text-green-400 mb-4">
                 ✅ Estimate submitted successfully!
             </div>
             <div v-if="submissionError" class="text-red-400 mb-4">
-                ⚠️ {{ submissionError }}
+                {{ submissionError }}
             </div>
 
             <!-- Estimate Details -->
-            <div class="bg-teal-300/70 p-6 rounded-xl mb-6">
-                <h2 class="text-black text-xl font-semibold">{{ retrievedQuestData?.title }}</h2>
-                <p class="text-black mt-2">{{ retrievedQuestData?.description }}</p>
+            <div class="bg-teal-300/70 p-6 rounded mb-6 space-y-4">
+                <h2 class="text-black text-2xl font-semibold">{{ retrievedQuestData?.title }}</h2>
+                <p class="text-zinc-800 text-base mt-2">{{ retrievedQuestData?.description }}</p>
+                <h3 class="text-black/90 text-xl font-semibold">Acceptance Criteria</h3>
+                <p class="text-zinc-800 text-base mt-2">{{ retrievedQuestData?.acceptanceCriteria }}</p>
             </div>
 
             <!-- Form -->
             <div class="mb-10">
-                <label for="difficulty" class="block mb-2 text-sm font-semibold">Your Difficulty Estimate</label>
+                <label for="difficulty" class="block mb-2 text-sm font-semibold">Difficulty Tier Estimate</label>
 
-                <select v-model="level" class="w-full rounded bg-zinc-900 border border-zinc-700 p-2 text-white">
+                <select 
+                    v-model="rank"
+                    class="w-full rounded bg-zinc-800 border border-zinc-700 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-400"
+                >
                     <option disabled value="">Choose difficulty tier</option>
                     <option v-for="opt in levelOptions" :key="opt.value" :value="opt.value">
                         {{ opt.label }}
@@ -226,25 +195,29 @@ onMounted(async () => {
 
                 <label for="comment" class="block mt-4 mb-2 text-sm font-semibold">Comments</label>
                 <textarea id="comment" v-model="comment"
-                    class="w-full rounded bg-zinc-900 border border-zinc-700 p-2 text-white" rows="4"
-                    placeholder=" Thoughts, considerations, or reasoning behind your estimate..."></textarea>
+                    class="w-full rounded bg-zinc-800 border border-zinc-700 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-400"
+                    rows="4" placeholder=" Thoughts, considerations, or reasoning behind your estimate...">
+                </textarea>
 
                 <button @click="submitEstimation"
-                    class="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white" 
-                    :disabled="isSubmitting"
-                >
+                    class="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white" :disabled="isSubmitting">
                     Submit Estimate
                 </button>
             </div>
 
             <!-- Past Reviews -->
-            <div v-if="errorEstimates" class="text-red-400">{{ errorEstimates }}</div>
 
             <div v-if="retrievedEstimates && retrievedEstimates.length > 0">
-                <h3 class="text-lg font-semibold mb-4">Recent Estimations</h3>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Recent Estimations</h3>
+                    <button @click="refreshPage"
+                        class="bg-green-600 hover:bg-green-500 text-white text-sm font-medium px-3 py-1.5 rounded transition-colors duration-200">
+                        Refresh
+                    </button>
+
+                </div>
                 <ul class="space-y-3">
-                    <li v-for="(est, i) in retrievedEstimates" :key="i"
-                        class="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
+                    <li v-for="(est, i) in retrievedEstimates" :key="i" class="bg-zinc-800 p-4 rounded">
                         <div class="flex justify-between items-center mb-1">
                             <span class="font-bold">{{ est.username }}</span>
                             <span class="text-sm text-zinc-400">{{ est.rank }}</span>
@@ -254,11 +227,9 @@ onMounted(async () => {
                 </ul>
             </div>
 
-            <div v-else-if="!isLoadingEstimates && !errorEstimates" class="text-zinc-400 text-sm">
+            <div v-else="!isLoadingEstimates && !errorEstimates" class="text-zinc-400 text-base">
                 No estimates yet. Be the first to add one!
             </div>
-
-
         </div>
     </NuxtLayout>
 </template>

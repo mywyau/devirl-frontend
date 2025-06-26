@@ -18,6 +18,7 @@
     "types",
     "utils",
     "pages",
+    "service",
     "components",
     "layouts"
   ]

@@ -1,15 +1,43 @@
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuests } from "@/controllers/QuestBackendController";
-import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
+import { streamAllQuestsReward } from "@/controllers/QuestBackendController";
+import { getStatusTextColour } from "@/service/QuestStatusService";
+import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
 import { useCookie } from "nuxt/app";
 import { computed, onMounted, ref, watch } from "vue";
 
+
 const userType = useCookie("user_type"); // reads cookie on client and SSR
 
-const quests = ref<QuestPartial[]>([]);
+const questsWithReward = ref<QuestWithReward[]>([]);
 const error = ref<string | null>(null);
 const loading = ref(true);
+
+function rankClass(rank: string): string {
+  switch (rank.toLowerCase()) {
+    case "bronze":
+      return "text-yellow-400";
+    case "iron":
+      return "text-gray-400";
+    case "steel":
+      return "text-gray-300";
+    case "mithril":
+      return "text-blue-300";
+    case "adamantite":
+      return "text-green-300";
+    case "runic":
+      return "text-teal-300";
+    case "demon":
+      return "text-red-400";
+    case "ruinous":
+      return "text-purple-400";
+    case "aether":
+      return "text-pink-400";
+    default:
+      return "text-zinc-300";
+  }
+}
+
 
 // Get the user session
 const { data: user, pending: authPending } = useAuthUser();
@@ -42,11 +70,11 @@ async function fetchQuests() {
 
   loading.value = true;
   error.value = null;
-  quests.value = [];
+  questsWithReward.value = [];
 
   try {
-    for await (const quest of streamAllQuests(safeUserId.value)) {
-      quests.value.push(quest);
+    for await (const quest of streamAllQuestsReward(safeUserId.value)) {
+      questsWithReward.value.push(quest);
     }
   } catch (err) {
     console.error(err);
@@ -68,43 +96,58 @@ async function fetchQuests() {
         Loading quests...
       </div>
       <div v-else-if="error" class="text-red-500">{{ error }}</div>
-      <div v-else-if="quests.length === 0" class="text-zinc-400">
+      <div v-else-if="questsWithReward.length === 0" class="text-zinc-400">
         No quests available yet.
       </div>
 
       <div class="grid gap-6" v-else>
-        <div v-for="(quest, index) in quests" :key="quest.questId" class="p-4 rounded-xl shadow bg-white/10">
+        <div v-for="(quest, index) in questsWithReward" :key="quest.quest.questId"
+          class="p-4 rounded-xl shadow bg-white/10">
 
-          <h2 :id="`quest-title-${index}`" class="text-xl font-semibold text-indigo-300">
-            {{ quest.title }}
-          </h2>
-          
-          <div class="flex justify-between items-center mb-1">
-            <div class="flex flex-wrap gap-2 mt-2">
-              <span v-for="tag in quest.tags" :key="tag" class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
+          <div class="flex justify-between items-center">
+            <h2 :id="`quest-title-${index}`" class="text-xl font-semibold text-indigo-300">
+              {{ quest.quest.title }}
+            </h2>
+            <span :class="`text-base font-semibold ${rankClass(quest.quest.rank)}`">
+              {{ quest.quest.rank }}
+            </span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span v-for="tag in quest.quest.tags" :key="tag"
+                class="bg-green-600 text-white text-xs px-2 py-1 rounded">
                 {{ tag }}
               </span>
             </div>
-            <span class="text-base text-zinc-400">{{ quest.rank }}</span>
           </div>
 
 
           <div class="flex justify-between items-center mb-1">
-            <span class="text-sm text-teal-400 font-semibold mt-2">{{ quest.status }}</span>
+            <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold mt-4`">{{
+              quest.quest.status }}
+            </span>
           </div>
 
           <div class="mt-4 flex items-center">
 
-            <span class="font-mono text-sm text-green-400">💰 £{{ quest.bounty || 0.0 }}</span>
+            <span v-if="quest.reward?.rewardValue != null" class="text-base text-green-400">
+              ${{ (quest.reward.rewardValue! / 100).toFixed(2) }}
+            </span>
+
+            <span v-else class="font-mono text-sm text-zinc-300">
+              No reward
+            </span>
 
             <div class="flex space-x-4 ml-auto">
-              <NuxtLink v-if="userType == 'Dev'" :to="`/quest/estimation/${quest.questId}`"
-                :id="`estimation-link-${quest.questId}`" :data-testid="`estimation-link-${quest.questId}`"
+              <NuxtLink v-if="userType == 'Dev'" :to="`/quest/estimation/${quest.quest.questId}`"
+                :id="`estimation-link-${quest.quest.questId}`" :data-testid="`estimation-link-${quest.quest.questId}`"
                 class="text-white hover:underline hover:text-teal-300">
                 Estimations
               </NuxtLink>
-              <NuxtLink :to="`/quest/${quest.questId}`" :id="`details-link-${quest.questId}`"
-                :data-testid="`details-link-${quest.questId}`" class="text-white hover:underline hover:text-teal-300">
+              <NuxtLink :to="`/quest/${quest.quest.questId}`" :id="`details-link-${quest.quest.questId}`"
+                :data-testid="`details-link-${quest.quest.questId}`"
+                class="text-white hover:underline hover:text-teal-300">
                 Details
               </NuxtLink>
             </div>

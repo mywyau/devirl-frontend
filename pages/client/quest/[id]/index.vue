@@ -17,7 +17,6 @@ import { getEstimatesRequest } from "@/controllers/EstimateController";
 import type { GetEstimate } from "@/types/schema/EstimateSchema";
 import { useRouter } from "vue-router";
 
-
 const router = useRouter();
 
 // 1) Grab the route param
@@ -130,21 +129,17 @@ async function loadEstimates() {
 
       <h1 class="text-3xl font-bold mb-6 text-pink-300">Quest Details</h1>
 
-      <!-- 1) SSR (and hydration) show “Loading…” until getQuest resolves -->
       <div v-if="isLoading" class="text-zinc-400">Loading quest…</div>
 
-      <!-- 2) If there was a network/auth or Zod parse error -->
       <div v-else-if="errorMessage" class="text-red-500">
         {{ errorMessage }}
       </div>
 
-      <!-- 3) If SSR saw no valid user, prompt to log in -->
       <div v-else-if="!safeUserId" class="text-yellow-300">
         You must be logged in to see this quest.
         <a href="/login" class="underline">Log in here</a>.
       </div>
-
-      <!-- 4) Otherwise, render the quest that SSR fetched -->
+      
       <div v-else class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow">
 
         <h2 :id="`quest-title`" :class="`text-2xl font-semibold ${getStatusTextColour(result?.status?.toString())} mb-2`">
@@ -202,7 +197,7 @@ async function loadEstimates() {
         </div>
 
         <!-- Past Reviews -->
-        <div v-if="errorEstimates" class="text-red-400">{{ errorEstimates }}</div>
+        <div v-if="errorEstimates" class="text-red-400 pt-4">{{ errorEstimates }}</div>
 
         <div class="mt-10" v-if="retrievedEstimates && retrievedEstimates.length > 0">
           <h3 class="text-white text-lg font-semibold mb-4">Recent Estimations</h3>
