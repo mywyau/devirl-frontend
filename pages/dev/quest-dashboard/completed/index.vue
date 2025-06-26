@@ -93,41 +93,18 @@ onMounted(() => {
             {{ quest.title }}
           </h2>
 
-          <!-- <p class="text-white text-sm mt-2 mb-4">
-            {{ quest.description }}
-          </p> -->
-
-          <div class="mt-auto flex justify-between items-center pt-4 border-t border-white/10">
-            <button @click="goToRewards"
+          <div class="mt-auto flex justify-between items-center pt-4 ">
+            <!-- <button @click="goToRewards"
               class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium px-4 py-2 rounded transition-colors">
               Claim Reward
-            </button>
+            </button> -->
 
-            <NuxtLink :to="`/dev/quest/${quest.questId}`">
-              <button
-                class="bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium px-4 py-2 rounded transition-colors">
-                View Details
-              </button>
-            </NuxtLink>
+
+          <NuxtLink :to="`/dev/quest/${quest.questId}`"
+            class="text-indigo-300 rounded hover:text-indigo-200 hover:underline text-sm">
+            View Details
+          </NuxtLink>
           </div>
-
-
-          <!-- <div class="mt-auto flex">
-
-            <div class="mt-6 flex gap-4">
-              <button @click="goToRewards"
-                class="bg-emerald-500/90 hover:bg-emerald-400/90 text-white px-4 py-2 rounded">
-                Rewards
-              </button>
-            </div>
-
-            <NuxtLink :to="`/dev/quest/${quest.questId}`"
-              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline">
-              <Button variant="default" class="bg-green-500 text-white rounded hover:bg-green-400">
-                View Details
-              </Button>
-            </NuxtLink>
-          </div> -->
 
         </div>
       </div>

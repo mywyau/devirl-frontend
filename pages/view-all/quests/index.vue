@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
 import { streamAllQuestsReward } from "@/controllers/QuestBackendController";
+import { getStatusTextColour } from "@/service/QuestStatusService";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
 import { useCookie } from "nuxt/app";
 import { computed, onMounted, ref, watch } from "vue";
+
 
 const userType = useCookie("user_type"); // reads cookie on client and SSR
 
@@ -102,34 +104,38 @@ async function fetchQuests() {
         <div v-for="(quest, index) in questsWithReward" :key="quest.quest.questId"
           class="p-4 rounded-xl shadow bg-white/10">
 
-          <h2 :id="`quest-title-${index}`" class="text-xl font-semibold text-indigo-300">
-            {{ quest.quest.title }}
-          </h2>
-
-          <div class="flex justify-between items-center mb-1">
-            <div class="flex flex-wrap gap-2 mt-2">
-              <span v-for="tag in quest.quest.tags" :key="tag"
-                class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
-                {{ tag }}
-              </span>
-            </div>
+          <div class="flex justify-between items-center">
+            <h2 :id="`quest-title-${index}`" class="text-xl font-semibold text-indigo-300">
+              {{ quest.quest.title }}
+            </h2>
             <span :class="`text-base font-semibold ${rankClass(quest.quest.rank)}`">
               {{ quest.quest.rank }}
             </span>
           </div>
 
+          <div class="flex justify-between items-center">
+            <div class="flex flex-wrap gap-2 mt-4">
+              <span v-for="tag in quest.quest.tags" :key="tag"
+                class="bg-green-600 text-white text-xs px-2 py-1 rounded">
+                {{ tag }}
+              </span>
+            </div>
+          </div>
+
 
           <div class="flex justify-between items-center mb-1">
-            <span class="text-sm text-teal-400 font-semibold mt-2">{{ quest.quest.status }}</span>
+            <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold mt-4`">{{
+              quest.quest.status }}
+            </span>
           </div>
 
           <div class="mt-4 flex items-center">
 
-            <span v-if="quest.reward?.rewardValue != null" class="font-mono text-sm text-green-400">
+            <span v-if="quest.reward?.rewardValue != null" class="text-base text-green-400">
               ${{ (quest.reward.rewardValue! / 100).toFixed(2) }}
             </span>
 
-            <span v-else class="font-mono text-sm text-zinc-300 italic">
+            <span v-else class="font-mono text-sm text-zinc-300">
               No reward
             </span>
 

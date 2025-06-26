@@ -74,7 +74,7 @@ onMounted(fetchFiles)
                         <th class="py-2">Filename</th>
                         <th class="py-2">Size (KB)</th>
                         <th class="py-2">Uploaded</th>
-                        <th class="py-2">Actions</th>
+                        <!-- <th class="py-2">Actions</th> -->
                     </tr>
                 </thead>
                 <tbody>

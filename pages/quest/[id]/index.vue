@@ -108,14 +108,14 @@ const reportError = ref(false);
           {{ result?.title }}
         </h2>
 
-        <h3 class="text-l font-semibold mb-2 text-zinc-300">
+        <h3 class="text-l font-semibold mb-2 text-white">
           Description
         </h3>
         <p class="mb-4 text-zinc-400">
           {{ result?.description }}
         </p>
 
-        <h3 class="text-l font-semibold mb-2 text-zinc-300">
+        <h3 class="text-l font-semibold mb-2 text-white">
           Acceptance Criteria
         </h3>
         <p class="mb-4 text-zinc-400">
@@ -123,8 +123,6 @@ const reportError = ref(false);
         </p>
 
         <div>
-          <span class="font-semibold">Status: </span>
-
           <span :class="`font-semibold mb-4 ${getStatusTextColour(result?.status?.toString())}`">
             {{ result?.status.toString() }}
           </span>
@@ -143,17 +141,17 @@ const reportError = ref(false);
         </div>
 
         <p v-if="acceptSuccess" class="text-green-500 text-sm pt-4">
-          Accept Quest Succeded
+          Successfully Accepted Quest
         </p>
         <p v-if="acceptError" class="text-red-500 text-sm">
-          Accept Quest Failed!
+          Failed to Accept Quest
         </p>
 
         <p v-if="reportSuccess" class="text-green-500 text-sm pt-4">
-          Report Quest Succeded!
+          Successfully Reported Quest
         </p>
         <p v-if="reportError" class="text-red-500 text-sm">
-          Report Quest Failed!
+          Failed to Report Quest
         </p>
       </div>
     </div>

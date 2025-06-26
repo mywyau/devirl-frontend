@@ -26,15 +26,9 @@ const totalToPay = computed(() => {
 })
 
 
-// 1) Grab the route param
 const route = useRoute();
 const questIdFromRoute = route.params.id as string;
-
-// Get quest ID from route
 const questId = questIdFromRoute
-
-// const clientId = 'mock-client-id' // Replace with session/composable logic
-// const devId = 'mock-dev-id' // You might auto-fill this from quest data
 
 const rewardAmount = ref<number | null>(null)
 const success = ref(false)

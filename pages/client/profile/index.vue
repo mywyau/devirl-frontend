@@ -99,7 +99,7 @@ onMounted(() => {
   <NuxtLayout>
     <div class="max-w-5xl mx-auto mt-16 p-6">
       <div class="flex flex-col md:flex-row gap-8">
-        <div class="flex-1 p-6 rounded-2xl border">
+        <div class="bg-zinc-800 flex-1 rounded-3xl p-10">
           <h1 class="text-2xl text-white font-bold mb-6 text-center">
             Your Profile
           </h1>
