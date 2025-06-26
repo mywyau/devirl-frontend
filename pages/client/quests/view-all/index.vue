@@ -100,7 +100,7 @@ function refreshPage() {
 
       <div v-else>
         <div v-if="rawQuestsWithReward.length === 0" class="text-zinc-400">
-          No quests available yet.
+          You have not created any quests or no unable to retrieve any quests.
         </div>
 
         <div class="grid gap-6">
