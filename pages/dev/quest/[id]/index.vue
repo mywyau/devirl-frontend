@@ -5,7 +5,7 @@ import { computed, ref } from "vue";
 
 import {
   getQuest,
-  acceptQuestRequest,
+  acceptQuest,
 } from "@/controllers/QuestBackendController";
 import {
   QuestPartialSchema,
@@ -88,7 +88,7 @@ async function handleAcceptQuest() {
   }
   try {
     // On the client, credentials: "include" is enough to send the cookie
-    await acceptQuestRequest(safeUserId.value, {
+    await acceptQuest(safeUserId.value, {
       devId: safeUserId.value,
       questId: questIdFromRoute,
     });

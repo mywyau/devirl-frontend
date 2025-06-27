@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
 import {
   streamAllQuestsByStatusDev,
-  updateQuestStatusRequest,
+  updateQuestStatus,
 } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
@@ -85,7 +85,7 @@ async function handleupdateQuestStatus(questId: string) {
   }
   try {
     // On the client, credentials: "include" is enough to send the cookie
-    await updateQuestStatusRequest(safeUserId.value, questId, {
+    await updateQuestStatus(safeUserId.value, questId, {
       questStatus: "InProgress",
     });
     inProgressSuccess.value = true;

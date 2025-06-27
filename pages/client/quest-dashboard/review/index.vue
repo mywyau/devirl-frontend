@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
 import {
-  completeQuestRequest,
+  completeQuest,
   streamAllQuestsByStatus,
-  updateQuestStatusRequest,
+  updateQuestStatus,
 } from "@/controllers/QuestBackendController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
@@ -85,7 +85,7 @@ async function handleUpdateQuestToCompleted(questId: string, rank: string) {
   }
   try {
     // On the client, credentials: "include" is enough to send the cookie
-    await completeQuestRequest(safeUserId.value, questId, {
+    await completeQuest(safeUserId.value, questId, {
       rank: rank,
       questStatus: "Completed",
     });
@@ -107,7 +107,7 @@ async function handleUpdateQuestToFailed(questId: string) {
   }
   try {
     // On the client, credentials: "include" is enough to send the cookie
-    await updateQuestStatusRequest(safeUserId.value, questId, {
+    await updateQuestStatus(safeUserId.value, questId, {
       questStatus: "Failed",
     });
     failedSuccess.value = true;
