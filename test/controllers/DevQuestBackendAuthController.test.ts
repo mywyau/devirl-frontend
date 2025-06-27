@@ -1,78 +1,75 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { DevQuestBackendAuthConnector } from "../../connectors/DevQuestBackendAuthConnector";
+import { DevQuestBackendAuthController } from "../../controllers/DevQuestBackendAuthController";
 
-// Mocks
-vi.mock("@/configuration/ConfigLoader", () => ({
-  loadConfig: () => ({
-    devQuestBackend: { baseUrl: "https://mock-backend.com" },
-  }),
-}));
-
-// Mock $fetch from ofetch
-vi.mock("ofetch", async () => {
-  const actual = await vi.importActual("ofetch");
-  return {
-    ...actual,
-    $fetch: vi.fn(),
-  };
-});
-
-import { $fetch } from "ofetch";
+vi.mock("@/connectors/DevQuestBackendAuthConnector");
 
 describe("DevQuestBackendAuthController", () => {
   let controller: DevQuestBackendAuthController;
+  let connectorMock: vi.mocked<DevQuestBackendAuthConnector>;
 
   beforeEach(() => {
+    connectorMock = new DevQuestBackendAuthConnector() as any;
+    controller = new DevQuestBackendAuthController(connectorMock);
     vi.clearAllMocks();
-    controller = new DevQuestBackendAuthController();
   });
 
-  it("computes correct session URL", async () => {
-    const url = (controller as any).storeSessionUrl("user123");
-    expect(url).toBe("https://mock-backend.com/auth/session/user123");
-  });
-
-  it("stores session successfully", async () => {
-    const mockResponse = { success: true, message: "stored" };
-    ($fetch as any).mockResolvedValue(mockResponse);
+  it("calls connector.storeSession (browser) and returns result", async () => {
+    connectorMock.storeSession.mockResolvedValue({ success: true });
 
     const result = await controller.storeCookieSessionInRedis("user123");
-    expect(result).toEqual(mockResponse);
 
-    expect($fetch).toHaveBeenCalledWith(
-      "https://mock-backend.com/auth/session/user123",
-      {
-        method: "POST",
-        credentials: "include",
-      }
+    expect(connectorMock.storeSession).toHaveBeenCalledWith("user123");
+    expect(result).toEqual({ success: true });
+  });
+
+  it("calls connector.storeSession (s2s) and returns result", async () => {
+    connectorMock.storeSession.mockResolvedValue({ success: true });
+
+    const result = await controller.storeCookieSessionInRedisServerToServer(
+      "user123",
+      "cookie=abc"
     );
+
+    expect(connectorMock.storeSession).toHaveBeenCalledWith(
+      "user123",
+      "cookie=abc"
+    );
+    expect(result).toEqual({ success: true });
   });
 
-  it("throws error with backend message", async () => {
-    ($fetch as any).mockRejectedValue({
-      data: { message: "Redis failure" },
+  it("calls connector.deleteSession and returns result", async () => {
+    connectorMock.deleteSession.mockResolvedValue({ success: true });
+
+    const result = await controller.deleteCookieSessionInRedisServerToServer(
+      "user123",
+      "cookie=abc"
+    );
+
+    expect(connectorMock.deleteSession).toHaveBeenCalledWith(
+      "user123",
+      "cookie=abc"
+    );
+    expect(result).toEqual({ success: true });
+  });
+
+  it("throws readable error from backend error message", async () => {
+    connectorMock.storeSession.mockRejectedValue({
+      data: { message: "Bad session" },
     });
 
     await expect(
       controller.storeCookieSessionInRedis("user123")
-    ).rejects.toThrow("Redis failure");
+    ).rejects.toThrow("Bad session");
   });
 
-  it("throws error with generic message", async () => {
-    ($fetch as any).mockRejectedValue({
-      message: "Network error",
+  it("throws generic error if no backend data message", async () => {
+    connectorMock.storeSession.mockRejectedValue({
+      message: "Something failed",
     });
 
     await expect(
       controller.storeCookieSessionInRedis("user123")
-    ).rejects.toThrow("Network error");
-  });
-
-  it("throws unknown error if no message is provided", async () => {
-    ($fetch as any).mockRejectedValue({});
-
-    await expect(
-      controller.storeCookieSessionInRedis("user123")
-    ).rejects.toThrow("Unknown error occurred while storing session");
+    ).rejects.toThrow("Something failed");
   });
 });

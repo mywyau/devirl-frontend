@@ -4,7 +4,7 @@ import {
   deleteQuest,
   getQuest,
   updateQuest,
-} from "../../controllers/QuestBackendController.ts";
+} from "../../controllers/QuestController.ts";
 
 import { type QuestPartial } from "../../types/schema/QuestStatusSchema";
 

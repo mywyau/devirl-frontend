@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuestsReward } from "@/controllers/QuestBackendController";
-import { getStatusTextColour } from "@/service/QuestStatusService";
+import { streamAllQuestsReward } from "@/controllers/QuestController";
+import { getStatusTextColour } from "@/utils/QuestStatusUtils";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
 import { useCookie } from "nuxt/app";
 import { computed, onMounted, ref, watch } from "vue";

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useAuthUser } from "@/composables/useAuthUser";
-import { createQuest } from "@/controllers/QuestBackendController"; // <- updated import
+import { createQuest } from "@/controllers/QuestController"; // <- updated import
 import { CreateQuestSchema } from "@/types/schema/QuestStatusSchema";
 import { ref } from "vue";
 

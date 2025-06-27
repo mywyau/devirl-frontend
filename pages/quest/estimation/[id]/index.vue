@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
 import { createEstimate, getEstimatesRequest } from "@/controllers/EstimateController"; // <- updated import
-import { getQuest } from "@/controllers/QuestBackendController";
+import { getQuest } from "@/controllers/QuestController";
 import { CreateEstimateSchema, type CreateEstimate, type GetEstimate } from "@/types/schema/EstimateSchema";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { useRoute } from "nuxt/app";

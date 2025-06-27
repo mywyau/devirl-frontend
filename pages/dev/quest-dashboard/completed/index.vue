@@ -1,7 +1,7 @@
 <!-- src/pages/ClientCompletedQuests.vue -->
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuestsByStatusDev } from "@/controllers/QuestBackendController";
+import { streamAllQuestsByStatusDev } from "@/controllers/QuestController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
 import { useRouter } from 'vue-router';

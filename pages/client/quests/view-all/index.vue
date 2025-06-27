@@ -4,9 +4,9 @@ import { computed, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuestsForUser } from "@/controllers/QuestBackendController";
+import { streamAllQuestsForUser } from "@/controllers/QuestController";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
-import { getStatusTextColour } from "@/service/QuestStatusService";
+import { getStatusTextColour } from "@/utils/QuestStatusUtils";
 
 
 function rankClass(rank: string): string {

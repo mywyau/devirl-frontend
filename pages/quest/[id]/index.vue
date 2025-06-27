@@ -6,7 +6,7 @@ import { computed, ref } from "vue";
 import {
   getQuest,
   acceptQuest,
-} from "@/controllers/QuestBackendController";
+} from "@/controllers/QuestController";
 import {
   QuestPartialSchema,
   type QuestPartial,
@@ -14,7 +14,7 @@ import {
 import { useAuthUser } from "@/composables/useAuthUser";
 import { Button } from "@/components/ui/button/variants";
 import { useCookie } from "nuxt/app";
-import { getStatusTextColour } from "@/service/QuestStatusService"
+import { getStatusTextColour } from "@/utils/QuestStatusUtils"
 
 const userType = useCookie("user_type"); // reads cookie on client and SSR
 

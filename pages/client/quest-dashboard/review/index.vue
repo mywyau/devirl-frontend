@@ -6,7 +6,7 @@ import {
   completeQuest,
   streamAllQuestsByStatus,
   updateQuestStatus,
-} from "@/controllers/QuestBackendController";
+} from "@/controllers/QuestController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
-import { getQuest } from "@/controllers/QuestBackendController";
+import { getQuest } from "@/controllers/QuestController";
 import { uploadUrl } from "@/controllers/UploadController";
 import { useAsyncData, useRoute } from "nuxt/app";
 import { computed, ref } from "vue";
