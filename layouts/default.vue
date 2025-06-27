@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
-import { loadConfig } from "@/configuration/ConfigLoader";
+import { loginUrl, logoutUrl } from "@/controllers/AuthController";
 import { useCookie } from "nuxt/app";
 
 const { data: user, error } = useAuthUser();
@@ -10,21 +10,11 @@ const userType = useCookie("user_type"); // reads cookie on client and SSR
 if (error.value) {
   console.error("Failed to load auth session:", error.value);
 }
-
-const loginUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/login`;
-const logoutUrl = `${loadConfig().devIrlFrontend.baseUrl}/api/auth/logout`;
-
-const handleLogout = () => {
-  // Full browser redirect ensures session is reset on both client and server
-  window.location.href = "/api/auth/logout";
-};
 </script>
 
 <template>
 
-  <div
-    class="flex flex-col overflow-x-hidden bg-zinc-900 min-h-screen font-sans"
-  >
+  <div class="flex flex-col overflow-x-hidden bg-zinc-900 min-h-screen font-sans">
 
     <header class="px-6 py-4 flex justify-between items-center">
       <NuxtLink to="/" class="text-xl font-bold text-white hover:text-teal-400">
@@ -62,7 +52,8 @@ const handleLogout = () => {
             Profile
           </NuxtLink>
 
-          <a href="#" @click.prevent="handleLogout" class="text-white hover:text-red-400 text-base">Logout</a>
+          <!-- <a href="#" @click.prevent="handleLogout" class="text-white hover:text-red-400 text-base">Logout</a> -->
+          <a :href="logoutUrl()" class="text-white hover:text-red-400 text-base">Logout</a>
         </template>
 
         <template v-else>
@@ -71,7 +62,7 @@ const handleLogout = () => {
             Hiscores
           </NuxtLink>
 
-          <a :href="loginUrl" class=" text-white hover:text-green-400 text-base">
+          <a :href="loginUrl()" class=" text-white hover:text-green-400 text-base">
             Login
           </a>
         </template>

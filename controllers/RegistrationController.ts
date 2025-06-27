@@ -1,40 +1,39 @@
-// ./controllers/RegistrationController.ts (or connectors/registration.ts)
+import { z } from "zod";
+import { UpdateUserTypeSchema } from "@/types/schema/UserDataSchema";
+import { updateUserType } from "@/connectors/RegistrationConnector";
 
-import { loadConfig } from "@/configuration/ConfigLoader";
-import { $fetch } from "ofetch";
-import { UserDataSchema } from "@/types/schema/UserDataSchema";
-import type { UserData, UpdateUserTypePayload } from "@/types/schema/UserDataSchema";
+export async function submitUserTypeUpdate(
+  userId: string | undefined,
+  form: { username: string; userType: string }
+): Promise<{ success: boolean; error?: string }> {
+  if (!userId) {
+    return {
+      success: false,
+      error: "User ID is missing. Please log in again.",
+    };
+  }
 
-const config = loadConfig();
-const baseUrl = config.devQuestBackend.baseUrl;
+  try {
+    const payload = UpdateUserTypeSchema.parse(form);
+    await updateUserType(userId, payload);
 
-const registrationUrl = (path: string, userId: string) =>
-  `${baseUrl}/registration/${path}/${encodeURIComponent(userId)}`;
+    await $fetch("/api/auth/refresh-session", {
+      method: "POST",
+      credentials: "include",
+    });
 
+    return { success: true };
+  } catch (e: any) {
+    if (e instanceof z.ZodError) {
+      return {
+        success: false,
+        error: e.errors.map((err) => err.message).join(", "),
+      };
+    }
 
-export async function createUserNuxtServerToScalaServer(
-  userId: string,
-  cookieHeader: string,
-  payload: UserData
-) {
-  const url = registrationUrl("data/create", userId);
-  return await $fetch(url, {
-    method: "POST",
-    headers: {
-      cookie: cookieHeader,
-    },
-    body: payload,
-  });
-}
-
-export async function updateUserType(userId: string, payload: UpdateUserTypePayload) {
-  const url = registrationUrl("update/user/type", userId);
-  return await $fetch(url, {
-    method: "PUT",
-    credentials: "include",
-    body: payload,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+    return {
+      success: false,
+      error: e?.data?.message || "Something went wrong",
+    };
+  }
 }

@@ -34,8 +34,6 @@ export default defineEventHandler(async (event) => {
     .split(";")
     .find((c) => c.trim().startsWith("auth_session="));
 
-  console.debug(`session cookie: ${sessionCookie}\n`, ); // Debug: see what's being sent as cookie header
-
   // Refetch updated user data (including userType)
   const userData = await $fetch(
     `${config.devQuestBackend.baseUrl}/registration/user/data/${encodeURIComponent(userId)}`,

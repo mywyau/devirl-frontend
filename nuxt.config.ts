@@ -32,5 +32,6 @@ export default defineNuxtConfig({
       auth0CallbackUrl: process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URL || "[nuxt.config.ts][auth0CallbackUrl] config undefined, please define it",
     },
     auth0ClientSecret: process.env.AUTH0_CLIENT_SECRET || "[nuxt.config.ts][auth0ClientSecret] config undefined, please define it",
+    test: process.env.TEST || "",
   },
 });

@@ -89,10 +89,6 @@ async function handleSubmit() {
     return;
   }
 
-  console.log("Final payload being sent:");
-  console.log(JSON.stringify(payload, null, 2));
-
-
   const parsed = CreateQuestSchema.safeParse(payload)
 
   if (!parsed.success) {

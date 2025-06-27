@@ -2,35 +2,21 @@
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { useFetch } from "nuxt/app";
 
-type SessionUser = {
-  name: string;
-  email: string;
-  sub: string;
-};
+const config = loadConfig();
+const baseUrl = `${config.devIrlFrontend.baseUrl}/`;
 
-export class AuthController {
-  constructor(
-    private readonly config = loadConfig(),
-    private readonly apiBasePath = "/"
-  ) {}
+export function loginUrl(): string {
+  return `${baseUrl}api/auth/login`;
+}
 
-  private get baseUrl(): string {
-    return `${this.config.devIrlFrontend.baseUrl}${this.apiBasePath}`;
-  }
+export function logoutUrl(): string {
+  return `${baseUrl}api/auth/logout`;
+}
 
-  loginUrl(): string {
-    return `${this.baseUrl}api/auth/login`;
-  }
+export function callbackUrl(): string {
+  return `${baseUrl}api/auth/callback`;
+}
 
-  logoutUrl(): string {
-    return `${this.baseUrl}api/auth/logout`;
-  }
-
-  callbackUrl(): string {
-    return `${this.baseUrl}api/auth/callback`;
-  }
-
-  async logoutRequest() {
-    return await useFetch(this.logoutUrl(), { credentials: "include" });
-  }
+export async function logoutRequest() {
+  return await useFetch(logoutUrl(), { credentials: "include" });
 }

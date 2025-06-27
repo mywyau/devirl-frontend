@@ -1,76 +1,86 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createUserNuxtServerToScalaServer, updateUserType } from "@/controllers/RegistrationController";
-import type { UserData, UpdateUserTypePayload } from "@/types/schema/UserDataSchema";
+import { submitUserTypeUpdate } from "../../controllers/RegistrationController";
+import { updateUserType } from "../../connectors/RegistrationConnector";
 
-// Mocks
-vi.mock("ofetch", () => ({
-  $fetch: vi.fn(),
+// Mock the connector function
+vi.mock("@/connectors/RegistrationConnector", () => ({
+  updateUserType: vi.fn(),
 }));
 
-vi.mock("@/configuration/ConfigLoader", () => ({
-  loadConfig: () => ({
-    devQuestBackend: {
-      baseUrl: "https://mock-api.com",
-    },
-  }),
-}));
+// Mock $fetch for session refresh
+globalThis.$fetch = vi.fn();
 
-const $fetch = (await import("ofetch")).$fetch as ReturnType<typeof vi.fn>;
-
-describe("RegistrationController", () => {
+describe("submitUserTypeUpdate", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("createUserNuxtServerToScalaServer sends POST with cookie header and correct body", async () => {
-    const mockUserId = "user123";
-    const mockCookie = "auth=abc.def.ghi";
-    const mockPayload: UserData = {
-      userId: "user123",
-      email: "test@example.com",
-      firstName: "Test",
-      lastName: "User",
-      userType: "Dev",
-    };
+  it("returns success when update and session refresh succeed", async () => {
+    (updateUserType as any).mockResolvedValueOnce(undefined);
+    ($fetch as any).mockResolvedValueOnce(undefined);
 
-    const expectedUrl = `https://mock-api.com/registration/data/create/${mockUserId}`;
-
-    $fetch.mockResolvedValueOnce({ success: true });
-
-    const response = await createUserNuxtServerToScalaServer(mockUserId, mockCookie, mockPayload);
-
-    expect($fetch).toHaveBeenCalledWith(expectedUrl, {
-      method: "POST",
-      headers: {
-        cookie: mockCookie,
-      },
-      body: mockPayload,
+    const result = await submitUserTypeUpdate("user123", {
+      username: "testuser",
+      userType: "Client",
     });
 
-    expect(response).toEqual({ success: true });
+    expect(updateUserType).toHaveBeenCalledWith("user123", {
+      username: "testuser",
+      userType: "Client",
+    });
+
+    expect($fetch).toHaveBeenCalledWith("/api/auth/refresh-session", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    expect(result).toEqual({ success: true });
   });
 
-  it("updateUserType sends PUT with credentials and JSON body", async () => {
-    const mockUserId = "dev456";
-    const mockPayload: UpdateUserTypePayload = {
+  it("returns error if user ID is missing", async () => {
+    const result = await submitUserTypeUpdate(undefined, {
+      username: "testuser",
       userType: "Client",
-    };
-
-    const expectedUrl = `https://mock-api.com/registration/update/user/type/${mockUserId}`;
-
-    $fetch.mockResolvedValueOnce({ updated: true });
-
-    const response = await updateUserType(mockUserId, mockPayload);
-
-    expect($fetch).toHaveBeenCalledWith(expectedUrl, {
-      method: "PUT",
-      credentials: "include",
-      body: mockPayload,
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
 
-    expect(response).toEqual({ updated: true });
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("User ID is missing");
+  });
+
+  it("returns Zod validation error for invalid data", async () => {
+    const result = await submitUserTypeUpdate("user123", {
+      username: "", // assume your schema requires non-empty
+      userType: "", // and valid enum
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.error).toMatch(/Invalid enum value|Required/); // depends on your schema
+  });
+
+  it("returns backend error message if present", async () => {
+    (updateUserType as any).mockRejectedValueOnce({
+      data: { message: "Internal server error" },
+    });
+
+    const result = await submitUserTypeUpdate("user123", {
+      username: "testuser",
+      userType: "Client",
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.error).toBe("Internal server error");
+  });
+
+  it("returns fallback error message if no message is available", async () => {
+
+    (updateUserType as any).mockRejectedValueOnce(new Error("boom"));
+
+    const result = await submitUserTypeUpdate("user123", {
+      username: "testuser",
+      userType: "Client",
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.error).toBe("Something went wrong");
   });
 });
