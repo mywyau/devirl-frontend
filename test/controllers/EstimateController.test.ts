@@ -23,7 +23,7 @@ describe("EstimateController", () => {
 
   describe("getEstimatesRequest", () => {
     it("should return parsed estimates on valid response", async () => {
-        
+
       const mockData = [
         {
           username: "dev123",
@@ -60,7 +60,7 @@ describe("EstimateController", () => {
       const payload: CreateEstimate = {
         questId: "quest456",
         rank: "steel",
-        reasoning: "Some solid reasoning",
+        comment: "Some solid reasoning",
       };
 
       const mockResponse = { ok: true };
