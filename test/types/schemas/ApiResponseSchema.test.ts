@@ -4,7 +4,7 @@ import {
     DeleteResponseSchema,
     GetResponseSchema,
     UpdateResponseSchema,
-} from "../../types/schema/ApiResponses";
+} from "../../../types/schema/ApiResponses";
 
 const validData = {
   code: "200",
