@@ -45,7 +45,7 @@ function toggleTag(tag: string) {
 
     <div class="flex flex-wrap gap-2 mt-2">
       <span v-for="tag in modelValue" :key="tag"
-        class="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+        class="bg-green-500 text-white px-3 py-1 rounded text-sm flex items-center gap-2">
         {{ tag }}
         <button @click="toggleTag(tag)" class="text-white font-bold">×</button>
       </span>

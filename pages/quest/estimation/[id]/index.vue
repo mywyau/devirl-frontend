@@ -164,7 +164,7 @@ onMounted(async () => {
             </div>
 
             <div v-if="submissionSuccess" class="text-green-400 mb-4">
-                ✅ Estimate submitted successfully!
+                Estimate submitted successfully!
             </div>
             <div v-if="submissionError" class="text-red-400 mb-4">
                 {{ submissionError }}
@@ -182,10 +182,8 @@ onMounted(async () => {
             <div class="mb-10">
                 <label for="difficulty" class="block mb-2 text-sm font-semibold">Difficulty Tier Estimate</label>
 
-                <select 
-                    v-model="rank"
-                    class="w-full rounded bg-zinc-800 border border-zinc-700 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-400"
-                >
+                <select v-model="rank"
+                    class="w-full rounded bg-zinc-800 border border-zinc-700 p-2 text-white focus:outline-none focus:ring-1 focus:ring-green-400">
                     <option disabled value="">Choose difficulty tier</option>
                     <option v-for="opt in levelOptions" :key="opt.value" :value="opt.value">
                         {{ opt.label }}
