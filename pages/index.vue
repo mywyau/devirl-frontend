@@ -8,7 +8,7 @@
       <div class="py-32 px-6">
         <div class="max-w-3xl mx-auto text-center space-y-6">
           <h1 class="font-heading text-5xl md:text-6xl font-extrabold tracking-tight leading-tight">
-            Welcome to <span class="text-teal-400">Dev IRL</span>
+            Welcome to <span class="font-sans text-teal-400">Dev IRL</span>
           </h1>
           <p class="text-lg md:text-xl text-gray-300 leading-relaxed">
             A platform where developers complete real-world coding quests, earn XP, and rise through the ranks. Built

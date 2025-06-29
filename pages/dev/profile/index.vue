@@ -100,11 +100,11 @@ async function startStripeOnboarding() {
 <template>
   <NuxtLayout>
     <div class="max-w-6xl mx-auto mt-16 px-4 md:px-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="font-sans grid grid-cols-1 md:grid-cols-2 gap-8">
 
         <!-- Profile Info Card -->
         <div class="p-6 rounded-2xl border border-zinc-700 shadow-lg">
-          <h2 class="text-3xl font-bold text-white mb-6 text-center">Your Profile</h2>
+          <h2 class="font-heading text-3xl font-bold text-white mb-6 text-center">Your Profile</h2>
 
           <div v-if="isLoading" class="text-white text-center">Loading...</div>
 

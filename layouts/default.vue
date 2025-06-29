@@ -18,7 +18,7 @@ if (error.value) {
 
     <header class="px-6 py-4 flex justify-between items-center">
       <NuxtLink to="/" class="font-heading text-2xl font-bold text-white hover:text-teal-400">
-        Dev Irl
+        Dev IRL
       </NuxtLink>
 
       <nav class="space-x-6 flex items-center">
