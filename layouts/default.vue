@@ -17,52 +17,52 @@ if (error.value) {
   <div class="flex flex-col overflow-x-hidden bg-zinc-900 min-h-screen font-sans">
 
     <header class="px-6 py-4 flex justify-between items-center">
-      <NuxtLink to="/" class="text-xl font-bold text-white hover:text-teal-400">
+      <NuxtLink to="/" class="font-heading text-2xl font-bold text-white hover:text-teal-400">
         Dev Irl
       </NuxtLink>
 
       <nav class="space-x-6 flex items-center">
         <template v-if="user">
 
-          <NuxtLink to="/view-all/quests" class="text-white hover:text-green-400">
+          <NuxtLink to="/view-all/quests" class="font-heading text-white hover:text-green-400">
             View all quests
           </NuxtLink>
 
-          <NuxtLink to="/hiscores" class="text-white hover:text-indigo-400">
+          <NuxtLink to="/hiscores" class="font-heading text-white hover:text-indigo-400">
             Hiscores
           </NuxtLink>
 
-          <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="text-white hover:text-indigo-400">
+          <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="font-heading text-white hover:text-indigo-400">
             Skills
           </NuxtLink>
 
-          <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard" class="text-white hover:text-blue-400">
+          <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard" class="font-heading text-white hover:text-blue-400">
             Dashboard
           </NuxtLink>
 
-          <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard" class="text-white hover:text-blue-400">
+          <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard" class="font-heading text-white hover:text-blue-400">
             Dashboard
           </NuxtLink>
 
-          <NuxtLink v-if="userType === 'Dev'" to="/dev/profile" class="text-white hover:text-blue-400">
+          <NuxtLink v-if="userType === 'Dev'" to="/dev/profile" class="font-heading text-white hover:text-blue-400">
             Profile
           </NuxtLink>
 
-          <NuxtLink v-if="userType === 'Client'" to="/client/profile" class="text-white hover:text-blue-400">
+          <NuxtLink v-if="userType === 'Client'" to="/client/profile" class="font-heading text-white hover:text-blue-400">
             Profile
           </NuxtLink>
 
           <!-- <a href="#" @click.prevent="handleLogout" class="text-white hover:text-red-400 text-base">Logout</a> -->
-          <a :href="logoutUrl()" class="text-white hover:text-red-400 text-base">Logout</a>
+          <a :href="logoutUrl()" class="font-heading text-white hover:text-red-400 text-base">Logout</a>
         </template>
 
         <template v-else>
 
-          <NuxtLink to="/hiscores" class="text-white hover:text-indigo-300">
+          <NuxtLink to="/hiscores" class="font-heading text-white hover:text-indigo-300">
             Hiscores
           </NuxtLink>
 
-          <a :href="loginUrl()" class=" text-white hover:text-green-400 text-base">
+          <a :href="loginUrl()" class="font-heading text-white hover:text-green-400 text-base">
             Login
           </a>
         </template>

@@ -52,7 +52,7 @@ const languageLinks = [
       <!-- Left Sidebar -->
       <aside class="w-64 shrink-0">
         <div class="mb-8">
-          <h2 class="text-lg font-bold mb-2">Skill Hiscores</h2>
+          <h2 class="font-heading text-lg font-semibold mb-2">Skill Hiscores</h2>
           <ul class="space-y-2">
             <li v-for="skill in skillLinks" :key="skill">
               <NuxtLink :to="`/hiscores/skills/${skill}`"
@@ -64,11 +64,11 @@ const languageLinks = [
         </div>
 
         <div>
-          <h2 class="text-lg font-bold mb-2">Language Hiscores</h2>
+          <h2 class="font-heading text-lg font-semibold mb-2">Language Hiscores</h2>
           <ul class="space-y-2">
             <li v-for="lang in languageLinks" :key="lang">
               <NuxtLink :to="`/hiscores/languages/${lang}`"
-                class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
+                class="font-sans block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                 {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
               </NuxtLink>
             </li>
@@ -79,25 +79,25 @@ const languageLinks = [
       <!-- Main Content -->
       <div class="flex-1">
 
-        <h1 class="text-3xl font-bold mb-6 text-center">Hiscores</h1>
+        <h1 class="font-heading text-3xl font-semibold mb-6 text-center">Hiscores</h1>
 
         <div class="w-full max-w-4xl mx-auto">
 
           <table class="w-full table-auto text-left border-collapse mb-10">
             <thead class="border-b border-white/10 text-white">
               <tr>
-                <th class="py-2">Rank</th>
-                <th class="py-2">Username</th>
-                <th class="py-2">Total Level</th>
-                <th class="py-2">Total XP</th>
+                <th class="font-heading py-2">Rank</th>
+                <th class="font-heading py-2">Username</th>
+                <th class="font-heading py-2">Total Level</th>
+                <th class="font-heading py-2">Total XP</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(dev, i) in leaderboard" :key="dev.name" class="border-b border-white/5">
-                <td class="py-2">{{ i + 1 }}</td>
-                <td class="py-2 text-indigo-300 font-medium">{{ dev.name }}</td>
-                <td class="py-2">{{ dev.totalLevel }}</td>
-                <td class="py-2">{{ dev.totalXP.toLocaleString() }}</td>
+                <td class="font-sans py-2">{{ i + 1 }}</td>
+                <td class="font-sans py-2 text-indigo-300 font-medium">{{ dev.name }}</td>
+                <td class="font-sans py-2">{{ dev.totalLevel }}</td>
+                <td class="font-sans py-2">{{ dev.totalXP.toLocaleString() }}</td>
               </tr>
             </tbody>
           </table>
