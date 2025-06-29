@@ -95,7 +95,7 @@ const languageLinks = [
             <tbody>
               <tr v-for="(dev, i) in leaderboard" :key="dev.name" class="border-b border-white/5">
                 <td class="font-sans py-2">{{ i + 1 }}</td>
-                <td class="font-sans py-2 text-indigo-300 font-medium">{{ dev.name }}</td>
+                <td class="font-sans py-2 text-indigo-300">{{ dev.name }}</td>
                 <td class="font-sans py-2">{{ dev.totalLevel }}</td>
                 <td class="font-sans py-2">{{ dev.totalXP.toLocaleString() }}</td>
               </tr>

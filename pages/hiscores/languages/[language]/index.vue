@@ -82,7 +82,7 @@ const languageLinks = [
             <!-- Main Content -->
             <div class="flex-1">
 
-                <h1 class="text-3xl text-blue-400 font-bold mb-6 text-center">{{ titleCase(languageId) }}</h1>
+                <h1 class="font-heading text-3xl text-blue-400 font-bold mb-6 text-center">{{ titleCase(languageId) }}</h1>
 
                 <div class="w-full max-w-4xl mx-auto">
                     <table class="w-full table-auto text-left border-collapse mb-10">
@@ -98,7 +98,7 @@ const languageLinks = [
                             <tr v-for="(dev, i) in languageData" :key="`${dev.devId}-${dev.language}`"
                                 class="border-b border-white/5 text-white">
                                 <td class="py-2">{{ i + 1 }}</td>
-                                <td class="py-2 font-medium text-indigo-300">{{ dev.username }}</td>
+                                <td class="py-2 text-indigo-300">{{ dev.username }}</td>
                                 <td class="py-2">{{ dev.level }}</td>
                                 <td class="py-2">{{ dev.xp.toLocaleString() }}</td>
                             </tr>
