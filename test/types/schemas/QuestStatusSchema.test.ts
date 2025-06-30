@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   QuestPartialSchema,
   QuestStatusSchema,
-} from "../../types/schema/QuestStatusSchema";
+} from "../../../types/schema/QuestStatusSchema";
 
 describe("QuestStatusSchema", () => {
   it("accepts valid status values", () => {

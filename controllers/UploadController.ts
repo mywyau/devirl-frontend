@@ -1,4 +1,4 @@
-// controllers/QuestBackendController.ts
+// controllers/UploadController.ts
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { $fetch } from "ofetch";
 

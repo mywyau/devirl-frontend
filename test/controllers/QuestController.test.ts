@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import * as connector from "../../connectors/QuestConnector";
-import * as controller from "../../controllers/QuestBackendController";
+import * as controller from "../../controllers/QuestController";
 import type {
-    CreateQuestSchema,
-    QuestPartial
+  CreateQuestSchema,
+  QuestPartial,
 } from "../../types/schema/QuestStatusSchema";
 
 vi.mock("@/connectors/QuestConnector", async () => {

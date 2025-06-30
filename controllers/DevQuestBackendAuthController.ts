@@ -1,56 +1,27 @@
-// controllers/AuthController.ts
-import { loadConfig } from "@/configuration/ConfigLoader";
-import { $fetch } from "ofetch"; // ofetch is what Nuxt uses under the hood
-
-interface StoreSessionResponse {
-  success: boolean;
-  message?: string;
-}
+import {
+  DevQuestBackendAuthConnector,
+  type StoreSessionResponse,
+} from "@/connectors/DevQuestBackendAuthConnector";
 
 export class DevQuestBackendAuthController {
-  private readonly baseUrl: string;
+  private readonly connector: DevQuestBackendAuthConnector;
 
-  constructor(config = loadConfig(), private readonly apiBasePath = "/") {
-    this.baseUrl = `${config.devQuestBackend.baseUrl}${apiBasePath}`;
-    console.info(`[DevQuestBackendAuthController] Initialized with base URL: ${this.baseUrl}`);
-  }
-
-  private storeSessionUrl(userId: string): string {
-    const url = `${this.baseUrl}auth/session/${encodeURIComponent(userId)}`;
-    console.debug(`[DevQuestBackendAuthController] Computed storeSessionUrl: ${url}`);
-    return url;
-  }
-
-  private deleteSessionUrl(userId: string): string {
-    const url = `${this.baseUrl}auth/session/delete/${encodeURIComponent(
-      userId
-    )}`;
-    console.debug(`[DevQuestBackendAuthController] Computed storeSessionUrl: ${url}`);
-    return url;
+  constructor(connector = new DevQuestBackendAuthConnector()) {
+    this.connector = connector;
+    console.info(`[DevQuestBackendAuthController] Initialized.`);
   }
 
   async storeCookieSessionInRedis(
     userId: string
   ): Promise<StoreSessionResponse> {
-    const url = this.storeSessionUrl(userId);
-    console.info(
-      `[DevQuestBackendAuthController] Storing session for user: ${userId} at ${url}`
-    );
-
+    console.info(`[Controller] Storing session for user: ${userId}`);
     try {
-      const response = await $fetch<StoreSessionResponse>(url, {
-        method: "POST",
-        credentials: "include",
-      });
-
-      console.info(
-        `[DevQuestBackendAuthController] Session stored successfully for user: ${userId}`,
-        response
-      );
+      const response = await this.connector.storeSession(userId);
+      console.info(`[Controller] Session stored for user: ${userId}`, response);
       return response;
     } catch (error: any) {
       console.error(
-        `[DevQuestBackendAuthController] Failed to store session for user: ${userId}`,
+        `[Controller] Failed to store session for user: ${userId}`,
         error
       );
       throw createReadableError(error);
@@ -61,27 +32,16 @@ export class DevQuestBackendAuthController {
     userId: string,
     cookieHeader: string
   ): Promise<StoreSessionResponse> {
-    const url = this.storeSessionUrl(userId);
     console.info(
-      `[DevQuestBackendAuthController] Storing session for user: ${userId} at ${url}`
+      `[Controller] Storing (server2server) session for user: ${userId}`
     );
-
     try {
-      const response = await $fetch<StoreSessionResponse>(url, {
-        method: "POST",
-        headers: {
-          cookie: cookieHeader, // Manually inject the cookie header for server to server
-        },
-      });
-
-      console.info(
-        `[DevQuestBackendAuthController] Session stored successfully for user: ${userId}`,
-        response
-      );
+      const response = await this.connector.storeSession(userId, cookieHeader);
+      console.info(`[Controller] Session stored for user: ${userId}`, response);
       return response;
     } catch (error: any) {
       console.error(
-        `[DevQuestBackendAuthController] Failed to store session for user: ${userId}`,
+        `[Controller] Failed to store session (s2s) for user: ${userId}`,
         error
       );
       throw createReadableError(error);
@@ -92,27 +52,17 @@ export class DevQuestBackendAuthController {
     userId: string,
     cookieHeader: string
   ): Promise<StoreSessionResponse> {
-    const url = this.storeSessionUrl(userId);
-    console.info(
-      `[DevQuestBackendAuthController] Storing session for user: ${userId} at ${url}`
-    );
-
+    console.info(`[Controller] Deleting session (s2s) for user: ${userId}`);
     try {
-      const response = await $fetch<StoreSessionResponse>(url, {
-        method: "POST",
-        headers: {
-          cookie: cookieHeader, // Manually inject the cookie header for server to server
-        },
-      });
-
+      const response = await this.connector.deleteSession(userId, cookieHeader);
       console.info(
-        `[DevQuestBackendAuthController] Session stored successfully for user: ${userId}`,
+        `[Controller] Session deleted for user: ${userId}`,
         response
       );
       return response;
     } catch (error: any) {
       console.error(
-        `[DevQuestBackendAuthController] Failed to store session for user: ${userId}`,
+        `[Controller] Failed to delete session (s2s) for user: ${userId}`,
         error
       );
       throw createReadableError(error);
@@ -121,18 +71,7 @@ export class DevQuestBackendAuthController {
 }
 
 function createReadableError(error: any): Error {
-  if (error?.data?.message) {
-    console.warn(
-      `[DevQuestBackendAuthController] Backend error message: ${error.data.message}`
-    );
-    return new Error(error.data.message);
-  }
-
-  if (error?.message) {
-    console.warn(`[DevQuestBackendAuthController] Generic error message: ${error.message}`);
-    return new Error(error.message);
-  }
-
-  console.warn(`[DevQuestBackendAuthController] Unknown error`, error);
+  if (error?.data?.message) return new Error(error.data.message);
+  if (error?.message) return new Error(error.message);
   return new Error("Unknown error occurred while storing session");
 }

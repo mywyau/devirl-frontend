@@ -13,6 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import Input from '@/components/reka/Input.vue';
+
+
 
 import { submitUserTypeUpdate } from "@/controllers/RegistrationController";
 
@@ -48,6 +51,7 @@ const updateRole = async () => {
   <NuxtLayout>
     <div class="min-h-screen flex items-center justify-center px-4">
       <div class="max-w-md w-full bg-white/20 rounded-2xl shadow-lg p-8 space-y-6">
+
         <h1 class="text-3xl font-semibold text-center text-teal-400">
           Complete Your Signup
         </h1>
@@ -62,12 +66,13 @@ const updateRole = async () => {
         <form @submit.prevent="updateRole" class="space-y-6">
 
           <div>
+
             <label for="username" class="block mb-1 text-sm font-medium text-white">
               Username
             </label>
-            <!-- Username input -->
-            <input id="username" v-model="userTypeForm.username" type="text" required placeholder="Create your username"
-              class="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400" />
+
+            <Input id="username" v-model="userTypeForm.username" placeholder="Username" />
+
             <p class="mt-1 text-sm text-zinc-400">Max 20 characters</p>
           </div>
 

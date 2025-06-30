@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useAsyncData, useRequestHeaders } from "#imports";
 import { Button } from "@/components/ui/button/variants";
-import { getStatusTextColour } from "@/service/QuestStatusService";
+import { getStatusTextColour } from "@/utils/QuestStatusUtils";
 import { computed, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 
-import { deleteQuest, getQuest } from "@/controllers/QuestBackendController";
+import { deleteQuest, getQuest } from "@/controllers/QuestController";
 import {
   QuestPartialSchema,
   type QuestPartial,
