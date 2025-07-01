@@ -1,6 +1,6 @@
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
-import { createUserNuxtServerToScalaServer } from "@/controllers/RegistrationController";
+import { createUserNuxtServerToScalaServer } from "@/connectors/RegistrationConnector";
 import { exchangeCodeForToken, getUserInfo } from "@/server/utils/auth0";
 import { sessionOptions } from "@/server/utils/sessionOptions";
 import type { UserData } from "@/types/schema/UserDataSchema";
