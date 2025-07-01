@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
-import { streamAllQuestsByStatusDev } from "@/controllers/QuestBackendController";
+import { streamAllQuestsByStatusDev } from "@/controllers/QuestController";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
 

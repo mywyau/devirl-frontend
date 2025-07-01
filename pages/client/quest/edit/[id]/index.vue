@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { getQuest, updateQuest } from "@/controllers/QuestBackendController";
+import { getQuest, updateQuest } from "@/controllers/QuestController";
 // import type { QuestPartial, UpdateQuestPayload } from "@/types/quests";
 
 import { Card, CardContent } from "@/components/ui/card";

@@ -1,4 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+
+import defaultTheme from 'tailwindcss/defaultTheme'
+
+
 export default {
   safelist: [
     {
@@ -63,8 +67,9 @@ export default {
         "card-foreground": "#F9FAFB", // text
       },
       fontFamily: {
-        sans: ["InterVariable", "sans-serif"],
-      },
+        sans: ['Space Grotesk', ...defaultTheme.fontFamily.sans],
+        heading: ['Space Grotesk', ...defaultTheme.fontFamily.sans], // optional
+      }
     },
   },
   plugins: [],

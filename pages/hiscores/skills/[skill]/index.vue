@@ -95,7 +95,7 @@ const languageLinks = [
                             <tr v-for="(dev, i) in skillData" :key="`${dev.devId}-${dev.skill}`"
                                 class="border-b border-white/5 text-white">
                                 <td class="py-2">{{ i + 1 }}</td>
-                                <td class="py-2 font-medium text-indigo-300">{{ dev.username }}</td>
+                                <td class="py-2 text-indigo-300">{{ dev.username }}</td>
                                 <td class="py-2">{{ dev.level }}</td>
                                 <td class="py-2">{{ dev.xp.toLocaleString() }}</td>
                             </tr>

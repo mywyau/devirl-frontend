@@ -4,7 +4,7 @@ import {
   UserDataSchema,
   UpdateUserTypeSchema,
   GetUserDataSchema,
-} from "../../types/schema/UserDataSchema";
+} from "../../../types/schema/UserDataSchema";
 
 describe("UserTypeSchema", () => {
   it("accepts valid values", () => {

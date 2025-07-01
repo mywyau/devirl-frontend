@@ -19,7 +19,7 @@ const statuses = [
         <CardContent class="p-6 space-y-6">
           
           <div class="flex items-center justify-between mb-4">
-            <h1 class="text-4xl font-extrabold tracking-tight">
+            <h1 class="font-heading text-4xl font-extrabold tracking-tight">
               Quest Dashboard
             </h1>
           </div>
