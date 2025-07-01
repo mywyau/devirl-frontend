@@ -211,7 +211,8 @@ async function handleSubmit() {
                 <SelectViewport class="p-[5px]">
                   <SelectLabel class="px-4 text-xs font-medium text-zinc-500 mb-1">Tiers</SelectLabel>
                   <SelectGroup>
-                    <SelectItem v-for="option in rankOptions" :key="option.value" :value="option.value"
+                    <SelectItem v-for="option in rankOptions" :id="`rank-option-${option.value}`" :key="option.value"
+                      :value="option.value"
                       class="text-sm leading-none text-black rounded flex items-center h-[30px] pr-[35px] pl-[25px] relative select-none data-[highlighted]:bg-green-100 data-[highlighted]:text-black">
                       <SelectItemIndicator class="absolute left-0 w-[25px] inline-flex items-center justify-center">
                         <Icon icon="radix-icons:check" />
@@ -232,11 +233,14 @@ async function handleSubmit() {
         </div>
 
         <div class="mb-10">
+
           <label class="text-sm text-white mb-2 block">Add Language Tags</label>
 
-          <ComboboxRoot v-model="questCreatePayload.tags" multiple ignore-filter class="relative">
+          <ComboboxRoot v-model="questCreatePayload.tags" multiple ignore-filter class="relative"
+            @select="() => query = ''">
             <ComboboxAnchor
               class="w-1/2 inline-flex items-center justify-between rounded-lg p-2 text-sm gap-2 bg-white text-black shadow hover:bg-stone-100 focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none">
+
               <TagsInputRoot v-model="questCreatePayload.tags" delimiter="" class="flex gap-2 items-center flex-wrap">
                 <TagsInputItem v-for="item in questCreatePayload.tags" :key="item" :value="item"
                   class="flex items-center gap-2 text-white bg-green-600 rounded px-2 py-1">
@@ -247,13 +251,15 @@ async function handleSubmit() {
                 </TagsInputItem>
 
                 <ComboboxInput v-model="query" as-child>
-                  <TagsInputInput placeholder="Add tags..."
+                  <TagsInputInput 
+                    id="language-tags"
+                    placeholder="Add tags..."
                     class="flex-1 rounded bg-transparent text-black placeholder:text-zinc-500 px-1 focus:outline-none"
                     @keydown.enter.prevent />
                 </ComboboxInput>
               </TagsInputRoot>
 
-              <ComboboxTrigger>
+              <ComboboxTrigger id="language-tags-trigger">
                 <Icon icon="radix-icons:chevron-down" class="h-4 w-4 text-green-700" />
               </ComboboxTrigger>
             </ComboboxAnchor>
@@ -263,7 +269,11 @@ async function handleSubmit() {
               <ComboboxViewport class="p-2">
                 <ComboboxGroup v-if="filteredOptions.length">
                   <ComboboxLabel class="px-4 text-xs text-zinc-500">Languages</ComboboxLabel>
-                  <ComboboxItem v-for="(option, index) in filteredOptions" :key="index" :value="option"
+                  <ComboboxItem 
+                    v-for="(option, index) in filteredOptions" 
+                    :id="`language-option-${option}`"
+                    :key="index" 
+                    :value="option"
                     class="text-sm text-black px-4 py-2 rounded hover:bg-green-100 cursor-pointer flex items-center justify-between">
                     {{ option }}
                     <ComboboxItemIndicator>
