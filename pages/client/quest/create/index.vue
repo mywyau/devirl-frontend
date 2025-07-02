@@ -61,16 +61,14 @@ const rankOptions = [
 ];
 
 const languageOptions = [
-  "Python",
   "Go",
-  "TypeScript",
-  "Scala",
-  "Rust",
   "JavaScript",
+  "Java",
+  "Python",
+  "Rust",
+  "Scala",
   "Sql",
-  "Ruby",
-  "C#",
-  "Haskell",
+  "TypeScript",
 ];
 
 const filteredOptions = computed(() =>
@@ -251,9 +249,7 @@ async function handleSubmit() {
                 </TagsInputItem>
 
                 <ComboboxInput v-model="query" as-child>
-                  <TagsInputInput 
-                    id="language-tags"
-                    placeholder="Add tags..."
+                  <TagsInputInput id="language-tags" placeholder="Add tags..."
                     class="flex-1 rounded bg-transparent text-black placeholder:text-zinc-500 px-1 focus:outline-none"
                     @keydown.enter.prevent />
                 </ComboboxInput>
@@ -269,11 +265,8 @@ async function handleSubmit() {
               <ComboboxViewport class="p-2">
                 <ComboboxGroup v-if="filteredOptions.length">
                   <ComboboxLabel class="px-4 text-xs text-zinc-500">Languages</ComboboxLabel>
-                  <ComboboxItem 
-                    v-for="(option, index) in filteredOptions" 
-                    :id="`language-option-${option}`"
-                    :key="index" 
-                    :value="option"
+                  <ComboboxItem v-for="(option, index) in filteredOptions" :id="`language-option-${option}`"
+                    :key="index" :value="option"
                     class="text-sm text-black px-4 py-2 rounded hover:bg-green-100 cursor-pointer flex items-center justify-between">
                     {{ option }}
                     <ComboboxItemIndicator>
