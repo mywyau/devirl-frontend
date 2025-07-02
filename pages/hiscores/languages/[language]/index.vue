@@ -1,47 +1,54 @@
 <script setup lang="ts">
+
 import { getHiscoreLanguage } from '@/controllers/LanguageController';
-import { useAsyncData } from 'nuxt/app';
-import { useRoute } from 'vue-router';
+import { useRoute } from 'nuxt/app';
+import { ref, watch } from 'vue';
 
-const route = useRoute()
-const languageId = route.params.language?.toString() || 'Rip no langauge found - error'
+const route = useRoute();
 
-// Fetch language data via useAsyncData (runs on server, then hydrates)
+const languageId = ref(route.params.language?.toString() || '');
 
-const {
-    data: languageData,
-    pending,
-    error: fetchError,
-} = await useAsyncData(
-    `hiscore-${languageId}`,
-    () => getHiscoreLanguage(languageId),
-    {
-        server: true,
-        default: () => [],
+const languageData = ref([]);
+const loading = ref(true);
+const error = ref(null);
+
+const fetchData = async () => {
+  try {
+    loading.value = true;
+    error.value = null;
+    const res = await getHiscoreLanguage(languageId.value);
+    languageData.value = res;
+  } catch (err) {
+    error.value = err;
+    console.error('Failed to fetch hiscore:', err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Fetch on mount
+await fetchData();
+
+// Watch for changes to the route param
+watch(
+  () => route.params.language,
+  (newLang) => {
+    if (newLang) {
+      languageId.value = newLang.toString();
+      fetchData();
     }
+  }
 );
 
 const titleCase = (str: string) =>
-    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
+const skillLinks = ['questing', 'reviewing', 'testing'];
 
-const skillLinks = [
-    "questing",
-    "reviewing",
-    "testing"
-]
-
-const languageLinks = [
-    "Java",
-    "Python",
-    "Rust",
-    "Scala",
-    "Sql",
-    "TypeScript",
-]
-
-
+// languages as strings representing enums must be capital with camelcase to match backend enums
+const languageLinks = ['Java', 'Python', 'Rust', 'Scala', 'Sql', 'TypeScript'];
 </script>
+
 
 <template>
     <NuxtLayout>
@@ -50,6 +57,22 @@ const languageLinks = [
 
             <!-- Left Sidebar -->
             <aside class="w-64 shrink-0">
+
+                <div class="mb-8">
+                  <h2 class="font-heading text-lg font-semibold mb-2">Hiscores</h2>
+                  <ul class="space-y-2">
+                    <li>
+                      <NuxtLink 
+                        :to="`/hiscores`"          
+                        class="font-sans block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white"
+                      >
+                        Total Level 
+                      </NuxtLink>
+                    </li>
+                  </ul>
+                </div>
+
+
                 <div class="mb-8">
                     <h2 class="text-lg font-bold mb-2">Skill Hiscores</h2>
                     <ul class="space-y-2">

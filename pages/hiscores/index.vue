@@ -1,49 +1,43 @@
 <script setup lang="ts">
-// Mocked user leaderboard data
-const leaderboard = [
-  {
-    name: "dev_alex",
-    totalLevel: 158,
-    totalXP: 1_320_000,
-  },
-  {
-    name: "review_queen",
-    totalLevel: 146,
-    totalXP: 1_180_000,
-  },
-  {
-    name: "code_monster",
-    totalLevel: 140,
-    totalXP: 1_090_000,
-  },
-  {
-    name: "fast_dev",
-    totalLevel: 132,
-    totalXP: 970_000,
-  },
-  {
-    name: "bug_hunter",
-    totalLevel: 129,
-    totalXP: 920_000,
-  },
-]
+
+import { loadConfig } from "@/configuration/ConfigLoader";
+import { onMounted, ref } from 'vue';
+
+const config = loadConfig();
+const baseUrl = config.devQuestBackend.baseUrl.replace(/\/$/, "");
+
+type TotalLevel = {
+  devId: string
+  username: string
+  totalLevel: number
+  totalXP: number
+}
+
+const leaderboard = ref<TotalLevel[]>([])
 
 const skillLinks = [
-  "questing",
-  "reviewing",
-  "testing"
+  'questing',
+  'reviewing',
+  'testing'
 ]
 
-const languageLinks = [
-  "java",
-  "python",
-  "rust",
-  "scala",
-  "sql",
-  "typescript",
-]
+// languages as strings representing enums must be capital with camelcase to match backend enums
+const languageLinks = ['Java', 'Python', 'Rust', 'Scala', 'Sql', 'TypeScript'];
 
+
+onMounted(async () => {
+  try {
+    const res = await fetch(`${baseUrl}/hiscore/total/level`)
+    if (!res.ok) throw new Error('Failed to fetch hiscores')
+    const data = await res.json()
+    leaderboard.value = data.sort((a: TotalLevel, b: TotalLevel) => b.totalLevel - a.totalLevel)
+  } catch (err) {
+    console.error('Error loading leaderboard:', err)
+  }
+})
 </script>
+
+
 <template>
   <NuxtLayout>
 
@@ -51,6 +45,21 @@ const languageLinks = [
 
       <!-- Left Sidebar -->
       <aside class="w-64 shrink-0">
+
+        <div class="mb-8">
+          <h2 class="font-heading text-lg font-semibold mb-2">Hiscores</h2>
+          <ul class="space-y-2">
+            <li>
+              <NuxtLink 
+                :to="`/hiscores`"          
+                class="font-sans block px-3 py-2 rounded text-sm text-white/90 hover:text-white bg-indigo-500/70 text-white font-semibold"
+              >
+                Total Level 
+              </NuxtLink>
+            </li>
+          </ul>
+        </div>
+
         <div class="mb-8">
           <h2 class="font-heading text-lg font-semibold mb-2">Skill Hiscores</h2>
           <ul class="space-y-2">
@@ -79,7 +88,7 @@ const languageLinks = [
       <!-- Main Content -->
       <div class="flex-1">
 
-        <h1 class="font-heading text-3xl font-semibold mb-6 text-center">Hiscores</h1>
+        <h1 class="font-heading text-3xl font-semibold mb-6 text-center">Total Level</h1>
 
         <div class="w-full max-w-4xl mx-auto">
 
@@ -93,9 +102,9 @@ const languageLinks = [
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(dev, i) in leaderboard" :key="dev.name" class="border-b border-white/5">
+              <tr v-for="(dev, i) in leaderboard" :key="dev.username" class="border-b border-white/5">
                 <td class="font-sans py-2">{{ i + 1 }}</td>
-                <td class="font-sans py-2 text-indigo-300">{{ dev.name }}</td>
+                <td class="font-sans py-2 text-indigo-300">{{ dev.username }}</td>
                 <td class="font-sans py-2">{{ dev.totalLevel }}</td>
                 <td class="font-sans py-2">{{ dev.totalXP.toLocaleString() }}</td>
               </tr>

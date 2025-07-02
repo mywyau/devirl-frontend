@@ -30,14 +30,8 @@ const skillLinks = [
     "testing"
 ]
 
-const languageLinks = [
-    "java",
-    "python",
-    "rust",
-    "scala",
-    "sql",
-    "typescript",
-]
+// languages as strings representing enums must be capital with camelcase to match backend enums
+const languageLinks = ['Java', 'Python', 'Rust', 'Scala', 'Sql', 'TypeScript'];
 
 
 </script>
@@ -48,6 +42,21 @@ const languageLinks = [
         <div class="w-full max-w-screen-2xl mx-auto px-4 pt-10 pr-2 pl-2 flex gap-10 text-white min-h-screen">
             <!-- Left Sidebar -->
             <aside class="w-64 shrink-0">
+
+                <div class="mb-8">
+                  <h2 class="font-heading text-lg font-semibold mb-2">Hiscores</h2>
+                  <ul class="space-y-2">
+                    <li>
+                      <NuxtLink 
+                        :to="`/hiscores`"          
+                        class="font-sans block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white"
+                      >
+                        Total Level 
+                      </NuxtLink>
+                    </li>
+                  </ul>
+                </div>
+
                 <div class="mb-8">
                     <h2 class="text-lg font-bold mb-2">Skill Hiscores</h2>
                     <ul class="space-y-2">
