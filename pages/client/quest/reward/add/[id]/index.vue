@@ -5,17 +5,6 @@ import { loadConfig } from '@/configuration/ConfigLoader';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogOverlay,
-  AlertDialogPortal,
-  AlertDialogRoot,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from 'reka-ui'
 
 function handleAction() {
   // eslint-disable-next-line no-alert
@@ -96,13 +85,16 @@ async function submitReward() {
         fee of <span class="text-green-300">2.5%</span>
       </p>
 
+      <p class="mb-6">You will also have to make a stripe payment fee for handling the payment.</p>
+
       <p class="mb-6">You cannot change or update the reward once the quest has been
         accepted by a developer.</p>
 
       <p class="mb-6">Payment will only be made when the quest is in review and you are happy to make payment.</p>
 
+
       <div class="mt-6 mb-6">
-        <label for="reward" class="block text-base text-white font-semibold mb-2">Reward (£)</label>
+        <label for="reward" class="block text-base text-white font-semibold mb-2">Reward ($)</label>
 
         <!-- <input id="reward" type="number" v-model="rewardAmount" min="1" step="0.01" -->
         <!-- class="w-full px-3 py-2 rounded bg-zinc-800 border border-zinc-600 text-white" -->
