@@ -105,12 +105,15 @@ async function fetchQuests() {
           class="p-4 rounded-xl shadow bg-white/10">
 
           <div class="flex justify-between items-center">
+
             <h2 :id="`quest-title-${index}`" class="text-xl font-semibold text-indigo-300">
               {{ quest.quest.title }}
             </h2>
+
             <span :class="`text-base font-semibold ${rankClass(quest.quest.rank)}`">
               {{ quest.quest.rank }}
             </span>
+            
           </div>
 
           <div class="flex justify-between items-center">
