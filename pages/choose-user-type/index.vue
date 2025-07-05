@@ -71,12 +71,13 @@ const updateRole = async () => {
               Username
             </label>
 
-            <Input id="username" v-model="userTypeForm.username" placeholder="Username" />
+            <Input id="username" v-model="userTypeForm.username" placeholder="Username" class="w-full" />
 
             <p class="mt-1 text-sm text-zinc-400">Max 20 characters</p>
           </div>
 
           <div class="flex flex-col space-y-2">
+
             <label for="role-select" class="text-sm font-medium text-white">
               Select Your Role
             </label>

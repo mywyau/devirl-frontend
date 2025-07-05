@@ -17,10 +17,10 @@ export async function getEstimatesRequest(
   userId: string,
   questId: string,
   opts?: FetchOptions
-): Promise<GetEstimate[]> {
+): Promise<GetEstimate> {
   const res = await fetchEstimates(userId, questId, opts);
 
-  const parsed = z.array(GetEstimateSchema).safeParse(res);
+  const parsed = GetEstimateSchema.safeParse(res);
   if (!parsed.success) {
     console.error("[getEstimatesRequest] Invalid estimate data", parsed.error);
     throw new Error("Invalid estimate data received from backend");

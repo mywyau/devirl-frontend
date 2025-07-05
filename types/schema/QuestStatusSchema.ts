@@ -25,6 +25,7 @@ export const QuestPartialSchema = z.object({
   acceptanceCriteria: z.string().nullable().optional(),
   status: QuestStatusSchema,
   tags: z.array(z.string()).min(1, "At least one tag is required"),
+  estimated: z.boolean()
 });
 
 export type QuestPartial = z.infer<typeof QuestPartialSchema>;

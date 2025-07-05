@@ -1,6 +1,8 @@
 <!-- src/pages/ClientUserProfile.vue -->
 <script setup lang="ts">
+import { Button } from "@/components/ui/button/variants";
 import ProfileItem from "@/components/ui/profile/ProfileItem";
+import { useAuthUser } from "@/composables/useAuthUser";
 import { deleteUser, getUser } from "@/controllers/UserDataController";
 import {
   DeleteResponseSchema,
@@ -11,8 +13,20 @@ import {
   type GetUserData,
 } from "@/types/schema/UserDataSchema";
 import { onMounted, ref } from "vue";
-import { Button } from "@/components/ui/button/variants";
-import { useAuthUser } from "@/composables/useAuthUser";
+
+
+const clientStats = ref({
+  totalQuests: 12,
+  questsFailed: 3,
+  questsSucceeded: 7,
+  questsRewarded: 6,
+  completionRewardPaid: 6,
+})
+
+// Helper for percentages
+function percent(part: number, total: number): string {
+  return total === 0 ? '0%' : `${Math.round((part / total) * 100)}%`
+}
 
 // Reactive state
 const userProfile = ref<GetUserData | null>(null);
@@ -97,7 +111,7 @@ onMounted(() => {
 
 <template>
   <NuxtLayout>
-    <div class="max-w-5xl mx-auto mt-16 p-6">
+    <div class="max-w-5xl mx-auto mt-16 mb-16 p-6">
       <div class="flex flex-col md:flex-row gap-8">
         <div class="bg-zinc-800 flex-1 rounded-3xl p-10">
           <h1 class="text-2xl text-white font-bold mb-6 text-center">
@@ -108,25 +122,82 @@ onMounted(() => {
           <div v-else>
             <div v-if="userProfile">
               <div class="space-y-4">
-                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="First Name"
+                <ProfileItem textColor="text-white" labelColor="text-white" label="First Name"
                   :value="`${userProfile.firstName}`" />
 
-                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="Last Name"
+                <ProfileItem textColor="text-white" labelColor="text-white" label="Last Name"
                   :value="`${userProfile.lastName}`" />
 
-                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="Username"
+                <ProfileItem textColor="text-white" labelColor="text-white" label="Username"
                   :value="userProfile.username" />
 
-                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="Email"
-                  :value="userProfile.email" />
-                <ProfileItem textColor="text-blue-400" labelColor="text-white" label="Role"
+                <ProfileItem textColor="text-white" labelColor="text-white" label="Email" :value="userProfile.email" />
+                <ProfileItem textColor="text-white" labelColor="text-white" label="Role"
                   :value="userProfile.userType ?? '—'" />
               </div>
+
+              <div class="mt-10 border-t border-zinc-700 pt-6">
+                <h2 class="text-xl text-emerald-400 font-semibold mb-4 text-center">
+                  Quest Stats
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-white text-center">
+                  <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
+                    <p class="text-sm text-white mb-2">Quests Failed</p>
+                    <p class="text-xl font-bold text-red-400">
+                      {{ percent(clientStats.questsFailed, clientStats.totalQuests) }}
+                    </p>
+                    <Separator class="bg-zinc-600 my-2 h-px w-full" />
+                    <p class="text-sm text-white">
+                      {{ clientStats.questsFailed }} / {{ clientStats.totalQuests }}
+                    </p>
+                  </div>
+
+                  <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
+                    <p class="text-sm text-white mb-2">Quests Succeeded</p>
+                    <p class="text-xl font-bold text-green-400">
+                      {{ percent(clientStats.questsSucceeded, clientStats.totalQuests) }}
+                    </p>
+                    <Separator class="bg-zinc-600 my-2 h-px w-full" />
+                    <p class="text-sm text-white">
+                      {{ clientStats.questsSucceeded }} / {{ clientStats.totalQuests }}
+                    </p>
+                  </div>
+
+                  <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
+                    <p class="text-sm text-white mb-2">Quests Paid Out</p>
+                    <p class="text-xl font-bold text-blue-400">
+                      {{ percent(clientStats.questsRewarded, clientStats.totalQuests) }}
+
+                    </p>
+                    <Separator class="bg-zinc-600 my-2 h-px w-full" />
+                    <p class="text-sm text-white">
+                      {{ clientStats.questsRewarded }} / {{ clientStats.totalQuests }}
+                    </p>
+                  </div>
+
+                  <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
+                    <p class="text-sm text-white mb-2">Completion Rewards paid</p>
+                    <p class="text-xl font-bold text-indigo-400">
+                      {{ percent(clientStats.completionRewardPaid, clientStats.totalQuests) }}
+
+                    </p>
+                    <Separator class="bg-zinc-600 my-2 h-px w-full" />
+                    <p class="text-sm text-white">
+                      {{ clientStats.completionRewardPaid }} / {{ clientStats.totalQuests }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+
 
               <Button variant="secondary" class="mt-6 bg-red-600 text-white rounded hover:bg-red-500"
                 :disabled="isDeleting" @click="handleDeleteUser">
                 {{ isDeleting ? "Deleting..." : "Delete user profile" }}
               </Button>
+
+
 
               <p v-if="deleteError" class="text-red-500 mt-4 text-center text-sm">
                 {{ deleteError }}
