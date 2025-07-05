@@ -25,16 +25,6 @@ vi.mock("ofetch", async () => {
 
 import { $fetch } from "ofetch";
 
-// questId: z.string(),
-//   clientId: z.string(),
-//   devId: z.string().nullable().optional(),
-//   rank: z.string(),
-//   title: z.string(),
-//   description: z.string().nullable().optional(),
-//   acceptanceCriteria: z.string().nullable().optional(),
-//   status: QuestStatusSchema,
-//   tags: z.array(z.string()).min(1, "At least one tag is required"),
-
 const mockQuestPartial: QuestPartial = {
   questId: "quest123",
   clientId: "quest123",
@@ -45,6 +35,7 @@ const mockQuestPartial: QuestPartial = {
   acceptanceCriteria: "Some acceptance criteria",
   status: "InProgress",
   tags: ["Python", "Typescript", "Rust"],
+  estimated: true
 };
 
 describe("questBackend - getQuest", () => {

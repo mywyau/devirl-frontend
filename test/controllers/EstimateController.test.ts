@@ -1,11 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
-    createEstimate,
-    getEstimatesRequest,
+  createEstimate,
+  getEstimatesRequest,
 } from "../../controllers/EstimateController";
 
 import * as connector from "../../connectors/EstimateConnector";
-import type { CreateEstimate } from "../../types/schema/EstimateSchema";
+import type {
+  CalculatedEstimate,
+  CreateEstimate,
+  GetEstimate,
+} from "../../types/schema/EstimateSchema";
 
 // Mock the connector
 vi.mock("@/connectors/EstimateConnector", () => ({
@@ -23,20 +27,29 @@ describe("EstimateController", () => {
 
   describe("getEstimatesRequest", () => {
     it("should return parsed estimates on valid response", async () => {
-
-      const mockData = [
+      const mockCalculatedEstimate: CalculatedEstimate[] = [
         {
-          username: "dev123",
-          rank: "iron",
+          username: "username",
+          score: 80,
+          days: 5,
+          rank: "Iron",
           comment: "Challenging but manageable",
         },
       ];
+
+      const mockEstimationStatus = "EstimateOpen";
+
+      const mockData: GetEstimate = {
+        estimationStatus: mockEstimationStatus,
+        calculatedEstimate: mockCalculatedEstimate,
+      };
 
       vi.mocked(connector.fetchEstimates).mockResolvedValueOnce(mockData);
 
       const result = await getEstimatesRequest(userId, questId);
 
       expect(result).toEqual(mockData);
+
       expect(connector.fetchEstimates).toHaveBeenCalledWith(
         userId,
         questId,
@@ -59,7 +72,8 @@ describe("EstimateController", () => {
     it("should delegate to postEstimate with correct args", async () => {
       const payload: CreateEstimate = {
         questId: "quest456",
-        rank: "steel",
+        score: 80,
+        days: 5,
         comment: "Some solid reasoning",
       };
 

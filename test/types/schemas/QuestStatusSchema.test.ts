@@ -29,6 +29,7 @@ describe("QuestPartialSchema", () => {
     acceptanceCriteria: "bring my his head.",
     status: "InProgress",
     tags: ["Python", "Typescript"],
+    estimated: true
   };
 
   it("validates correct quest data", () => {

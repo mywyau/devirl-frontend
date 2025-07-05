@@ -24,6 +24,7 @@ vi.mock("@/connectors/QuestConnector", async () => {
 describe("QuestController", () => {
   const userId = "user123";
   const questId = "quest789";
+
   const questPartial: QuestPartial = {
     questId: questId,
     clientId: "client123",
@@ -34,6 +35,7 @@ describe("QuestController", () => {
     acceptanceCriteria: "Some Acceptance Criteria",
     status: "Open",
     tags: ["Python", "TypeScript"],
+    estimated: true,
   };
 
   beforeEach(() => {
