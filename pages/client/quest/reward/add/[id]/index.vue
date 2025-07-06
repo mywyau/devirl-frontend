@@ -49,7 +49,7 @@ async function submitReward() {
       credentials: "include",
       body: {
         questId: questId,
-        rewardValue: rewardCents
+        completionRewardValue: rewardCents
       }
     })
 
