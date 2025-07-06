@@ -220,7 +220,7 @@ onMounted(async () => {
                 <div class="mb-10">
 
                     <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white" for="difficulty">
-                        Difficulty Score Estimate (1-100)
+                        Difficulty Score (1-100)
                     </Label>
 
                     <div>
@@ -230,7 +230,7 @@ onMounted(async () => {
 
                     <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
                         for="number-of-days">
-                        Number of Days Estimate (1-10)
+                        Number of Days (1-10)
                     </Label>
 
                     <div>
