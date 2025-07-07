@@ -1,13 +1,16 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
+  CalculatedEstimate,
   CreateEstimateSchema,
+  GetEstimate,
   GetEstimateSchema,
-} from "../../../types/schema/EstimateSchema.ts"; // adjust path as needed
+} from "../../../types/schema/EstimateSchema.ts";
 
 describe("CreateEstimateSchema", () => {
   const validCreate = {
     questId: "abc123",
-    rank: "Mithril",
+    score: 80,
+    days: 5,
     comment: "Seems intermediate difficulty.",
   };
 
@@ -22,24 +25,29 @@ describe("CreateEstimateSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("fails if rank is not a string", () => {
-    const invalidData = { ...validCreate, rank: 42 };
-    const result = CreateEstimateSchema.safeParse(invalidData);
-    expect(result.success).toBe(false);
-  });
-
   it("fails if comment is empty", () => {
     const invalidData = { ...validCreate, comment: "" };
     const result = CreateEstimateSchema.safeParse(invalidData);
-    expect(result.success).toBe(true); // Still valid — no `.min()` constraint
+    expect(result.success).toBe(true); // Or false, if you add min(1) to schema
   });
 });
 
 describe("GetEstimateSchema", () => {
-  const validGet = {
-    username: "dev_chris",
-    rank: "Bronze",
-    comment: "Easy one, should be quick.",
+  const mockCalculatedEstimate: CalculatedEstimate[] = [
+    {
+      username: "username",
+      score: 80,
+      days: 5,
+      rank: "Iron",
+      comment: "Challenging but manageable",
+    },
+  ];
+
+  const mockEstimationStatus = "EstimateOpen";
+
+  const validGet: GetEstimate = {
+    estimationStatus: mockEstimationStatus,
+    calculatedEstimate: mockCalculatedEstimate,
   };
 
   it("validates correct GetEstimate data", () => {
@@ -48,19 +56,28 @@ describe("GetEstimateSchema", () => {
   });
 
   it("fails if username is missing", () => {
-    const { username, ...invalidData } = validGet;
+    const invalidData = {
+      ...validGet,
+      calculatedEstimate: [{ ...mockCalculatedEstimate[0], username: undefined }],
+    };
     const result = GetEstimateSchema.safeParse(invalidData);
     expect(result.success).toBe(false);
   });
 
   it("fails if rank is null", () => {
-    const invalidData = { ...validGet, rank: null };
+    const invalidData = {
+      ...validGet,
+      calculatedEstimate: [{ ...mockCalculatedEstimate[0], rank: null }],
+    };
     const result = GetEstimateSchema.safeParse(invalidData);
     expect(result.success).toBe(false);
   });
 
   it("fails if comment is a number", () => {
-    const invalidData = { ...validGet, comment: 123 };
+    const invalidData = {
+      ...validGet,
+      calculatedEstimate: [{ ...mockCalculatedEstimate[0], comment: 123 }],
+    };
     const result = GetEstimateSchema.safeParse(invalidData);
     expect(result.success).toBe(false);
   });

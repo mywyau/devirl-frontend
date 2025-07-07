@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
 import { streamAllQuestsReward } from "@/controllers/QuestController";
-import { getStatusTextColour } from "@/utils/QuestStatusUtils";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
+import { getStatusTextColour } from "@/utils/QuestStatusUtils";
 import { useCookie } from "nuxt/app";
 import { computed, onMounted, ref, watch } from "vue";
 
@@ -105,12 +105,19 @@ async function fetchQuests() {
           class="p-4 rounded-xl shadow bg-white/10">
 
           <div class="flex justify-between items-center">
+
             <h2 :id="`quest-title-${index}`" class="text-xl font-semibold text-indigo-300">
               {{ quest.quest.title }}
             </h2>
-            <span :class="`text-base font-semibold ${rankClass(quest.quest.rank)}`">
+
+            <span v-if="quest.quest.estimated" :class="`text-base font-semibold ${rankClass(quest.quest.rank)}`">
               {{ quest.quest.rank }}
             </span>
+
+            <span v-else :class="`text-base font-semibold text-white`">
+              Not Estimated
+            </span>
+
           </div>
 
           <div class="flex justify-between items-center">

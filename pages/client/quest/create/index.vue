@@ -284,7 +284,8 @@ async function handleSubmit() {
             Quest Title
           </label>
 
-          <Input id="quest-title" v-model="questCreatePayload.title" placeholder="Add a title to your quest post" />
+          <Input id="quest-title" v-model="questCreatePayload.title" placeholder="Add a title to your quest post"
+            class="w-full" />
 
           <p class="mt-1 text-sm text-zinc-400">Max 100 characters</p>
         </div>

@@ -33,9 +33,9 @@ onMounted(async () => {
 <template>
   <NuxtLayout>
     <div class="p-8 text-center">
-      <h1 class="text-3xl font-bold">Backend Health Check</h1>
-      <p class="mt-4 text-xl" v-if="jsonValue">Value: {{ jsonValue }}</p>
-      <p class="mt-4 text-xl text-red-500" v-else>
+      <h1 class="text-white text-3xl font-bold">Backend Health Check</h1>
+      <p class="text-white mt-4 text-xl" v-if="jsonValue">Value: {{ jsonValue }}</p>
+      <p class="text-white mt-4 text-xl text-red-500" v-else>
         Loading or failed to fetch...
       </p>
     </div>
