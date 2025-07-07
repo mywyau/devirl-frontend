@@ -138,13 +138,16 @@ async function fetchQuests() {
 
           <div class="mt-4 flex items-center">
 
-            <span v-if="quest.reward?.rewardValue != null" class="text-base text-green-400">
-              ${{ (quest.reward.rewardValue! / 100).toFixed(2) }}
-            </span>
+            <p class="text-base text-white">
+              Time Reward:
+              <span v-if="quest.reward?.timeRewardValue != null" class="text-base text-green-400">
+                ${{ (quest.reward.timeRewardValue! / 100).toFixed(2) }}
+              </span>
 
-            <span v-else class="font-mono text-sm text-zinc-300">
-              No reward
-            </span>
+              <span v-else class="font-sans text-sm text-zinc-300">
+                No reward
+              </span>
+            </p>
 
             <div class="flex space-x-4 ml-auto">
               <NuxtLink v-if="userType == 'Dev'" :to="`/quest/estimation/${quest.quest.questId}`"
@@ -159,6 +162,17 @@ async function fetchQuests() {
               </NuxtLink>
             </div>
           </div>
+
+          <p class="text-base text-white mt-4">
+            Completion Reward:
+            <span v-if="quest.reward?.completionRewardValue != null" class="text-base text-green-400">
+              ${{ (quest.reward.completionRewardValue! / 100).toFixed(2) }}
+            </span>
+
+            <span v-else class="font-sans text-sm text-zinc-300">
+              No reward
+            </span>
+          </p>
 
         </div>
       </div>

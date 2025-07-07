@@ -248,6 +248,7 @@ onMounted(async () => {
 
 
                     <button @click="submitEstimation"
+                        id="submit-estimate"
                         class="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white"
                         :disabled="isSubmitting">
                         Submit Estimate

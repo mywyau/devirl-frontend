@@ -79,5 +79,5 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return sendRedirect(event, userType ? "/" : "/choose-user-type");
+  return sendRedirect(event, userType ? "/" : "/registration");
 });
