@@ -37,8 +37,10 @@ export const url = {
     `${baseUrl}/quest/stream/${encodeURIComponent(userId)}`,
   streamAll: (userId: string) =>
     `${baseUrl}/quest/stream/all/${encodeURIComponent(userId)}`,
-  streamRewarded: (userId: string) =>
-    `${baseUrl}/quest/reward/stream/${encodeURIComponent(userId)}`,
+
+  streamRewarded: (userId: string, page: number, limit: number) =>
+    `${baseUrl}/quest/reward/stream/${encodeURIComponent(userId)}?page=${page}&limit=${limit}`
+  ,
   streamByStatus: (userId: string, status: QuestStatus, page = 1, limit = 10) =>
     `${baseUrl}/quest/stream/client/new/${encodeURIComponent(
       userId

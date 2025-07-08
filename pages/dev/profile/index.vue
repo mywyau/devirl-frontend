@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button/variants";
 import ProfileItem from "@/components/ui/profile/ProfileItem";
-// import { useAuthUser } from "@/composables/useAuthUser";
 import { loadConfig } from '@/configuration/ConfigLoader';
 import { deleteUser, getUser } from "@/controllers/UserDataController";
 import type { AuthUser } from "@/types/AuthUser";
@@ -143,14 +142,6 @@ async function startStripeOnboarding() {
               @click="startStripeOnboarding">
               Connect with Stripe
             </Button>
-            <!-- <nav class="space-y-4">
-              <NuxtLink to="/profile/equipment"
-                class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Equipment</NuxtLink>
-              <NuxtLink to="/dev/skills"
-                class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Skills</NuxtLink>
-              <NuxtLink to="/dev/inventory"
-                class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Inventory</NuxtLink>
-            </nav> -->
           </div>
         </div>
 
