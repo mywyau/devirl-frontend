@@ -168,14 +168,14 @@ async function loadEstimates() {
             Load Estimates
           </Button>
 
-          <a v-if="result?.status.toString() == `Open`" :href="`/client/quest/edit/${questId}`" rel="external"
+          <a v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated`" :href="`/client/quest/edit/${questId}`" rel="external"
             class="text-white">
             <Button variant="secondary" class="bg-yellow-500 text-white rounded hover:bg-yellow-400">
               Edit quest
             </Button>
           </a>
 
-          <a v-if="result?.status.toString() == `Open`" :href="`/client/quest/reward/add/${questId}`" rel="external"
+          <a v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated`" :href="`/client/quest/reward/add/${questId}`" rel="external"
             class="text-white">
             <Button variant="secondary" class="bg-emerald-500 text-white rounded hover:bg-emerald-400">
               Add a Reward
@@ -183,12 +183,13 @@ async function loadEstimates() {
           </a>
 
           <!-- Delete button (client‐only interaction) -->
-          <Button v-if="result?.status.toString() == `Open` || result?.status.toString() == `Completed`" variant="secondary"
+          <Button v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated` || result?.status.toString() == `Completed`" variant="secondary"
             class="bg-red-600 text-white rounded hover:bg-red-500" @click="handleDeleteQuest">
             Delete quest
           </Button>
 
-          <a v-if="result?.status.toString() == `Open`" :href="`/payment/${questId}`" rel="external"
+           <!-- this needs to be available only when a reward has been added-->
+          <a v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated`" :href="`/payment/${questId}`" rel="external"
             class="text-white">
             <Button variant="secondary" class="bg-emerald-500 text-white rounded hover:bg-emerald-400">
               Make payment
