@@ -76,7 +76,7 @@
 
         <div class="pt-12 text-center">
           <p class="text-xl text-teal-400 font-semibold">
-            Let’s make better software together!!!
+            Let’s make better software together!
           </p>
         </div>
       </div>
