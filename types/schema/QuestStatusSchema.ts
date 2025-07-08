@@ -3,13 +3,13 @@ import { RewardDataSchema } from "./RewardSchema";
 
 // Zod schema
 export const QuestStatusSchema = z.enum([
+  "NotEstimated",
+  "Open",
   "NotStarted",
   "InProgress",
+  "Review",
   "Completed",
   "Failed",
-  "Review",
-  "Open",
-  "Assigned",
 ]);
 
 // Inferred TypeScript type from Zod
