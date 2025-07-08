@@ -4,7 +4,8 @@ export const RewardDataSchema = z.object({
   questId: z.string(),
   clientId: z.string(),
   devId: z.string().nullable().optional(),
-  rewardValue: z.number().nullable().optional(),
+  timeRewardValue: z.number().nullable().optional(),
+  completionRewardValue: z.number().nullable().optional(),
   paid: z.boolean(),
 });
 

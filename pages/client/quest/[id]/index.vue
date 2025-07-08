@@ -205,8 +205,8 @@ async function loadEstimates() {
             <li v-for="(est, i) in retrievedEstimates" :key="i"
               class="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
               <div class="flex justify-between items-center mb-1">
-                <span class="text-white font-bold">{{ est.username }}</span>
-                <span class="text-sm text-white">{{ est.rank }}</span>
+                <span class="text-white font-bold">{{ est.calculatedEstimate.username }}</span>
+                <span class="text-sm text-white">{{ est.calculatedEstimate.rank }}</span>
               </div>
               <p class="text-zinc-300 text-sm">{{ est.comment }}</p>
             </li>
