@@ -6,7 +6,8 @@ describe("RewardDataSchema", () => {
     questId: "quest-123",
     clientId: "client-456",
     devId: "dev-789",
-    rewardValue: 150,
+    timeRewardValue: 10,
+    completionRewardValue: 100,
     paid: true,
   };
 
@@ -30,7 +31,8 @@ describe("RewardDataSchema", () => {
       questId: "quest-null",
       clientId: "client-null",
       devId: null,
-      rewardValue: null,
+      timeRewardValue: null,
+      completionRewardValue: null,
       paid: false,
     };
     const result = RewardDataSchema.safeParse(data);
@@ -43,8 +45,14 @@ describe("RewardDataSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("fails if rewardValue is a string", () => {
-    const invalidData = { ...validData, rewardValue: "100" };
+   it("fails if timeRewardValue is a string", () => {
+    const invalidData = { ...validData, timeRewardValue: "100" };
+    const result = RewardDataSchema.safeParse(invalidData);
+    expect(result.success).toBe(false);
+  });
+
+  it("fails if completionRewardValue is a string", () => {
+    const invalidData = { ...validData, completionRewardValue: "100" };
     const result = RewardDataSchema.safeParse(invalidData);
     expect(result.success).toBe(false);
   });
