@@ -124,7 +124,7 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
     <div class="p-6 max-w-4xl mx-auto">
 
       <h1 class="text-3xl font-bold mb-6 text-pink-300">
-        All Available Open Quests
+        All Available Quests
       </h1>
 
       <!-- Delayed loading message -->

@@ -52,6 +52,10 @@ if (error.value) {
             Profile
           </NuxtLink>
 
+          <NuxtLink to="/about" class="font-heading text-white hover:text-indigo-300">
+            About
+          </NuxtLink>
+
           <!-- <a href="#" @click.prevent="handleLogout" class="text-white hover:text-red-400 text-base">Logout</a> -->
           <a :href="logoutUrl()" class="font-heading text-white hover:text-red-400 text-base">Logout</a>
         </template>
@@ -60,6 +64,10 @@ if (error.value) {
 
           <NuxtLink to="/hiscores" class="font-heading text-white hover:text-indigo-300">
             Hiscores
+          </NuxtLink>
+
+          <NuxtLink to="/about" class="font-heading text-white hover:text-indigo-300">
+            About
           </NuxtLink>
 
           <a :href="loginUrl()" class="font-heading text-white hover:text-green-400 text-base">
