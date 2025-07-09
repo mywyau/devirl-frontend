@@ -129,7 +129,6 @@ async function handleSubmit() {
 
   const parsed = CreateQuestSchema.safeParse(payload)
 
-  console.log("Submitting payload:", parsed.data)
 
   if (!parsed.success) {
     submissionError.value = "Validation error: " + JSON.stringify(parsed.error.format());
@@ -167,8 +166,6 @@ async function handleSubmit() {
     { deep: true }
   )
 
-  console.log("Tags payload:", payload.tags)
-  console.log("Tags typeof each:", payload.tags.map(tag => typeof tag))
 }
 
 </script>

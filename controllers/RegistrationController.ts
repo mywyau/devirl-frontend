@@ -1,6 +1,9 @@
-import { z } from "zod";
-import { UpdateUserTypeSchema } from "@/types/schema/UserDataSchema";
 import { updateUserType } from "@/connectors/RegistrationConnector";
+import {
+  UpdateUserTypeSchema,
+  type UpdateUserType,
+} from "@/types/schema/UserDataSchema";
+import { z } from "zod";
 
 export async function submitUserTypeUpdate(
   userId: string | undefined,
@@ -14,7 +17,7 @@ export async function submitUserTypeUpdate(
   }
 
   try {
-    const payload = UpdateUserTypeSchema.parse(form);
+    const payload: UpdateUserType = UpdateUserTypeSchema.parse(form);
     await updateUserType(userId, payload);
 
     await $fetch("/api/auth/refresh-session", {

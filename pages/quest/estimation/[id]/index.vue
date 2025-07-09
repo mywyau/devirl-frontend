@@ -9,6 +9,8 @@ import { useRoute } from "nuxt/app";
 import { Label } from 'reka-ui';
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
+
 
 
 const router = useRouter();
@@ -197,78 +199,81 @@ onMounted(async () => {
                 <h1 class="text-3xl font-bold mb-4">Estimate Difficulty</h1>
             </div>
 
-            <div v-if="!estimationIsClosed">
+            <div v-if="!isLoadingEstimates">
+                <div v-if="!estimationIsClosed">
 
-                <div v-if="submissionSuccess" class="text-green-400 mb-4">
-                    Estimate submitted successfully!
-                </div>
-
-                <div v-if="submissionError" class="text-red-400 mb-4">
-                    {{ submissionError }}
-                </div>
-
-                <!-- Estimate Details -->
-                <div class="bg-teal-300/70 p-6 rounded mb-6 space-y-4">
-                    <h2 class="text-black text-2xl font-semibold">{{ retrievedQuestData?.title }}</h2>
-                    <h3 class="text-zinc-900 text-xl font-semibold underline">Description</h3>
-                    <p class="text-zinc-800 text-base mt-2">{{ retrievedQuestData?.description || "No description was given" }}</p>
-                    <h3 class="text-zinc-900 text-xl font-semibold underline">Acceptance Criteria</h3>
-                    <p class="text-zinc-800 text-base mt-2">{{ retrievedQuestData?.acceptanceCriteria }}</p>
-                </div>
-
-                <!-- Form -->
-                <div class="mb-10">
-
-                    <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white" for="difficulty">
-                        Difficulty Score (1-100)
-                    </Label>
-
-                    <div>
-                        <Input id="difficulty-score" type="number" v-model="score" placeholder="0" class="w-1/4" />
-                        <p v-if="scoreError" class="text-sm text-red-400 mt-1">{{ scoreError }}</p>
+                    <div v-if="submissionSuccess" class="text-green-400 mb-4">
+                        Estimate submitted successfully!
                     </div>
 
-                    <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
-                        for="number-of-days">
-                        Number of Days (1-10)
-                    </Label>
-
-                    <div>
-                        <Input id="number-of-day" type="number" v-model="days" placeholder="0" class="w-1/4" />
-                        <p v-if="daysError" class="text-sm text-red-400 mt-1">{{ daysError }}</p>
+                    <div v-if="submissionError" class="text-red-400 mb-4">
+                        {{ submissionError }}
                     </div>
-                    <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white" for="comment">
-                        Comments
-                    </Label>
 
-                    <TextArea id="comment" v-model="comment"
-                        placeholder="Thoughts, considerations, or reasoning behind your estimate..." />
+                    <!-- Estimate Details -->
+                    <div class="bg-teal-300/70 p-6 rounded mb-6 space-y-4">
+                        <h2 class="text-black text-2xl font-semibold">{{ retrievedQuestData?.title }}</h2>
+                        <h3 class="text-zinc-900 text-xl font-semibold underline">Description</h3>
+                        <p class="text-zinc-800 text-base mt-2">
+                            {{ retrievedQuestData?.description || "No description was given" }}
+                        </p>
+                        <h3 class="text-zinc-900 text-xl font-semibold underline">Acceptance Criteria</h3>
+                        <p class="text-zinc-800 text-base mt-2">{{ retrievedQuestData?.acceptanceCriteria }}</p>
+                    </div>
 
-                    <p v-if="commentError" class="text-sm text-red-400 mt-1">{{ commentError }}</p>
+                    <!-- Form -->
+                    <div class="mb-10">
 
+                        <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
+                            for="difficulty">
+                            Difficulty Score (1-100)
+                        </Label>
 
-                    <button @click="submitEstimation"
-                        id="submit-estimate"
-                        class="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white"
-                        :disabled="isSubmitting">
-                        Submit Estimate
-                    </button>
+                        <div>
+                            <Input id="difficulty-score" type="number" v-model="score" placeholder="0" class="w-1/4" />
+                            <p v-if="scoreError" class="text-sm text-red-400 mt-1">{{ scoreError }}</p>
+                        </div>
+
+                        <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
+                            for="number-of-days">
+                            Number of Days (1-10)
+                        </Label>
+
+                        <div>
+                            <Input id="number-of-day" type="number" v-model="days" placeholder="0" class="w-1/4" />
+                            <p v-if="daysError" class="text-sm text-red-400 mt-1">{{ daysError }}</p>
+                        </div>
+                        <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
+                            for="comment">
+                            Comments
+                        </Label>
+
+                        <TextArea id="comment" v-model="comment"
+                            placeholder="Thoughts, considerations, or reasoning behind your estimate..." />
+
+                        <p v-if="commentError" class="text-sm text-red-400 mt-1">{{ commentError }}</p>
+
+                        <ConfirmDialog 
+                            title="Confirm Estimate Submission"
+                            description="Are you sure you want to submit this estimate? You can only submit once and it cannot be changed."
+                            triggerText="Submit Estimate" actionText="Yes, submit" :disabled="isSubmitting"
+                            @confirm="submitEstimation"
+                            triggerClass="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white" 
+                        />
+
+                    </div>
                 </div>
-            </div>
 
-            <div v-else class="text-yellow-400 text-lg font-semibold mt-6">
-                Estimations are closed for this quest.
+                <div v-else class="text-yellow-400 text-lg font-semibold mt-6">
+                    Estimations are closed for this quest.
+                </div>
             </div>
 
             <!-- Past Reviews -->
 
-            <div v-if="estimationIsClosed && retrievedEstimates.length > 0">
+            <div v-if="!isLoadingEstimates && estimationIsClosed && retrievedEstimates.length > 0">
+
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold">Recent Estimations</h3>
-                    <button @click="refreshPage"
-                        class="bg-green-600 hover:bg-green-500 text-white text-sm font-medium px-3 py-1.5 rounded transition-colors duration-200">
-                        Refresh
-                    </button>
 
                 </div>
                 <ul class="space-y-3">
@@ -285,7 +290,7 @@ onMounted(async () => {
             </div>
 
 
-            <div v-else="!isLoadingEstimates && !errorEstimates" class="text-zinc-400 text-base">
+            <div v-else-if="!isLoadingEstimates && !errorEstimates" class="text-zinc-400 text-base">
                 <p>
                     There {{ retrievedEstimates?.length === 1 ? 'is' : 'are' }}
                     <span class="text-green-400">{{ retrievedEstimates?.length }}</span>

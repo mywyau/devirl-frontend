@@ -25,6 +25,18 @@ import {
   AccordionTrigger,
 } from 'reka-ui';
 
+import {
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogRoot,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from 'reka-ui';
+
 
 const openPanels = ref<string[]>(['description', 'acceptance']) // or [] to have them all closed initially
 
@@ -133,10 +145,42 @@ const reportError = ref(false);
 
         <div v-if="result?.status.toString() === 'Open'" class="mt-6 flex gap-4">
 
-          <Button v-if="userType === 'Dev'" variant="secondary"
+          <!-- <Button v-if="userType === 'Dev'" variant="secondary"
             class="bg-green-500 text-white rounded hover:bg-green-400" @click="handleAcceptQuest">
             Accept Quest
-          </Button>
+          </Button> -->
+
+          <AlertDialogRoot>
+            <AlertDialogTrigger as-child>
+              <Button variant="secondary" class="bg-green-500 text-white rounded hover:bg-green-400">
+                Accept Quest
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogPortal>
+              <AlertDialogOverlay class="bg-black/50 fixed inset-0 z-30" />
+              <AlertDialogContent
+                class="z-[100] fixed top-[50%] left-[50%] w-full max-w-md translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg">
+                <AlertDialogTitle class="text-lg font-semibold text-black">
+                  Accept this quest?
+                </AlertDialogTitle>
+                <AlertDialogDescription class="mt-2 text-sm text-gray-700">
+                  Once accepted, this quest will be assigned to you and you’ll be expected to deliver based on the
+                  criteria.
+                </AlertDialogDescription>
+                <div class="flex justify-end gap-4 mt-6">
+                  <AlertDialogCancel class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded text-sm font-medium"
+                    @click="handleAcceptQuest">
+                    Yes, accept quest
+                  </AlertDialogAction>
+                </div>
+              </AlertDialogContent>
+            </AlertDialogPortal>
+          </AlertDialogRoot>
+
 
           <!-- <Button variant="secondary" class="bg-red-500 text-white rounded hover:bg-red-400" @click="">
             Report Quest

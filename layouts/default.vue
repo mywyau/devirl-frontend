@@ -2,6 +2,11 @@
 import { useAuthUser } from "@/composables/useAuthUser";
 import { loginUrl, logoutUrl } from "@/controllers/AuthController";
 import { useCookie } from "nuxt/app";
+import { ref } from "vue";
+import { Icon } from '@iconify/vue';
+
+
+const mobileOpen = ref(false);
 
 const { data: user, error } = useAuthUser();
 
@@ -15,67 +20,71 @@ if (error.value) {
 <template>
 
   <div class="flex flex-col overflow-x-hidden bg-zinc-900 min-h-screen font-sans">
-
-    <header class="px-6 py-4 flex justify-between items-center">
+    <header class="px-6 py-4 flex justify-between items-center relative">
       <NuxtLink to="/" class="font-heading text-2xl font-bold text-white hover:text-teal-400">
         Dev IRL
       </NuxtLink>
 
-      <nav class="space-x-6 flex items-center">
+      <!-- Mobile menu button -->
+      <button @click="mobileOpen = !mobileOpen" class="text-white md:hidden" aria-label="Toggle menu">
+        <Icon icon="radix-icons:hamburger-menu" class="w-6 h-6" />
+      </button>
+
+      <!-- Desktop nav -->
+      <nav class="space-x-6 hidden md:flex items-center">
         <template v-if="user">
-
-          <NuxtLink to="/view-all/quests" class="font-heading text-white hover:text-green-400">
-            View all quests
+          <NuxtLink to="/view-all/quests" class="font-heading text-white hover:text-green-400">View all quests
           </NuxtLink>
-
-          <NuxtLink to="/hiscores" class="font-heading text-white hover:text-indigo-400">
-            Hiscores
-          </NuxtLink>
-
+          <NuxtLink to="/hiscores" class="font-heading text-white hover:text-indigo-400">Hiscores</NuxtLink>
           <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="font-heading text-white hover:text-indigo-400">
-            Skills
-          </NuxtLink>
-
-          <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard" class="font-heading text-white hover:text-blue-400">
-            Dashboard
-          </NuxtLink>
-
-          <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard" class="font-heading text-white hover:text-blue-400">
-            Dashboard
-          </NuxtLink>
-
+            Skills</NuxtLink>
+          <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard"
+            class="font-heading text-white hover:text-blue-400">Dashboard</NuxtLink>
+          <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard"
+            class="font-heading text-white hover:text-blue-400">Dashboard</NuxtLink>
           <NuxtLink v-if="userType === 'Dev'" to="/dev/profile" class="font-heading text-white hover:text-blue-400">
-            Profile
-          </NuxtLink>
-
-          <NuxtLink v-if="userType === 'Client'" to="/client/profile" class="font-heading text-white hover:text-blue-400">
-            Profile
-          </NuxtLink>
-
-          <NuxtLink to="/about" class="font-heading text-white hover:text-indigo-300">
-            About
-          </NuxtLink>
-
-          <!-- <a href="#" @click.prevent="handleLogout" class="text-white hover:text-red-400 text-base">Logout</a> -->
+            Profile</NuxtLink>
+          <NuxtLink v-if="userType === 'Client'" to="/client/profile"
+            class="font-heading text-white hover:text-blue-400">Profile</NuxtLink>
+          <NuxtLink to="/about" class="font-heading text-white hover:text-indigo-300">About</NuxtLink>
           <a :href="logoutUrl()" class="font-heading text-white hover:text-red-400 text-base">Logout</a>
         </template>
-
         <template v-else>
-
-          <NuxtLink to="/hiscores" class="font-heading text-white hover:text-indigo-300">
-            Hiscores
-          </NuxtLink>
-
-          <NuxtLink to="/about" class="font-heading text-white hover:text-indigo-300">
-            About
-          </NuxtLink>
-
-          <a :href="loginUrl()" class="font-heading text-white hover:text-green-400 text-base">
-            Login
-          </a>
+          <NuxtLink to="/hiscores" class="font-heading text-white hover:text-indigo-300">Hiscores</NuxtLink>
+          <NuxtLink to="/about" class="font-heading text-white hover:text-indigo-300">About</NuxtLink>
+          <a :href="loginUrl()" class="font-heading text-white hover:text-green-400 text-base">Login</a>
         </template>
       </nav>
+
+      <!-- Mobile dropdown nav -->
+      <transition name="fade">
+        <nav v-if="mobileOpen"
+          class="absolute top-full left-0 right-0 bg-zinc-900 border-t border-zinc-700 flex flex-col px-6 py-4 space-y-4 md:hidden z-50">
+          <template v-if="user">
+            <NuxtLink to="/view-all/quests" class="text-white hover:text-green-400">View all quests</NuxtLink>
+            <NuxtLink to="/hiscores" class="text-white hover:text-indigo-400">Hiscores</NuxtLink>
+            <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="text-white hover:text-indigo-400">Skills
+            </NuxtLink>
+            <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard" class="text-white hover:text-blue-400">
+              Dashboard</NuxtLink>
+            <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard" class="text-white hover:text-blue-400">
+              Dashboard</NuxtLink>
+            <NuxtLink v-if="userType === 'Dev'" to="/dev/profile" class="text-white hover:text-blue-400">Profile
+            </NuxtLink>
+            <NuxtLink v-if="userType === 'Client'" to="/client/profile" class="text-white hover:text-blue-400">Profile
+            </NuxtLink>
+            <NuxtLink to="/about" class="text-white hover:text-indigo-300">About</NuxtLink>
+            <a :href="logoutUrl()" class="text-white hover:text-red-400 text-base">Logout</a>
+          </template>
+          <template v-else>
+            <NuxtLink to="/hiscores" class="text-white hover:text-indigo-300">Hiscores</NuxtLink>
+            <NuxtLink to="/about" class="text-white hover:text-indigo-300">About</NuxtLink>
+            <a :href="loginUrl()" class="text-white hover:text-green-400 text-base">Login</a>
+          </template>
+        </nav>
+      </transition>
     </header>
+
 
     <main class="flex-grow">
       <slot />

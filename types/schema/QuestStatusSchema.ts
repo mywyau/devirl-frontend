@@ -4,6 +4,7 @@ import { RewardDataSchema } from "./RewardSchema";
 // Zod schema
 export const QuestStatusSchema = z.enum([
   "NotEstimated",
+  "Estimated",
   "Open",
   "NotStarted",
   "InProgress",

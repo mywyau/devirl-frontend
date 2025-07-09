@@ -40,5 +40,3 @@ export async function updateUserType(userId: string, payload: UpdateUserType) {
   });
 }
 
-
-    // ).flatten.filter(_.nonEmpty).map(HtmlFormat.escape).mkString("<br>")

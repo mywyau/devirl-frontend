@@ -34,8 +34,6 @@ const totalQuests = ref(0); // or call /quest/count/:userId later
 async function fetchTotalQuestCount() {
   const { numberOfQuests } = await $fetch<{ numberOfQuests: number }>(`${baseUrl}/quest/count/not-estimated/and/open`);
   totalQuests.value = numberOfQuests;
-  console.log("total count", numberOfQuests);
-
 }
 
 const loading = ref(false);
@@ -101,14 +99,6 @@ async function fetchQuestsForPage(page: number) {
   }
 }
 
-// watch(safeUserId, async (uid) => {
-//   if (uid) await fetchTotalQuestCount();
-// }, { immediate: true });
-
-// watch([currentPage, safeUserId], ([page, uid]) => {
-//   if (uid) fetchQuestsForPage(page);
-// }, { immediate: true });
-
 watch([currentPage, safeUserId], async ([page, uid]) => {
   if (uid) {
     await fetchTotalQuestCount();
@@ -140,7 +130,7 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
       <div v-if="error" class="text-red-500">{{ error }}</div>
 
       <!-- Pagination Controls -->
-      <template v-if="totalQuests > 0">
+      <template v-if="!loading && questsWithReward.length > 0 && totalQuests > itemsPerPage">
         <PaginationRoot v-model:page="currentPage" :total="totalQuests" :items-per-page="itemsPerPage"
           :sibling-count="1" show-edges class="mt-8 flex justify-center">
 
@@ -178,83 +168,83 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
 
       <div class="grid gap-6 mt-6" v-if="questsWithReward.length > 0">
         <div v-for="(quest, index) in questsWithReward" :key="quest.quest.questId"
-          class="p-4 rounded-xl shadow bg-white/10">
+          class="p-4 rounded-xl shadow bg-white/10 flex flex-col gap-4 sm:gap-6">
 
-          <div class="flex justify-between items-center">
-
-            <h2 :id="`quest-title-${index}`" class="text-xl font-semibold text-indigo-300">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <h2 :id="`quest-title-${index}`" class="text-lg sm:text-xl font-semibold text-indigo-300">
               {{ quest.quest.title }}
             </h2>
-
-            <span v-if="quest.quest.estimated" :class="`text-base font-semibold ${rankClass(quest.quest.rank)}`">
+            <span v-if="quest.quest.estimated"
+              :class="`text-sm sm:text-base font-semibold ${rankClass(quest.quest.rank)}`">
               {{ quest.quest.rank }}
             </span>
-
-            <span v-else :class="`text-base font-semibold text-white`">
+            <span v-else class="text-sm sm:text-base font-semibold text-white">
               Not Estimated
             </span>
-
           </div>
 
-          <div class="flex justify-between items-center">
+          <!-- <div class="flex justify-between items-center">
             <div class="flex flex-wrap gap-2 mt-4">
               <span v-for="tag in quest.quest.tags" :key="tag"
                 class="bg-green-600 text-white text-xs px-2 py-1 rounded">
                 {{ tag }}
               </span>
             </div>
-          </div>
+          </div> -->
 
-
-          <div class="flex justify-between items-center mb-1">
-            <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold mt-4`">{{
-              quest.quest.status }}
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span v-for="tag in quest.quest.tags" :key="tag" class="bg-green-600 text-white text-xs px-2 py-1 rounded">
+              {{ tag }}
             </span>
           </div>
 
-          <div class="mt-4 flex items-center">
 
-            <p class="text-base text-white">
+          <!-- <div class="flex justify-between items-center mb-1">
+            <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold mt-4`">{{
+              quest.quest.status }}
+            </span>
+          </div> -->
+
+          <div class="flex justify-between items-center mt-2">
+            <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold`">
+              {{ quest.quest.status }}
+            </span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-4">
+            <p class="text-sm sm:text-base text-white">
               Time Reward:
-              <span v-if="quest.reward?.timeRewardValue != null" class="text-base text-green-400">
+              <span v-if="quest.reward?.timeRewardValue != null" class="text-green-400">
                 ${{ (quest.reward.timeRewardValue! / 100).toFixed(2) }}
               </span>
-
-              <span v-else class="font-sans text-sm text-zinc-300">
-                No reward
-              </span>
+              <span v-else class="text-zinc-300">No reward</span>
             </p>
 
-            <div class="flex space-x-4 ml-auto">
+            <div class="flex gap-4">
               <NuxtLink v-if="userType == 'Dev'" :to="`/quest/estimation/${quest.quest.questId}`"
-                :id="`estimation-link-${quest.quest.questId}`" :data-testid="`estimation-link-${quest.quest.questId}`"
-                class="text-white hover:underline hover:text-teal-300">
+                class="text-sm text-white hover:underline hover:text-teal-300">
                 Estimations
               </NuxtLink>
-              <NuxtLink :to="`/quest/${quest.quest.questId}`" :id="`details-link-${quest.quest.questId}`"
-                :data-testid="`details-link-${quest.quest.questId}`"
-                class="text-white hover:underline hover:text-teal-300">
+              <NuxtLink :to="`/quest/${quest.quest.questId}`"
+                class="text-sm text-white hover:underline hover:text-teal-300">
                 Details
               </NuxtLink>
             </div>
           </div>
 
-          <p class="text-base text-white mt-4">
+          <p class="text-sm sm:text-base text-white mt-2">
             Completion Reward:
-            <span v-if="quest.reward?.completionRewardValue != null" class="text-base text-green-400">
+            <span v-if="quest.reward?.completionRewardValue != null" class="text-green-400">
               ${{ (quest.reward.completionRewardValue! / 100).toFixed(2) }}
             </span>
-
-            <span v-else class="font-sans text-sm text-zinc-300">
-              No reward
-            </span>
+            <span v-else class="text-zinc-300">No reward</span>
           </p>
 
         </div>
       </div>
 
       <!-- Pagination Controls -->
-      <template v-if="totalQuests > 0">
+      <template v-if="!loading && questsWithReward.length > 0 && totalQuests > itemsPerPage">
         <PaginationRoot v-model:page="currentPage" :total="totalQuests" :items-per-page="itemsPerPage"
           :sibling-count="1" show-edges class="mt-8 flex justify-center">
 

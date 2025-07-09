@@ -5,7 +5,7 @@ import { getStatusTextColour } from "@/utils/QuestStatusUtils";
 import { computed, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 
-import { deleteQuest, getQuest } from "@/controllers/QuestController";
+import { deleteQuest, getQuest, updateQuestStatus } from "@/controllers/QuestController";
 import {
   QuestPartialSchema,
   type QuestPartial,
@@ -16,6 +16,8 @@ import { useAuthUser } from "@/composables/useAuthUser";
 import { getEstimatesRequest } from "@/controllers/EstimateController";
 import type { GetEstimate } from "@/types/schema/EstimateSchema";
 import { useRouter } from "vue-router";
+
+import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 
 const router = useRouter();
 
@@ -86,6 +88,25 @@ const isLoading = pending;
 const deleteSuccess = ref(false);
 const deleteError = ref(false);
 
+
+// 9) Client‐only state for delete
+const changeToOpenSuccess = ref(false);
+const changeToOpenError = ref(false);
+
+async function handleChangeToOpenRequest() {
+  if (!safeUserId.value) {
+    deleteError.value = true;
+    return;
+  }
+  try {
+    await updateQuestStatus(safeUserId.value, questId, { questStatus: "Open" });
+    changeToOpenSuccess.value = true;
+  } catch (err) {
+    changeToOpenError.value = true;
+    console.error(err);
+  }
+}
+
 async function handleDeleteQuest() {
   if (!safeUserId.value) {
     deleteError.value = true;
@@ -121,10 +142,12 @@ async function loadEstimates() {
 </script>
 
 <template>
+  
   <NuxtLayout>
-    <div class="p-6 max-w-4xl mx-auto">
 
-      <h1 class="text-3xl font-bold mb-6 text-pink-300">Quest Details</h1>
+    <div class="p-4 sm:p-6 max-w-4xl mx-auto">
+
+      <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-pink-300">Quest Details</h1>
 
       <div v-if="isLoading" class="text-zinc-400">Loading quest…</div>
 
@@ -144,7 +167,7 @@ async function loadEstimates() {
           {{ result?.title }}
         </h2>
 
-        <p class="mb-4 text-zinc-300">{{ result?.description }}</p>
+        <p class="text-zinc-300 text-sm break-words">{{ result?.description }}</p>
 
         <div>
           <span class="text-white font-semibold">Status: </span>
@@ -154,46 +177,59 @@ async function loadEstimates() {
           }}</span>
         </div>
 
-        <div class="mt-6 flex gap-4">
+        <div class="mt-6 flex flex-wrap gap-4">
 
-          <Button variant="default" class="bg-teal-500 text-white rounded hover:bg-teal-400"
-            @click="router.push(`/client/quest/download/${questId}`)">
-            Download File
-          </Button>
+          <div class="mt-6 flex flex-col sm:flex-row flex-wrap gap-4">
 
-          <Button variant="secondary" class="bg-indigo-500 hover:bg-indigo-400 text-white rounded"
-            @click="loadEstimates">
-            Load Estimates
-          </Button>
-
-          <a v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated`"
-            :href="`/client/quest/edit/${questId}`" rel="external" class="text-white">
-            <Button variant="secondary" class="bg-yellow-500 text-white rounded hover:bg-yellow-400">
-              Edit quest
+            <Button variant="default" class="w-full sm:w-auto bg-teal-500 text-white rounded hover:bg-teal-400"
+              @click="router.push(`/client/quest/download/${questId}`)">
+              Download File
             </Button>
-          </a>
 
-          <a v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated`"
-            :href="`/client/quest/reward/add/${questId}`" rel="external" class="text-white">
-            <Button variant="secondary" class="bg-emerald-500 text-white rounded hover:bg-emerald-400">
-              Add a Reward
+            <Button variant="secondary" class="w-full sm:w-auto bg-indigo-500 hover:bg-indigo-400 text-white rounded"
+              v-if="result?.status.toString() == `Open` || result?.status.toString() == `Estimated`"
+              @click="loadEstimates">
+              Load Estimates
             </Button>
-          </a>
 
-          <!-- Delete button (client‐only interaction) -->
-          <Button
-            v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated` || result?.status.toString() == `Completed`"
-            variant="secondary" class="bg-red-600 text-white rounded hover:bg-red-500" @click="handleDeleteQuest">
-            Delete quest
-          </Button>
+            <a v-if="result?.status.toString() == `NotEstimated`" :href="`/client/quest/edit/${questId}`" rel="external"
+              class="text-white">
+              <Button variant="secondary" class="w-full sm:w-auto bg-yellow-500 text-white rounded hover:bg-yellow-400">
+                Edit quest
+              </Button>
+            </a>
 
-          <!-- this needs to be available only when a reward has been added-->
-          <a v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated`"
-            :href="`/payment/${questId}`" rel="external" class="text-white">
-            <Button variant="secondary" class="bg-emerald-500 text-white rounded hover:bg-emerald-400">
-              Make payment
-            </Button>
-          </a>
+            <a v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated` || result?.status.toString() == `Estimated`"
+              :href="`/client/quest/reward/add/${questId}`" rel="external" class="text-white">
+              <Button variant="secondary"
+                class="w-full sm:w-auto bg-emerald-500 text-white rounded hover:bg-emerald-400">
+                Add a Reward
+              </Button>
+            </a>
+
+            <ConfirmDialog
+              v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated` || result?.status.toString() == `Completed`"
+              title="Confirm Deletion"
+              description="Are you sure you want to permanently delete this quest? This cannot be undone."
+              triggerText="Delete quest"
+              :triggerClass="'w-full sm:w-auto bg-red-600 hover:bg-red-500 text-white rounded px-4 py-2 text-sm font-medium'"
+              @confirm="handleDeleteQuest" />
+
+            <ConfirmDialog v-if="result?.status.toString() == `Estimated`" title="Confirm Status Change"
+              description="Are you sure you want to reopen this quest? It will go back to the Open state and accept new estimates."
+              triggerText="Set to Open"
+              :triggerClass="'w-full sm:w-auto bg-red-600 hover:bg-red-500 text-white rounded px-4 py-2 text-sm font-medium'"
+              @confirm="handleChangeToOpenRequest" />
+
+            <!-- this needs to be available only when a reward has been added-->
+            <a v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated`"
+              :href="`/payment/${questId}`" rel="external" class="text-white">
+              <Button variant="secondary"
+                class="w-full sm:w-auto bg-emerald-500 text-white rounded hover:bg-emerald-400">
+                Make payment
+              </Button>
+            </a>
+          </div>
         </div>
 
         <!-- Past Reviews -->
@@ -204,11 +240,11 @@ async function loadEstimates() {
           <ul class="space-y-3">
             <li v-for="(est, i) in retrievedEstimates.calculatedEstimate" :key="i"
               class="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
-              <div class="flex justify-between items-center mb-1">
+              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1">
                 <span class="text-white font-bold">{{ est.username }}</span>
                 <span class="text-sm text-white">{{ est.rank }}</span>
               </div>
-              <p class="text-zinc-300 text-sm">{{ est.comment }}</p>
+              <p class="text-zinc-300 text-sm break-words">{{ est.comment }}</p>
             </li>
           </ul>
         </div>
