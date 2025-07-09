@@ -50,8 +50,7 @@ const result = computed<ProfileData | null>(() => {
             <div class="w-full bg-zinc-700 h-3 rounded">
               <!-- Add progress bar logic if desired -->
             </div>
-            <p class="text-zinc-200/90 text-xs mt-1">{{ data.skillXp }} / {{ 13000000 }} XP</p>
-            <!-- <p class="text-zinc-200/90 text-xs mt-1">{{ data.skillXp }} XP</p> -->
+            <p class="text-white text-xs mt-1">{{ data.skillXp }} XP</p>
           </div>
         </div>
 
@@ -70,13 +69,7 @@ const result = computed<ProfileData | null>(() => {
               <!-- Add progress bar logic if desired -->
             </div>
 
-            <!-- <div class="w-full bg-zinc-700 h-3 rounded">
-              <div class="bg-green-500 h-3" :style="{ width: progressPercent(data.skillXp, data.skillLevel) + '%' }">
-              </div>
-            </div> -->
-
-            <p class="text-zinc-200/90 text-xs mt-1">{{ data.languageXp }} / {{ 13000000 }} XP</p>
-            <!-- <p class="text-zinc-200/90 text-xs mt-1">{{ data.languageXp }} XP</p> -->
+            <p class="text-white text-xs mt-1">{{ data.languageXp }} XP</p>
           </div>
         </div>
       </div>

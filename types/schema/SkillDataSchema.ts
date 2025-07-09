@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const SkillSchema = z.enum(["Questing", "Reviewing", "Testing"]);
+export const SkillSchema = z.enum(["Questing", "Estimating", "Testing"]);
 
 export type Skill = z.infer<typeof SkillSchema>;
 

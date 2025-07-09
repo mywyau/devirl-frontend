@@ -96,8 +96,8 @@ export const streamAllQuestsForUser = (userId: string, opts?: FetchOptions) =>
 export const streamAllQuests = (userId: string) =>
   streamQuests(url.streamAll(userId));
 
-export const streamAllQuestsReward = (userId: string) =>
-  streamQuests(url.streamRewarded(userId));
+export const streamAllQuestsReward = (userId: string, page: number, limit: number) =>
+  streamQuests(url.streamRewarded(userId, page, limit));
 
 export const streamAllQuestsByStatus = (
   clientId: string,

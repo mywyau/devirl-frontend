@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button/variants";
 import ProfileItem from "@/components/ui/profile/ProfileItem";
-// import { useAuthUser } from "@/composables/useAuthUser";
 import { loadConfig } from '@/configuration/ConfigLoader';
 import { deleteUser, getUser } from "@/controllers/UserDataController";
 import type { AuthUser } from "@/types/AuthUser";
@@ -110,15 +109,15 @@ async function startStripeOnboarding() {
 
           <div v-else-if="userProfile">
             <div class="space-y-4">
-              <ProfileItem label="First Name" labelColor="text-white" textColor="text-blue-400"
+              <ProfileItem label="First Name" labelColor="text-white" textColor="text-white"
                 :value="userProfile.firstName" />
-              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-blue-400"
+              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-white"
                 :value="userProfile.lastName" />
-              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-blue-400" />
+              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-white" />
               <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white"
-                textColor="text-blue-400" />
+                textColor="text-white" />
               <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white"
-                textColor="text-blue-400" />
+                textColor="text-white" />
 
               <Button variant="secondary" class="w-full mt-6 bg-red-600 text-white hover:bg-red-500"
                 :disabled="isDeleting" @click="handleDeleteUser">
@@ -143,14 +142,6 @@ async function startStripeOnboarding() {
               @click="startStripeOnboarding">
               Connect with Stripe
             </Button>
-            <!-- <nav class="space-y-4">
-              <NuxtLink to="/profile/equipment"
-                class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Equipment</NuxtLink>
-              <NuxtLink to="/dev/skills"
-                class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Skills</NuxtLink>
-              <NuxtLink to="/dev/inventory"
-                class="block text-lg text-zinc-300 hover:text-white hover:underline transition">Inventory</NuxtLink>
-            </nav> -->
           </div>
         </div>
 

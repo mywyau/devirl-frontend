@@ -43,7 +43,11 @@ watch(
 const titleCase = (str: string) =>
   str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 
-const skillLinks = ['questing', 'reviewing', 'testing'];
+const skillLinks = [
+  'questing',
+  'estimating', 
+  // 'testing'
+];
 
 // languages as strings representing enums must be capital with camelcase to match backend enums
 const languageLinks = ['Java', 'Python', 'Rust', 'Scala', 'Sql', 'TypeScript'];

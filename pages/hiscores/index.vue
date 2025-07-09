@@ -17,8 +17,8 @@ const leaderboard = ref<TotalLevel[]>([])
 
 const skillLinks = [
   'questing',
-  'reviewing',
-  'testing'
+  'estimating',
+  // 'testing'
 ]
 
 // languages as strings representing enums must be capital with camelcase to match backend enums

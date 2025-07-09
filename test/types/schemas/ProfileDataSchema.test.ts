@@ -61,7 +61,7 @@ describe("ProfileDataSchema", () => {
     username: "coder_may",
     skillData: [
       { skill: "Testing", skillLevel: 1, skillXp: 100 },
-      { skill: "Reviewing", skillLevel: 2, skillXp: 200 },
+      { skill: "Estimating", skillLevel: 2, skillXp: 200 },
     ],
     languageData: [
       { language: "TypeScript", languageLevel: 3, languageXp: 900 },

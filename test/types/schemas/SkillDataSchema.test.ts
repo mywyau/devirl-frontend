@@ -5,7 +5,7 @@ import {
 } from "../../../types/schema/SkillDataSchema"; // Adjust import path as needed
 
 describe("SkillSchema", () => {
-  const validSkills = ["Questing", "Reviewing", "Testing"];
+  const validSkills = ["Questing", "Estimating", "Testing"];
 
   validSkills.forEach((skill) => {
     it(`accepts valid skill: ${skill}`, () => {
@@ -29,7 +29,7 @@ describe("SkillDataSchema", () => {
   const validData = {
     devId: "dev-xyz-789",
     username: "dev_luna",
-    skill: "Reviewing",
+    skill: "Estimating",
     level: 2,
     xp: 450,
   };
