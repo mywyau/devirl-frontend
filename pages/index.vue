@@ -19,7 +19,6 @@
       <!-- Developer Workflow Section -->
       <section class="bg-teal-500 text-black py-20 px-6">
         <div class="max-w-5xl mx-auto space-y-10">
-          <h2 class="text-4xl font-heading font-bold text-center">Hey Devs</h2>
           <p class="text-center text-black/80 max-w-3xl mx-auto">
             Tired of toy problems? Here, you can solve real ones — and get XP, feedback, and cool rewards for your work.
           </p>
@@ -44,7 +43,6 @@
       <!-- Client Value Section -->
       <section class="bg-white text-black py-20 px-6">
         <div class="max-w-5xl mx-auto space-y-10">
-          <h2 class="text-4xl font-heading font-bold text-center">Hey Clients</h2>
           <p class="text-center text-gray-700 max-w-3xl mx-auto">
             Got a feature you’ve been putting off? A bug you can’t squash? Let the community handle it — fast, fun, and with full transparency.
           </p>

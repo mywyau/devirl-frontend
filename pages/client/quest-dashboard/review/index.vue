@@ -10,6 +10,18 @@ import {
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { computed, onMounted, ref, watch } from "vue";
 
+import {
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogRoot,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from 'reka-ui';
+
 // User session
 const { data: user, pending: authPending } = useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
@@ -160,21 +172,83 @@ async function handleUpdateQuestToFailed(questId: string) {
 
             <a :href="`/payment/${quest.questId}`" rel="external" class="text-white">
               <Button :to="`/payment/${quest.questId}`" variant="secondary"
-                class="bg-indigo-500 text-white rounded hover:bg-indigo-400 px-4 py-2 text-sm"
-              >
+                class="bg-indigo-500 text-white rounded hover:bg-indigo-400 px-4 py-2 text-sm">
                 Make Payment
               </Button>
             </a>
 
-            <Button variant="secondary" class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 text-sm"
+            <!-- <Button variant="secondary" class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 text-sm"
               @click="handleUpdateQuestToCompleted(quest.questId, quest.rank)">
               Complete Quest
-            </Button>
+            </Button> -->
 
-            <Button variant="secondary" class="bg-red-500 text-white rounded hover:bg-red-400 px-4 py-2 text-sm"
+            <AlertDialogRoot>
+              <AlertDialogTrigger as-child>
+                <Button variant="secondary"
+                  class="bg-green-500 text-white rounded hover:bg-green-400 px-4 py-2 text-sm">
+                  Complete Quest
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogPortal>
+                <AlertDialogOverlay class="bg-black/50 fixed inset-0 z-30" />
+                <AlertDialogContent
+                  class="z-[100] fixed top-[50%] left-[50%] w-full max-w-md translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg">
+                  <AlertDialogTitle class="text-lg font-semibold text-black">
+                    Confirm Completion
+                  </AlertDialogTitle>
+                  <AlertDialogDescription class="mt-2 text-sm text-gray-700">
+                    Are you sure you want to mark this quest as completed? The developer will receive their reward.
+                  </AlertDialogDescription>
+                  <div class="flex justify-end gap-4 mt-6">
+                    <AlertDialogCancel class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded text-sm font-medium"
+                      @click="handleUpdateQuestToCompleted(quest.questId, quest.rank)">
+                      Yes, complete it
+                    </AlertDialogAction>
+                  </div>
+                </AlertDialogContent>
+              </AlertDialogPortal>
+            </AlertDialogRoot>
+
+
+            <!-- <Button variant="secondary" class="bg-red-500 text-white rounded hover:bg-red-400 px-4 py-2 text-sm"
               @click="handleUpdateQuestToFailed(quest.questId)">
               Fail Quest
-            </Button>
+            </Button> -->
+
+            <AlertDialogRoot>
+              <AlertDialogTrigger as-child>
+                <Button variant="secondary" class="bg-red-500 text-white rounded hover:bg-red-400 px-4 py-2 text-sm">
+                  Fail Quest
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogPortal>
+                <AlertDialogOverlay class="bg-black/50 fixed inset-0 z-30" />
+                <AlertDialogContent
+                  class="z-[100] fixed top-[50%] left-[50%] w-full max-w-md translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg">
+                  <AlertDialogTitle class="text-lg font-semibold text-black">
+                    Confirm Failure
+                  </AlertDialogTitle>
+                  <AlertDialogDescription class="mt-2 text-sm text-gray-700">
+                    Are you sure you want to fail this quest? The developer will not be rewarded.
+                  </AlertDialogDescription>
+                  <div class="flex justify-end gap-4 mt-6">
+                    <AlertDialogCancel class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      class="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded text-sm font-medium"
+                      @click="handleUpdateQuestToFailed(quest.questId)">
+                      Yes, fail it
+                    </AlertDialogAction>
+                  </div>
+                </AlertDialogContent>
+              </AlertDialogPortal>
+            </AlertDialogRoot>
+
           </div>
         </div>
       </div>
