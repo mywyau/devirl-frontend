@@ -3,7 +3,6 @@ import { useAsyncData } from "#imports"; // Nuxt auto-import
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
-import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
 import {
   acceptQuest,
@@ -25,17 +24,9 @@ import {
   AccordionTrigger,
 } from 'reka-ui';
 
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogOverlay,
-  AlertDialogPortal,
-  AlertDialogRoot,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from 'reka-ui';
+import { getStatusFormatter } from "@/utils/QuestStatusUtils";
+
+import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 
 
 const openPanels = ref<string[]>(['description', 'acceptance']) // or [] to have them all closed initially
@@ -136,70 +127,36 @@ const reportError = ref(false);
             {{ result?.title }}
           </h2>
           <span class="text-lg font-semibold">
-            Quest Status:
             <span :class="`text-lg mb-4 ${getStatusTextColour(result?.status?.toString())}`">
-              {{ result?.status.toString() }}
+              {{ getStatusFormatter(result?.status.toString()) }}
             </span>
           </span>
         </div>
 
-        <div v-if="result?.status.toString() === 'Open'" class="mt-6 flex gap-4">
+        <div v-if="result?.status.toString() === 'Open' && userType === 'Dev'" class="mt-6 flex gap-4">
 
-          <!-- <Button v-if="userType === 'Dev'" variant="secondary"
-            class="bg-green-500 text-white rounded hover:bg-green-400" @click="handleAcceptQuest">
-            Accept Quest
-          </Button> -->
+          <ConfirmDialog
+            v-if="result?.status.toString() == `Open` || result?.status.toString() == `NotEstimated` || result?.status.toString() == `Completed`"
+            title="Accept this quest?"
+            description="Once accepted, this quest will be assigned to you and you’ll be expected to deliver based on the criteria. This cannot be undone."
+            triggerText="Accept Quest" triggerClass="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white"
+            actionClass="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-sans"
+            @confirm="handleAcceptQuest" />
 
-          <AlertDialogRoot>
-            <AlertDialogTrigger as-child>
-              <Button variant="secondary" class="bg-green-500 text-white rounded hover:bg-green-400">
-                Accept Quest
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogPortal>
-              <AlertDialogOverlay class="bg-black/50 fixed inset-0 z-30" />
-              <AlertDialogContent
-                class="z-[100] fixed top-[50%] left-[50%] w-full max-w-md translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg">
-                <AlertDialogTitle class="text-lg font-semibold text-black">
-                  Accept this quest?
-                </AlertDialogTitle>
-                <AlertDialogDescription class="mt-2 text-sm text-gray-700">
-                  Once accepted, this quest will be assigned to you and you’ll be expected to deliver based on the
-                  criteria.
-                </AlertDialogDescription>
-                <div class="flex justify-end gap-4 mt-6">
-                  <AlertDialogCancel class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded text-sm font-medium"
-                    @click="handleAcceptQuest">
-                    Yes, accept quest
-                  </AlertDialogAction>
-                </div>
-              </AlertDialogContent>
-            </AlertDialogPortal>
-          </AlertDialogRoot>
+          <p v-if="acceptSuccess" class="text-green-500 text-sm pt-4">
+            Successfully Accepted Quest
+          </p>
+          <p v-if="acceptError" class="text-red-500 text-sm">
+            Failed to Accept Quest
+          </p>
 
-
-          <!-- <Button variant="secondary" class="bg-red-500 text-white rounded hover:bg-red-400" @click="">
-            Report Quest
-          </Button> -->
+          <p v-if="reportSuccess" class="text-green-500 text-sm pt-4">
+            Successfully Reported Quest
+          </p>
+          <p v-if="reportError" class="text-red-500 text-sm">
+            Failed to Report Quest
+          </p>
         </div>
-
-        <p v-if="acceptSuccess" class="text-green-500 text-sm pt-4">
-          Successfully Accepted Quest
-        </p>
-        <p v-if="acceptError" class="text-red-500 text-sm">
-          Failed to Accept Quest
-        </p>
-
-        <p v-if="reportSuccess" class="text-green-500 text-sm pt-4">
-          Successfully Reported Quest
-        </p>
-        <p v-if="reportError" class="text-red-500 text-sm">
-          Failed to Report Quest
-        </p>
       </div>
 
       <div>

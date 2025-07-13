@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 import TextArea from '@/components/reka/TextArea.vue';
 import { useAuthUser } from "@/composables/useAuthUser";
 import { createEstimate, getEstimatesRequest } from "@/controllers/EstimateController"; // <- updated import
@@ -9,7 +10,6 @@ import { useRoute } from "nuxt/app";
 import { Label } from 'reka-ui';
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 
 
 
@@ -253,12 +253,12 @@ onMounted(async () => {
 
                         <p v-if="commentError" class="text-sm text-red-400 mt-1">{{ commentError }}</p>
 
-                        <ConfirmDialog 
-                            title="Confirm Estimate Submission"
+                        <ConfirmDialog title="Confirm Estimate Submission"
                             description="Are you sure you want to submit this estimate? You can only submit once and it cannot be changed."
                             triggerText="Submit Estimate" actionText="Yes, submit" :disabled="isSubmitting"
                             @confirm="submitEstimation"
-                            triggerClass="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white" 
+                            triggerClass="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white"
+                            actionClass="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-medium"
                         />
 
                     </div>

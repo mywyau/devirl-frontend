@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import {
-  AlertDialogRoot,
-  AlertDialogTrigger,
-  AlertDialogPortal,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogCancel,
   AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogOverlay,
+  AlertDialogPortal,
+  AlertDialogRoot,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from 'reka-ui';
+
+import { Button } from "@/components/ui/button/variants";
+
 
 defineProps<{
   title: string;
@@ -17,6 +20,7 @@ defineProps<{
   triggerText: string;
   actionText?: string;
   disabled?: boolean;
+  actionConfirmId?: string;
   triggerClass?: string;
   actionClass?: string;
 }>();
@@ -29,19 +33,17 @@ const emit = defineEmits<{
 <template>
   <AlertDialogRoot>
     <AlertDialogTrigger as-child>
-      <button
-        :class="triggerClass"
-        :disabled="disabled"
-      >
+
+      <Button variant="default" :class="triggerClass" :disabled="disabled">
         {{ triggerText }}
-      </button>
+      </Button>
+      
     </AlertDialogTrigger>
 
     <AlertDialogPortal>
       <AlertDialogOverlay class="bg-black/50 fixed inset-0 z-30" />
       <AlertDialogContent
-        class="z-[100] fixed top-[50%] left-[50%] w-full max-w-md translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg sm:px-6 px-4"
-      >
+        class="z-[100] fixed top-[50%] left-[50%] w-full max-w-md translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg sm:px-6 px-4">
         <AlertDialogTitle class="text-lg font-semibold text-black">
           {{ title }}
         </AlertDialogTitle>
@@ -50,15 +52,17 @@ const emit = defineEmits<{
         </AlertDialogDescription>
 
         <div class="flex justify-end gap-4 mt-6">
-          <AlertDialogCancel class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
+          <AlertDialogAction 
+            :id="actionConfirmId || 'confirm-button'"
             :class="actionClass || 'bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded text-sm font-medium'"
-            @click="emit('confirm')"
-          >
+            @click="emit('confirm')">
             {{ actionText || 'Confirm' }}
           </AlertDialogAction>
+          <AlertDialogCancel 
+            id="cancel-button"
+            class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
+            Cancel
+          </AlertDialogCancel>
         </div>
       </AlertDialogContent>
     </AlertDialogPortal>

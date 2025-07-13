@@ -19,7 +19,7 @@ import { $fetch } from "ofetch";
 import {
   fetchUserData,
   createUserData,
-  updateUserDataType,
+  registerUserRequest,
   deleteUserData,
 } from "../../connectors/UserDataConnector";
 
@@ -80,13 +80,13 @@ describe("UserDataConnector", () => {
     );
   });
 
-  it("updateUserDataType - success", async () => {
+  it("registerUserRequest - success", async () => {
     const payload = { userType: "Client" };
     const mockResponse = { code: "200", message: "Updated" };
 
     ($fetch as any).mockResolvedValue(mockResponse);
 
-    const result = await updateUserDataType(userId, payload);
+    const result = await registerUserRequest(userId, payload);
     expect(result).toEqual(mockResponse);
 
     expect($fetch).toHaveBeenCalledWith(

@@ -1,31 +1,35 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { submitUserTypeUpdate } from "../../controllers/RegistrationController";
-import { updateUserType } from "../../connectors/RegistrationConnector";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { registerUserRequest } from "../../connectors/RegistrationConnector";
+import { submitRegisterUser } from "../../controllers/RegistrationController";
 
 // Mock the connector function
 vi.mock("@/connectors/RegistrationConnector", () => ({
-  updateUserType: vi.fn(),
+  registerUserRequest: vi.fn(),
 }));
 
-// Mock $fetch for session refresh
+// // Mock $fetch for session refresh
 globalThis.$fetch = vi.fn();
 
-describe("submitUserTypeUpdate", () => {
+describe("submitRegisterUser", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("returns success when update and session refresh succeed", async () => {
-    (updateUserType as any).mockResolvedValueOnce(undefined);
+    (registerUserRequest as any).mockResolvedValueOnce(undefined);
     ($fetch as any).mockResolvedValueOnce(undefined);
 
-    const result = await submitUserTypeUpdate("user123", {
+    const result = await submitRegisterUser("user123", {
       username: "testuser",
+      firstName: "Bob",
+      lastName: "Smith",
       userType: "Client",
     });
 
-    expect(updateUserType).toHaveBeenCalledWith("user123", {
+    expect(registerUserRequest).toHaveBeenCalledWith("user123", {
       username: "testuser",
+      firstName: "Bob",
+      lastName: "Smith",
       userType: "Client",
     });
 
@@ -38,8 +42,10 @@ describe("submitUserTypeUpdate", () => {
   });
 
   it("returns error if user ID is missing", async () => {
-    const result = await submitUserTypeUpdate(undefined, {
+    const result = await submitRegisterUser(undefined, {
       username: "testuser",
+      firstName: "Bob",
+      lastName: "Smith",
       userType: "Client",
     });
 
@@ -48,8 +54,10 @@ describe("submitUserTypeUpdate", () => {
   });
 
   it("returns Zod validation error for invalid data", async () => {
-    const result = await submitUserTypeUpdate("user123", {
+    const result = await submitRegisterUser("user123", {
       username: "", // assume your schema requires non-empty
+      firstName: "",
+      lastName: "",
       userType: "", // and valid enum
     });
 
@@ -58,12 +66,14 @@ describe("submitUserTypeUpdate", () => {
   });
 
   it("returns backend error message if present", async () => {
-    (updateUserType as any).mockRejectedValueOnce({
+    (registerUserRequest as any).mockRejectedValueOnce({
       data: { message: "Internal server error" },
     });
 
-    const result = await submitUserTypeUpdate("user123", {
+    const result = await submitRegisterUser("user123", {
       username: "testuser",
+      firstName: "Bob",
+      lastName: "Smith",
       userType: "Client",
     });
 
@@ -72,11 +82,12 @@ describe("submitUserTypeUpdate", () => {
   });
 
   it("returns fallback error message if no message is available", async () => {
+    (registerUserRequest as any).mockRejectedValueOnce(new Error("boom"));
 
-    (updateUserType as any).mockRejectedValueOnce(new Error("boom"));
-
-    const result = await submitUserTypeUpdate("user123", {
+    const result = await submitRegisterUser("user123", {
       username: "testuser",
+      firstName: "Bob",
+      lastName: "Smith",
       userType: "Client",
     });
 

@@ -5,12 +5,12 @@ import {
   deleteUserData,
   fetchUserData,
   updateUserData,
-  updateUserDataType,
+  registerUserRequest,
 } from "@/connectors/UserDataConnector";
 import type {
   CreateUserData,
   UpdateUserData,
-  UpdateUserType,
+  RegistrationPayload,
 } from "@/types/schema/UserDataSchema";
 
 export async function getUser(
@@ -28,8 +28,8 @@ export async function updateUser(userId: string, payload: UpdateUserData) {
   return await updateUserData(userId, payload);
 }
 
-export async function updateUserType(userId: string, payload: UpdateUserType) {
-  return await updateUserDataType(userId, payload);
+export async function registerUser(userId: string, payload: RegistrationPayload) {
+  return await registerUserRequest(userId, payload);
 }
 
 export async function deleteUser(userId: string) {

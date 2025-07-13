@@ -5,22 +5,21 @@ export const UserTypeSchema = z.enum(["Dev", "Client", "UnknownUserType"]);
 
 export type UserType = z.infer<typeof UserTypeSchema>;
 
-export const UserDataSchema = z.object({
+export const LoginUserDataSchema = z.object({
   email: z.string(),
-  firstName: z.string(),
-  lastName: z.string(),
   userType: UserTypeSchema.optional(),
 });
 
-export type UserData = z.infer<typeof UserDataSchema>;
+export type LoginUserData = z.infer<typeof LoginUserDataSchema>;
 
-export const UpdateUserTypeSchema = z.object({
-  username:  z.string(),
+export const RegistrationPayloadSchema = z.object({
+  username: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   userType: UserTypeSchema,
 });
 
-export type UpdateUserType = z.infer<typeof UpdateUserTypeSchema>;
-
+export type RegistrationPayload = z.infer<typeof RegistrationPayloadSchema>;
 
 export const GetUserDataSchema = z.object({
   userId: z.string(),

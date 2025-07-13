@@ -102,6 +102,7 @@ async function handleUpdateQuestToCompleted(questId: string, rank: string) {
       questStatus: "Completed",
     });
     completedSuccess.value = true;
+    quests.value = quests.value.filter((q) => q.questId !== questId);
   } catch (err) {
     completedError.value = true;
     console.error(err);
@@ -123,6 +124,7 @@ async function handleUpdateQuestToFailed(questId: string) {
       questStatus: "Failed",
     });
     failedSuccess.value = true;
+    quests.value = quests.value.filter((q) => q.questId !== questId);
   } catch (err) {
     failedError.value = true;
     console.error(err);
@@ -154,7 +156,7 @@ async function handleUpdateQuestToFailed(questId: string) {
       </div>
 
       <!-- Show quests immediately when available -->
-      <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-1 gap-6">
         <div v-for="quest in quests" :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full">
           <h2 id="quest-title" class="text-xl font-semibold text-blue-300">{{ quest.title }}</h2>
@@ -197,7 +199,8 @@ async function handleUpdateQuestToFailed(questId: string) {
                     Confirm Completion
                   </AlertDialogTitle>
                   <AlertDialogDescription class="mt-2 text-sm text-gray-700">
-                    Are you sure you want to mark this quest as completed? The developer will receive their reward.
+                    Are you sure you want to mark this quest as completed? The developer will receive their xp. This
+                    cannot be undone.
                   </AlertDialogDescription>
                   <div class="flex justify-end gap-4 mt-6">
                     <AlertDialogCancel class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
@@ -214,11 +217,6 @@ async function handleUpdateQuestToFailed(questId: string) {
             </AlertDialogRoot>
 
 
-            <!-- <Button variant="secondary" class="bg-red-500 text-white rounded hover:bg-red-400 px-4 py-2 text-sm"
-              @click="handleUpdateQuestToFailed(quest.questId)">
-              Fail Quest
-            </Button> -->
-
             <AlertDialogRoot>
               <AlertDialogTrigger as-child>
                 <Button variant="secondary" class="bg-red-500 text-white rounded hover:bg-red-400 px-4 py-2 text-sm">
@@ -233,7 +231,7 @@ async function handleUpdateQuestToFailed(questId: string) {
                     Confirm Failure
                   </AlertDialogTitle>
                   <AlertDialogDescription class="mt-2 text-sm text-gray-700">
-                    Are you sure you want to fail this quest? The developer will not be rewarded.
+                    Are you sure you want to fail this quest? The developer will not be rewarded. This cannot be undone.
                   </AlertDialogDescription>
                   <div class="flex justify-end gap-4 mt-6">
                     <AlertDialogCancel class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">

@@ -2,8 +2,8 @@
 
 import { loadConfig } from "@/configuration/ConfigLoader";
 import {
-  type UpdateUserType,
-  type UserData
+  type LoginUserData,
+  type RegistrationPayload,
 } from "@/types/schema/UserDataSchema";
 import { $fetch } from "ofetch";
 
@@ -16,7 +16,7 @@ const registrationUrl = (path: string, userId: string) =>
 export async function createUserNuxtServerToScalaServer(
   userId: string,
   cookieHeader: string,
-  payload: UserData
+  payload: LoginUserData
 ) {
   const url = registrationUrl("data/create", userId);
   return await $fetch(url, {
@@ -28,7 +28,10 @@ export async function createUserNuxtServerToScalaServer(
   });
 }
 
-export async function updateUserType(userId: string, payload: UpdateUserType) {
+export async function registerUserRequest(
+  userId: string,
+  payload: RegistrationPayload
+) {
   const url = registrationUrl("update/user/type", userId);
   return await $fetch(url, {
     method: "PUT",
@@ -39,4 +42,3 @@ export async function updateUserType(userId: string, payload: UpdateUserType) {
     },
   });
 }
-

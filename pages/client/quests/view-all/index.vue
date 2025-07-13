@@ -34,6 +34,21 @@ function rankClass(rank: string): string {
   }
 }
 
+function statusFormatter(questStatus: string): string {
+  switch (questStatus) {
+    case "NotStarted":
+      return "Not Started"
+    case "NotEstimated":
+      return "Not Estimated"
+    case "InProgress":
+      return "In Progress"
+    case "PaidOut":
+      return "Paid Out"
+    default:
+      return questStatus
+  }
+}
+
 // 1) Resolve the logged‐in user (SSR will forward the cookie via useAuthUser)
 const { data: user } = await useAuthUser();
 const safeUserId = computed(() => user.value?.sub || "");
@@ -91,10 +106,16 @@ function refreshPage() {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-4xl mx-auto">
-      <h1 class="text-3xl font-bold mb-6 text-pink-300">My Quests</h1>
+
+      <div class="mt-6 flex justify-between items-center">
+        <h1 class="text-3xl font-bold mb-6 text-pink-300">My Quests</h1>
+        <button @click="refreshPage" class="text-white underline text-sm">
+          Refresh
+        </button>
+      </div>
+
 
       <div v-if="isLoading" class="text-zinc-500">Loading quests...</div>
-
 
       <div v-else-if="error" class="text-red-500">Failed to load quests.</div>
 
@@ -123,8 +144,8 @@ function refreshPage() {
             </div>
 
             <div class="flex justify-between items-center mb-1">
-              <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold mt-4`">{{
-                quest.quest.status }}
+              <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold mt-4`">
+                {{ statusFormatter(quest.quest.status) }}
               </span>
             </div>
 
@@ -162,12 +183,6 @@ function refreshPage() {
             </p>
 
           </div>
-        </div>
-
-        <div class="mt-6">
-          <button @click="refreshPage" class="text-white underline text-sm">
-            Refresh
-          </button>
         </div>
       </div>
     </div>
