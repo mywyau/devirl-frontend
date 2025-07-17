@@ -1,10 +1,12 @@
 import { loadConfig } from "@/configuration/ConfigLoader";
-import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
 import { createUserNuxtServerToScalaServer } from "@/connectors/RegistrationConnector";
+import { DevQuestBackendAuthController } from "@/controllers/DevQuestBackendAuthController";
 import { exchangeCodeForToken, getUserInfo } from "@/server/utils/auth0";
 import { sessionOptions } from "@/server/utils/sessionOptions";
-import type { UserData } from "@/types/schema/UserDataSchema";
-import { UserDataSchema } from "@/types/schema/UserDataSchema";
+import {
+  LoginUserDataSchema,
+  type LoginUserData,
+} from "@/types/schema/UserDataSchema";
 import type { SessionData } from "@/types/SessionData";
 import { createError, setCookie } from "h3";
 import { getIronSession } from "iron-session";
@@ -70,10 +72,8 @@ export async function syncUserToBackend(
   userId: string,
   cookieHeader: string
 ) {
-  const parsed: UserData = UserDataSchema.parse({
+  const parsed: LoginUserData = LoginUserDataSchema.parse({
     email: user.email,
-    firstName: user.given_name,
-    lastName: user.family_name,
   });
 
   const backendController = new DevQuestBackendAuthController();
@@ -90,7 +90,7 @@ export async function fetchUserType(
 ): Promise<string | null> {
   const config = loadConfig();
   try {
-    const userData = await $fetch<UserData>(
+    const userData = await $fetch<LoginUserData>(
       `${
         config.devQuestBackend.baseUrl
       }/registration/user/data/${encodeURIComponent(userId)}`,
