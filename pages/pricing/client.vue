@@ -31,7 +31,7 @@ const plans = [
     price: "$100/mo",
     description: "Growth plan for scaling teams",
     maxActiveQuests: "20",
-    devPool: "Limit Dev Rank",
+    devPool: "Choose Dev Level",
     estimations: true,
     silverHighlight: true,
     goldHighlight: false
@@ -42,7 +42,7 @@ const plans = [
     price: "$180/mo",
     description: "For high-volume teams needing premium support",
     maxActiveQuests: "Unlimited",
-    devPool: "Choose Dev Rank and Request specific Developers",
+    devPool: "Set Dev Level and Request Developers",
     estimations: true,
     silverHighlight: true,
     goldHighlight: false
@@ -54,7 +54,7 @@ const plans = [
 <template>
   <NuxtLayout>
     <section class="max-w-7xl mx-auto px-4 py-16">
-      <h1 class="text-4xl font-bold text-center mb-4 text-white">Client Pricing Plans</h1>
+      <h1 class="text-4xl font-bold text-center mb-4 text-white">Pricing Plans</h1>
       <p class="text-center text-gray-500 mb-12 text-white">Choose the plan that fits your workflow and growth stage.
       </p>
 
