@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createUserNuxtServerToScalaServer, updateUserType } from "../../connectors/RegistrationConnector";
+import { createUserNuxtServerToScalaServer, registerUserRequest } from "../../connectors/RegistrationConnector";
 import { $fetch } from "ofetch";
 
 // Mock $fetch
@@ -48,7 +48,7 @@ describe("registration connector", () => {
     });
   });
 
-  describe("updateUserType", () => {
+  describe("registerUserRequest", () => {
     it("sends PUT request with correct payload", async () => {
       const userId = "user-456";
       const payload = {
@@ -58,7 +58,7 @@ describe("registration connector", () => {
 
       mockedFetch.mockResolvedValueOnce({ success: true });
 
-      const result = await updateUserType(userId, payload);
+      const result = await registerUserRequest(userId, payload);
 
       expect(mockedFetch).toHaveBeenCalledWith(
         expect.stringContaining(`/registration/update/user/type/${encodeURIComponent(userId)}`),
@@ -77,7 +77,7 @@ describe("registration connector", () => {
       mockedFetch.mockRejectedValueOnce(new Error("update failed"));
 
       await expect(() =>
-        updateUserType("user-456", { username: "bob", userType: "Dev" })
+        registerUserRequest("user-456", { username: "bob", userType: "Dev" })
       ).rejects.toThrow("update failed");
     });
   });

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+
+import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 import { Button } from "@/components/ui/button/variants";
 import ProfileItem from "@/components/ui/profile/ProfileItem";
 import { loadConfig } from '@/configuration/ConfigLoader';
@@ -9,17 +11,6 @@ import { GetUserDataSchema, type GetUserData } from "@/types/schema/UserDataSche
 import { useAsyncData, useFetch, useRequestHeaders } from "nuxt/app";
 import { computed, ref } from "vue";
 
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogOverlay,
-  AlertDialogPortal,
-  AlertDialogRoot,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from 'reka-ui';
 
 const config = loadConfig()
 const baseUrl = `${config.devQuestBackend.baseUrl}/`
@@ -103,7 +94,6 @@ async function startStripeOnboarding() {
   }
 }
 
-
 </script>
 
 <template>
@@ -119,53 +109,24 @@ async function startStripeOnboarding() {
 
           <div v-else-if="userProfile">
             <div class="space-y-4">
-              <ProfileItem label="First Name" labelColor="text-white" textColor="text-white"
-                :value="userProfile.firstName" />
-              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-white"
-                :value="userProfile.lastName" />
+
+              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white" textColor="text-white" />
               <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-white" />
-              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white"
-                textColor="text-white" />
-              <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white"
-                textColor="text-white" />
+              <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white" textColor="text-white" />
+              <ProfileItem label="First Name" labelColor="text-white" textColor="text-white" :value="userProfile.firstName" />
+              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-white" :value="userProfile.lastName" />
 
-              <!-- <Button variant="secondary" class="w-full mt-6 bg-red-600 text-white hover:bg-red-500"
-                :disabled="isDeleting" @click="handleDeleteUser">
-                {{ isDeleting ? "Deleting..." : "Delete user profile" }}
-              </Button> -->
-
-              <AlertDialogRoot>
-                <AlertDialogTrigger as-child>
-                  <Button variant="secondary" class="w-full mt-6 bg-red-600 text-white hover:bg-red-500"
-                    :disabled="isDeleting">
-                    {{ isDeleting ? "Deleting..." : "Delete user profile" }}
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogPortal>
-                  <AlertDialogOverlay class="bg-black/50 fixed inset-0 z-30" />
-                  <AlertDialogContent
-                    class="z-[100] fixed top-[50%] left-[50%] w-full max-w-md translate-x-[-50%] translate-y-[-50%] rounded-lg bg-white p-6 shadow-lg">
-                    <AlertDialogTitle class="text-lg font-semibold text-black">
-                      Confirm Deletion
-                    </AlertDialogTitle>
-                    <AlertDialogDescription class="mt-2 text-sm text-gray-700">
-                      Are you sure you want to delete your profile? This action cannot be undone and all your data will
-                      be removed.
-                    </AlertDialogDescription>
-                    <div class="flex justify-end gap-4 mt-6">
-                      <AlertDialogCancel class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
-                        Cancel
-                      </AlertDialogCancel>
-                      <AlertDialogAction
-                        class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded text-sm font-medium"
-                        @click="handleDeleteUser">
-                        Yes, delete my profile
-                      </AlertDialogAction>
-                    </div>
-                  </AlertDialogContent>
-                </AlertDialogPortal>
-              </AlertDialogRoot>
-
+              <ConfirmDialog 
+                actionConfirmId="delete-profile-confirm-button"
+                :data-testid="`delete-user-profile`" 
+                title="Are you sure you want to delete your profile?"
+                description="Are you sure you want to delete your profile? This action cannot be undone and all your data will be removed."
+                triggerText="Delete profile"
+                triggerClass="px-4 py-2 bg-red-500 hover:bg-red-400 rounded text-white"
+                actionText="Yes, delete my profile"
+                actionClass="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded text-sm font-sans"
+                @confirm="handleDeleteUser" 
+              />
 
               <p v-if="deleteError" class="text-red-500 mt-4 text-center text-sm">{{ deleteError }}</p>
               <p v-if="deleteSuccess" class="text-green-500 mt-4 text-center text-sm">{{ deleteSuccess }}</p>

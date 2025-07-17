@@ -1,5 +1,6 @@
 <!-- src/pages/ClientNotStartedQuests.vue -->
 <script setup lang="ts">
+import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 import { Button } from "@/components/ui/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
 import {
@@ -80,8 +81,11 @@ onMounted(() => {
 const inReviewSuccess = ref(false);
 const inReviewError = ref(false);
 
+const notStartedSuccess = ref(false);
+const notStartedError = ref(false);
+
 // Update Status of Quest
-async function handleUpdateQuestStatus(questId: string) {
+async function handleChangeQuestStatusReview(questId: string) {
   if (!safeUserId.value) {
     inReviewError.value = true;
     return;
@@ -89,14 +93,35 @@ async function handleUpdateQuestStatus(questId: string) {
   try {
     // On the client, credentials: "include" is enough to send the cookie
     await updateQuestStatus(safeUserId.value, questId, {
-      questStatus: "Review",
+      questStatus: 'Review'
     });
     inReviewSuccess.value = true;
+    quests.value = quests.value.filter((q) => q.questId !== questId);
   } catch (err) {
     inReviewError.value = true;
     console.error(err);
   }
 }
+
+async function handleChangeQuestStatusNotStarted(questId: string) {
+  if (!safeUserId.value) {
+    inReviewError.value = true;
+    return;
+  }
+  try {
+    // On the client, credentials: "include" is enough to send the cookie
+    await updateQuestStatus(safeUserId.value, questId, {
+      questStatus: 'NotStarted'
+    });
+    notStartedSuccess.value = true;
+    quests.value = quests.value.filter((q) => q.questId !== questId);
+  } catch (err) {
+    notStartedError.value = true;
+    console.error(err);
+  }
+}
+
+
 </script>
 
 <template>
@@ -107,16 +132,24 @@ async function handleUpdateQuestStatus(questId: string) {
         Below are all the quests that are in progress.
       </p>
 
-      <!-- ← New: Feedback messages go here, outside of the quests‐list logic -->
       <div v-if="inReviewSuccess" class="mb-4 p-3 bg-green-600 text-white rounded">
         Successfully moved quest to Review!
       </div>
+
       <div v-else-if="inReviewError" class="mb-4 p-3 bg-red-600 text-white rounded">
         Unable to move quest to Review.
       </div>
 
+      <div v-else-if="notStartedSuccess" class="mb-4 p-3 bg-green-600 text-white rounded">
+        Successfully moved quest to Not Started!
+      </div>
+
+      <div v-else-if="notStartedError" class="mb-4 p-3 bg-red-600 text-white rounded">
+        Unable to move quest to Not Started.
+      </div>
+
       <!-- Show quests immediately when available -->
-      <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-1 gap-6">
         <div v-for="quest in quests" :key="quest.questId"
           class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full">
 
@@ -132,17 +165,28 @@ async function handleUpdateQuestStatus(questId: string) {
             View Details
           </NuxtLink>
 
-          <div class="mt-auto flex justify-end space-x-3">
+          <div class="mt-auto flex flex-wrap justify-end gap-3">
 
             <Button variant="default" class="bg-teal-500 text-white rounded hover:bg-teal-400"
               @click="router.push(`/dev/quest/submit/${quest.questId}`)">
               Upload File
             </Button>
 
-            <Button variant="secondary" class="bg-blue-500 text-white rounded hover:bg-blue-400"
-              @click="handleUpdateQuestStatus(quest.questId)">
-              Move quest to in Review
-            </Button>
+            <ConfirmDialog :id="`move-to-not-started-${quest.questId}`"
+              :data-testid="`move-to-not-started-${quest.questId}`" title="Move to back to Not Started?"
+              description="You are going to change this quest's status back to Not Started."
+              triggerText="Change Status to Not Started"
+              triggerClass="bg-gray-500 hover:bg-gray-400 text-white px-4 py-2 rounded text-sm font-sans"
+              actionClass="bg-gray-500 hover:bg-gray-400 text-white px-4 py-2 rounded text-sm font-sans"
+              @confirm="handleChangeQuestStatusNotStarted(quest.questId)" />
+
+            <ConfirmDialog :id="`move-to-review-${quest.questId}`" :data-testid="`move-to-review-${quest.questId}`"
+              title="Move to Review?"
+              description="You are going to change this quest's status to Review. This cannot be undone."
+              triggerText="Change Status to Review"
+              triggerClass="px-4 py-2 bg-blue-500 hover:bg-blue-400 rounded text-white"
+              actionClass="bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded text-sm font-sans"
+              @confirm="handleChangeQuestStatusReview(quest.questId)" />
           </div>
         </div>
       </div>

@@ -1,13 +1,18 @@
-import { updateUserType } from "@/connectors/RegistrationConnector";
+import { registerUserRequest } from "@/connectors/RegistrationConnector";
 import {
-  UpdateUserTypeSchema,
-  type UpdateUserType,
+  RegistrationPayloadSchema,
+  type RegistrationPayload,
 } from "@/types/schema/UserDataSchema";
 import { z } from "zod";
 
-export async function submitUserTypeUpdate(
+export async function submitRegisterUser(
   userId: string | undefined,
-  form: { username: string; userType: string }
+  form: {
+    username: string;
+    firstName: string;
+    lastName: string;
+    userType: string;
+  }
 ): Promise<{ success: boolean; error?: string }> {
   if (!userId) {
     return {
@@ -17,8 +22,8 @@ export async function submitUserTypeUpdate(
   }
 
   try {
-    const payload: UpdateUserType = UpdateUserTypeSchema.parse(form);
-    await updateUserType(userId, payload);
+    const payload: RegistrationPayload = RegistrationPayloadSchema.parse(form);
+    await registerUserRequest(userId, payload);
 
     await $fetch("/api/auth/refresh-session", {
       method: "POST",

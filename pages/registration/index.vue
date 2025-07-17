@@ -14,13 +14,12 @@ import {
 } from "@/components/ui/select";
 
 import Input from '@/components/reka/Input.vue';
-
-
-
-import { submitUserTypeUpdate } from "@/controllers/RegistrationController";
+import { submitRegisterUser } from "@/controllers/RegistrationController";
 
 const userTypeForm = ref({
   username: "",
+  firstName: "",
+  lastName: "",
   userType: "",
 });
 
@@ -36,7 +35,7 @@ const updateRole = async () => {
 
   const safeUserId = user.value?.sub;
 
-  const result = await submitUserTypeUpdate(safeUserId, userTypeForm.value);
+  const result = await submitRegisterUser(safeUserId, userTypeForm.value);
 
   if (result.success) {
     userTypeSuccess.value = true;
@@ -65,15 +64,33 @@ const updateRole = async () => {
 
         <form @submit.prevent="updateRole" class="space-y-6">
 
-          <div>
+          <div class="space-y-2">
 
-            <label for="username" class="block mb-1 text-sm font-medium text-white">
+            <label for="username" class="block text-sm font-medium text-white">
               Username
             </label>
 
             <Input id="username" v-model="userTypeForm.username" placeholder="Username" class="w-full" />
 
             <p class="mt-1 text-sm text-zinc-400">Max 20 characters</p>
+
+
+            <label for="firstname" class="block text-sm font-medium text-white">
+              First Name
+            </label>
+
+            <Input id="firstname" v-model="userTypeForm.firstName" placeholder="First Name" class="w-full" />
+
+            <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
+
+
+            <label for="lastname" class="block text-sm font-medium text-white">
+              Last Name
+            </label>
+
+            <Input id="lastname" v-model="userTypeForm.lastName" placeholder="Last Name" class="w-full" />
+
+            <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
           </div>
 
           <div class="flex flex-col space-y-2">

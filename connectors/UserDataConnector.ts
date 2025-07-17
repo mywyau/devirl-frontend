@@ -4,7 +4,7 @@ import { loadConfig } from "@/configuration/ConfigLoader";
 import type {
   CreateUserData,
   UpdateUserData,
-  UpdateUserType,
+  RegistrationPayload,
 } from "@/types/schema/UserDataSchema";
 import { GetUserDataSchema } from "@/types/schema/UserDataSchema";
 import { $fetch } from "ofetch";
@@ -56,9 +56,9 @@ export async function updateUserData(userId: string, payload: UpdateUserData) {
   });
 }
 
-export async function updateUserDataType(
+export async function registerUserRequest(
   userId: string,
-  payload: UpdateUserType
+  payload: RegistrationPayload
 ) {
   return await $fetch(endpoints.update(userId), {
     method: "PUT",

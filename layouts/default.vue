@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useAuthUser } from "@/composables/useAuthUser";
 import { loginUrl, logoutUrl } from "@/controllers/AuthController";
+import { Icon } from '@iconify/vue';
 import { useCookie } from "nuxt/app";
 import { ref } from "vue";
-import { Icon } from '@iconify/vue';
 
 
 const mobileOpen = ref(false);
@@ -46,12 +46,10 @@ if (error.value) {
             Profile</NuxtLink>
           <NuxtLink v-if="userType === 'Client'" to="/client/profile"
             class="font-heading text-white hover:text-blue-400">Profile</NuxtLink>
-          <NuxtLink to="/about" class="font-heading text-white hover:text-indigo-300">About</NuxtLink>
           <a :href="logoutUrl()" class="font-heading text-white hover:text-red-400 text-base">Logout</a>
         </template>
         <template v-else>
           <NuxtLink to="/hiscores" class="font-heading text-white hover:text-indigo-300">Hiscores</NuxtLink>
-          <NuxtLink to="/about" class="font-heading text-white hover:text-indigo-300">About</NuxtLink>
           <a :href="loginUrl()" class="font-heading text-white hover:text-green-400 text-base">Login</a>
         </template>
       </nav>
@@ -73,12 +71,10 @@ if (error.value) {
             </NuxtLink>
             <NuxtLink v-if="userType === 'Client'" to="/client/profile" class="text-white hover:text-blue-400">Profile
             </NuxtLink>
-            <NuxtLink to="/about" class="text-white hover:text-indigo-300">About</NuxtLink>
             <a :href="logoutUrl()" class="text-white hover:text-red-400 text-base">Logout</a>
           </template>
           <template v-else>
             <NuxtLink to="/hiscores" class="text-white hover:text-indigo-300">Hiscores</NuxtLink>
-            <NuxtLink to="/about" class="text-white hover:text-indigo-300">About</NuxtLink>
             <a :href="loginUrl()" class="text-white hover:text-green-400 text-base">Login</a>
           </template>
         </nav>
@@ -100,6 +96,9 @@ if (error.value) {
         <div>
           <h3 class="text-white font-semibold text-base mb-1">Explore</h3>
           <ul class="space-y-1">
+            <li>
+              <NuxtLink to="/about" class="hover:text-white hover:underline">About</NuxtLink>
+            </li>
             <li>
               <NuxtLink to="/faq" class="hover:text-white hover:underline">FAQ</NuxtLink>
             </li>

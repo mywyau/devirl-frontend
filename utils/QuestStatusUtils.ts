@@ -18,3 +18,16 @@ export const getStatusTextColour = (
       return "text-indigo-300";
   }
 };
+
+export const getStatusFormatter = (status: string): string => {
+  switch (status) {
+    case "NotEstimated":
+      return "Not Estimated";
+    case "InProgress":
+      return "In Progress";
+    case "NotStarted":
+      return "Not Started";
+    default:
+      return status;
+  }
+};

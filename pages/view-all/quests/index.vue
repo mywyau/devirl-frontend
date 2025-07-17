@@ -4,9 +4,10 @@ import { useAuthUser } from "@/composables/useAuthUser";
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { streamAllQuestsReward } from "@/controllers/QuestController";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
-import { getStatusTextColour } from "@/utils/QuestStatusUtils";
+import { getStatusFormatter, getStatusTextColour } from "@/utils/QuestStatusUtils";
 import { useCookie } from "nuxt/app";
 import { computed, ref, watch } from "vue";
+
 
 import { Icon } from '@iconify/vue';
 import {
@@ -183,15 +184,6 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
             </span>
           </div>
 
-          <!-- <div class="flex justify-between items-center">
-            <div class="flex flex-wrap gap-2 mt-4">
-              <span v-for="tag in quest.quest.tags" :key="tag"
-                class="bg-green-600 text-white text-xs px-2 py-1 rounded">
-                {{ tag }}
-              </span>
-            </div>
-          </div> -->
-
           <div class="flex flex-wrap gap-2 mt-2">
             <span v-for="tag in quest.quest.tags" :key="tag" class="bg-green-600 text-white text-xs px-2 py-1 rounded">
               {{ tag }}
@@ -199,15 +191,9 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
           </div>
 
 
-          <!-- <div class="flex justify-between items-center mb-1">
-            <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold mt-4`">{{
-              quest.quest.status }}
-            </span>
-          </div> -->
-
           <div class="flex justify-between items-center mt-2">
             <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold`">
-              {{ quest.quest.status }}
+              {{ getStatusFormatter(quest.quest.status) }}
             </span>
           </div>
 

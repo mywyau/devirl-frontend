@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import {
   UserTypeSchema,
-  UserDataSchema,
-  UpdateUserTypeSchema,
+  LoginUserDataSchema,
+  RegistrationPayloadSchema,
   GetUserDataSchema,
 } from "../../../types/schema/UserDataSchema";
 
@@ -19,52 +19,53 @@ describe("UserTypeSchema", () => {
   });
 });
 
-describe("UserDataSchema", () => {
+describe("LoginUserDataSchema", () => {
   const valid = {
     email: "john@example.com",
-    firstName: "John",
-    lastName: "Doe",
   };
 
   it("validates when required fields are present", () => {
-    const result = UserDataSchema.safeParse(valid);
+    const result = LoginUserDataSchema.safeParse(valid);
     expect(result.success).toBe(true);
   });
 
   it("allows optional userType", () => {
-    const result = UserDataSchema.safeParse({ ...valid, userType: "Client" });
+    const result = LoginUserDataSchema.safeParse({ ...valid, userType: "Client" });
     expect(result.success).toBe(true);
   });
 
   it("fails when required fields are missing", () => {
-    const result = UserDataSchema.safeParse({ firstName: "John" });
+    const result = LoginUserDataSchema.safeParse({ firstName: "John" });
     expect(result.success).toBe(false);
     expect(result.error.issues.some(issue => issue.path.includes("email"))).toBe(true);
-    expect(result.error.issues.some(issue => issue.path.includes("lastName"))).toBe(true);
   });
 
   it("rejects invalid userType", () => {
-    const result = UserDataSchema.safeParse({ ...valid, userType: "Admin" });
+    const result = LoginUserDataSchema.safeParse({ ...valid, userType: "Admin" });
     expect(result.success).toBe(false);
   });
 });
 
-describe("UpdateUserTypeSchema", () => {
+describe("RegistrationPayloadSchema", () => {
+
   it("passes with valid userType", () => {
-    const result = UpdateUserTypeSchema.safeParse({ 
+
+    const result = RegistrationPayloadSchema.safeParse({ 
       username: "Goku",
+      firstName: "bob",
+      lastName: "smith",
       userType: "Dev"
      });
     expect(result.success).toBe(true);
   });
 
   it("fails with missing userType", () => {
-    const result = UpdateUserTypeSchema.safeParse({});
+    const result = RegistrationPayloadSchema.safeParse({});
     expect(result.success).toBe(false);
   });
 
   it("fails with invalid userType", () => {
-    const result = UpdateUserTypeSchema.safeParse({ userType: "Admin" });
+    const result = RegistrationPayloadSchema.safeParse({ userType: "Admin" });
     expect(result.success).toBe(false);
   });
 });

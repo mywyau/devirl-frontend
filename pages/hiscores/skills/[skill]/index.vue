@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
+
 import { getHiscoreSkill } from '@/controllers/SkillController';
 import { useAsyncData } from 'nuxt/app';
 import { useRoute } from 'vue-router';
@@ -31,7 +33,23 @@ const skillLinks = [
 ]
 
 // languages as strings representing enums must be capital with camelcase to match backend enums
-const languageLinks = ['Java', 'Python', 'Rust', 'Scala', 'Sql', 'TypeScript'];
+const languageLinks = [
+  'C',
+  'C++',
+  'C#',
+  'Go',
+  'Java',
+  'JavaScript',
+  'Kotlin',
+  'PHP',
+  'Python',
+  'Ruby',
+  'Rust',
+  'Scala',
+  'Sql',
+  'Swift',
+  'TypeScript'
+];
 
 
 </script>
@@ -70,7 +88,7 @@ const languageLinks = ['Java', 'Python', 'Rust', 'Scala', 'Sql', 'TypeScript'];
                     </ul>
                 </div>
 
-                <div>
+                <!-- <div>
                     <h2 class="text-lg font-bold mb-2">Language Hiscores</h2>
                     <ul class="space-y-2">
                         <li v-for="lang in languageLinks" :key="lang">
@@ -80,7 +98,33 @@ const languageLinks = ['Java', 'Python', 'Rust', 'Scala', 'Sql', 'TypeScript'];
                             </NuxtLink>
                         </li>
                     </ul>
-                </div>
+                </div> -->
+
+                <ScrollAreaRoot class="h-96 relative overflow-hidden" style="--scrollbar-size: 10px">
+                    <div class="mb-2">
+                        <h2 class="text-lg font-bold">Language Hiscores</h2>
+                    </div>
+
+                    <ScrollAreaViewport class="w-full h-full pr-2">
+                        <ul class="space-y-2">
+                            <li v-for="lang in languageLinks" :key="lang">
+                                <NuxtLink :to="`/hiscores/languages/${encodeURIComponent(lang)}`"
+                                    class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
+                                    {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
+                                </NuxtLink>
+                            </li>
+                        </ul>
+                    </ScrollAreaViewport>
+
+                    <ScrollAreaScrollbar
+                        class="flex select-none touch-none p-0.5 bg-white/10 hover:bg-white/20 transition-colors duration-[160ms] ease-out data-[orientation=vertical]:w-2.5"
+                        orientation="vertical">
+                        <ScrollAreaThumb
+                            class="flex-1 bg-white/60 hover:bg-white rounded-[10px] relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-full before:h-full before:min-w-[44px] before:min-h-[44px]" />
+                    </ScrollAreaScrollbar>
+                </ScrollAreaRoot>
+
+
             </aside>
 
             <!-- Main Content -->
@@ -94,8 +138,8 @@ const languageLinks = ['Java', 'Python', 'Rust', 'Scala', 'Sql', 'TypeScript'];
                             <tr>
                                 <th class="py-2">Rank</th>
                                 <th class="py-2">Username</th>
-                                <th class="py-2">Total Level</th>
-                                <th class="py-2">Total XP</th>
+                                <th class="py-2">Level</th>
+                                <th class="py-2">XP</th>
                             </tr>
                         </thead>
                         <tbody>
