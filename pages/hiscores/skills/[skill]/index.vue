@@ -4,6 +4,8 @@ import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewpor
 import { getHiscoreSkill } from '@/controllers/SkillController';
 import { useAsyncData } from 'nuxt/app';
 import { useRoute } from 'vue-router';
+import { languageFormatter } from "@/utils/LanguageFormatter";
+
 
 const route = useRoute()
 const skillId = route.params.skill?.toString() || 'questing'
@@ -35,8 +37,8 @@ const skillLinks = [
 // languages as strings representing enums must be capital with camelcase to match backend enums
 const languageLinks = [
   'C',
-  'C++',
-  'C#',
+  'CPlusPlus',
+  'CSharp',
   'Go',
   'Java',
   'JavaScript',
@@ -88,18 +90,6 @@ const languageLinks = [
                     </ul>
                 </div>
 
-                <!-- <div>
-                    <h2 class="text-lg font-bold mb-2">Language Hiscores</h2>
-                    <ul class="space-y-2">
-                        <li v-for="lang in languageLinks" :key="lang">
-                            <NuxtLink :to="`/hiscores/languages/${lang}`"
-                                class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
-                                {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
-                            </NuxtLink>
-                        </li>
-                    </ul>
-                </div> -->
-
                 <ScrollAreaRoot class="h-96 relative overflow-hidden" style="--scrollbar-size: 10px">
                     <div class="mb-2">
                         <h2 class="text-lg font-bold">Language Hiscores</h2>
@@ -110,7 +100,7 @@ const languageLinks = [
                             <li v-for="lang in languageLinks" :key="lang">
                                 <NuxtLink :to="`/hiscores/languages/${encodeURIComponent(lang)}`"
                                     class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
-                                    {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
+                                    {{ languageFormatter(lang.charAt(0).toUpperCase() + lang.slice(1)) }}
                                 </NuxtLink>
                             </li>
                         </ul>

@@ -7,6 +7,9 @@ import { computed, ref, watch } from "vue";
 
 import { Icon } from '@iconify/vue';
 
+import { languageFormatter } from "@/utils/LanguageFormatter";
+
+
 import {
   ComboboxAnchor,
   ComboboxContent,
@@ -61,14 +64,21 @@ const rankOptions = [
 ];
 
 const languageOptions = [
-  "Go",
-  "JavaScript",
-  "Java",
-  "Python",
-  "Rust",
-  "Scala",
-  "Sql",
-  "TypeScript",
+  'C',
+  'CPlusPlus',
+  'CSharp',
+  'Go',
+  'Java',
+  'JavaScript',
+  'Kotlin',
+  'PHP',
+  'Python',
+  'Ruby',
+  'Rust',
+  'Scala',
+  'Sql',
+  'Swift',
+  'TypeScript'
 ];
 
 const filteredOptions = computed(() =>
@@ -112,6 +122,7 @@ async function handleSubmit() {
   };
 
 
+  console.log(payload)
 
   if (payload.tags.length === 0) {
     submissionError.value = "Please select at least one tag.";
@@ -237,7 +248,7 @@ async function handleSubmit() {
               class="w-1/2 inline-flex items-center justify-between rounded-lg p-2 text-sm gap-2 bg-white text-black shadow hover:bg-stone-100 focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none">
 
               <TagsInputRoot v-model="questCreatePayload.tags" delimiter="" class="flex gap-2 items-center flex-wrap">
-                <TagsInputItem v-for="item in questCreatePayload.tags" :key="item" :value="item"
+                <TagsInputItem v-for="item in questCreatePayload.tags" :key="item" :value="languageFormatter(item)"
                   class="flex items-center gap-2 text-white bg-green-600 rounded px-2 py-1">
                   <TagsInputItemText class="text-sm" />
                   <TagsInputItemDelete>
@@ -265,7 +276,7 @@ async function handleSubmit() {
                   <ComboboxItem v-for="(option, index) in filteredOptions" :id="`language-option-${option}`"
                     :key="index" :value="option"
                     class="text-sm text-black px-4 py-2 rounded hover:bg-green-100 cursor-pointer flex items-center justify-between">
-                    {{ option }}
+                    {{ languageFormatter(option) }}
                     <ComboboxItemIndicator>
                       <Icon icon="radix-icons:check" />
                     </ComboboxItemIndicator>

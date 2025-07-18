@@ -1,6 +1,22 @@
 import { z } from "zod";
 
-export const LanguageSchema = z.enum(["Python", "Java", "Scala", "Rust", "TypeScript", "Sql"]);
+export const LanguageSchema = z.enum([
+  "C",
+  "C++",
+  "C#",
+  "Go",
+  "Java",
+  "JavaScript",
+  "Kotlin",
+  "PHP",
+  "Python",
+  "Ruby",
+  "Rust",
+  "Scala",
+  "Sql",
+  "Swift",
+  "TypeScript",
+]);
 
 export type Language = z.infer<typeof LanguageSchema>;
 

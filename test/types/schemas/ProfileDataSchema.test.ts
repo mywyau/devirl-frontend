@@ -92,7 +92,7 @@ describe("ProfileDataSchema", () => {
   it("fails if languageData includes an invalid entry", () => {
     const invalidProfile = {
       ...validProfile,
-      languageData: [{ language: "Go", languageLevel: 2, languageXp: 300 }],
+      languageData: [{ language: "Haskell", languageLevel: 2, languageXp: 300 }],
     };
     const result = ProfileDataSchema.safeParse(invalidProfile);
     expect(result.success).toBe(false);
