@@ -24,7 +24,7 @@ import {
   AccordionTrigger,
 } from 'reka-ui';
 
-import { getStatusFormatter } from "@/utils/QuestStatusUtils";
+import { statusFormatter } from "@/utils/QuestStatusUtils";
 
 import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 
@@ -128,7 +128,7 @@ const reportError = ref(false);
           </h2>
           <span class="text-lg font-semibold">
             <span :class="`text-lg mb-4 ${getStatusTextColour(result?.status?.toString())}`">
-              {{ getStatusFormatter(result?.status.toString()) }}
+              {{ statusFormatter(result?.status.toString()) }}
             </span>
           </span>
         </div>
