@@ -4,8 +4,8 @@ import { z } from "zod";
 const pluralize = (count: number, noun: string) =>
   `${count} ${noun}${count === 1 ? "" : "s"}`;
 
-const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]*$/;
-const nameRegex = /^[a-zA-Z]+(?:[-' ][a-zA-Z]+)*$/;
+const usernameRegex = /^[a-z][a-z0-9_]*$/;
+const nameRegex = /^[a-z]+(?:[-' ][a-z]+)*$/;
 
 export const userRegistrationSchema = z.object({
   username: z
@@ -15,29 +15,36 @@ export const userRegistrationSchema = z.object({
     .max(20, { message: `Max ${pluralize(20, "character")}` })
     .regex(
       usernameRegex,
-      "Username must start with a letter and contain only letters, numbers, and underscores"
+      "Usernames must be lowercase and only contain letters, numbers, and underscores"
     ),
   firstName: z
     .string()
     .trim()
     .min(1, "First name is required")
     .max(50, { message: `Max ${pluralize(50, "character")}` })
-    .regex(
-      nameRegex,
-      "First name must only contain letters, hyphens, or apostrophes"
-    ),
+    .superRefine((val, ctx) => {
+      if (val.length > 0 && !nameRegex.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "First name must be lowercase and only contain letters, hyphens, or apostrophes",
+        });
+      }
+    }),
   lastName: z
     .string()
     .trim()
     .min(1, "Last name is required")
     .max(50, { message: `Max ${pluralize(50, "character")}` })
-    .regex(
-      nameRegex,
-      "Last name must only contain letters, hyphens, or apostrophes"
-    ),
-  userType: z.enum(["Client", "Dev"], {
-    required_error: "User type is required",
-  }),
+    .superRefine((val, ctx) => {
+      if (val.length > 0 && !nameRegex.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Last name must be lowercase and only contain letters, hyphens, or apostrophes",
+        });
+      }
+    }),
 });
 
 export type UserRegistrationForm = z.infer<typeof userRegistrationSchema>;

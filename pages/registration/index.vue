@@ -79,33 +79,32 @@ const updateRole = async () => {
               Username
             </label>
 
-            <Input id="username" v-model="userTypeForm.username" placeholder="Username" class="w-full" />
-            <p class="mt-1 text-sm text-zinc-400">Max 20 characters</p>
             <p v-if="validationErrors.username" class="text-sm text-red-500">
               {{ validationErrors.username }}
             </p>
 
+            <Input id="username" v-model="userTypeForm.username" placeholder="Username" class="w-full" />
+            <p class="mt-1 text-sm text-zinc-400">Max 20 characters</p>
 
             <label for="firstname" class="block text-sm font-medium text-white">
               First Name
             </label>
-
-            <Input id="firstname" v-model="userTypeForm.firstName" placeholder="First Name" class="w-full" />
-            <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
             <p v-if="validationErrors.firstName" class="text-sm text-red-500">
               {{ validationErrors.firstName }}
             </p>
+            <Input id="firstname" v-model="userTypeForm.firstName" placeholder="First Name" class="w-full" />
+            <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
 
 
             <label for="lastname" class="block text-sm font-medium text-white">
               Last Name
             </label>
-
-            <Input id="lastname" v-model="userTypeForm.lastName" placeholder="Last Name" class="w-full" />
-            <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
             <p v-if="validationErrors.lastName" class="text-sm text-red-500">
               {{ validationErrors.lastName }}
             </p>
+            <Input id="lastname" v-model="userTypeForm.lastName" placeholder="Last Name" class="w-full" />
+            <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
+
           </div>
 
           <div class="flex flex-col space-y-2">
