@@ -16,6 +16,7 @@ import { getStatusTextColour } from "@/utils/QuestStatusUtils";
 import { useCookie } from "nuxt/app";
 
 import { Icon } from '@iconify/vue';
+
 import {
   AccordionContent,
   AccordionHeader,
@@ -24,7 +25,7 @@ import {
   AccordionTrigger,
 } from 'reka-ui';
 
-import { getStatusFormatter } from "@/utils/QuestStatusUtils";
+import { statusFormatter } from "@/utils/QuestStatusUtils";
 
 import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 
@@ -120,7 +121,7 @@ const reportError = ref(false);
       <div v-if="isLoading" class="text-zinc-400">Loading quest...</div>
       <div v-else-if="error" class="text-red-500">{{ error }}</div>
 
-      <div v-else class="bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow mb-6">
+      <div v-else class="bg-zinc-800 p-6 rounded-xl mb-6">
 
         <div class="flex justify-between items-center">
           <h2 :id="`quest-title`" class="text-2xl font-semibold mb-2 text-indigo-300 mb-6">
@@ -128,7 +129,7 @@ const reportError = ref(false);
           </h2>
           <span class="text-lg font-semibold">
             <span :class="`text-lg mb-4 ${getStatusTextColour(result?.status?.toString())}`">
-              {{ getStatusFormatter(result?.status.toString()) }}
+              {{ statusFormatter(result?.status.toString()) }}
             </span>
           </span>
         </div>
@@ -160,7 +161,7 @@ const reportError = ref(false);
       </div>
 
       <div>
-        <AccordionRoot class="rounded-lg border border-zinc-700 bg-zinc-900 mb-6" default-value="description"
+        <AccordionRoot class="rounded-lg border border-zinc-800 bg-zinc-900 mb-6" :default-value="['description']"
           v-model="openPanels" type="multiple" :collapsible="true">
           <AccordionItem
             class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg border-b border-zinc-700 focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-emerald-500"
@@ -203,7 +204,6 @@ const reportError = ref(false);
           </AccordionItem>
         </AccordionRoot>
       </div>
-
     </div>
   </NuxtLayout>
 </template>

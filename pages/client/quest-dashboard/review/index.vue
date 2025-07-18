@@ -1,6 +1,6 @@
 <!-- src/pages/ClientSubmittedQuests.vue -->
 <script setup lang="ts">
-import { Button } from "@/components/ui/button/variants";
+import { Button } from "@/components/old/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
 import {
   completeQuest,

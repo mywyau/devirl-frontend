@@ -4,10 +4,11 @@ import { useAuthUser } from "@/composables/useAuthUser";
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { streamAllQuestsReward } from "@/controllers/QuestController";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
-import { getStatusFormatter, getStatusTextColour } from "@/utils/QuestStatusUtils";
+import { statusFormatter, getStatusTextColour } from "@/utils/QuestStatusUtils";
 import { useCookie } from "nuxt/app";
-import { computed, ref, watch } from "vue";
-
+import { computed, ref, watch } from "vue"; 
+import { languageFormatter } from "@/utils/LanguageUtils";
+import { rankClass } from "@/utils/QuestRankUtil";
 
 import { Icon } from '@iconify/vue';
 import {
@@ -39,31 +40,6 @@ async function fetchTotalQuestCount() {
 
 const loading = ref(false);
 const error = ref<string | null>(null);
-
-function rankClass(rank: string): string {
-  switch (rank.toLowerCase()) {
-    case "bronze":
-      return "text-yellow-400";
-    case "iron":
-      return "text-gray-400";
-    case "steel":
-      return "text-gray-300";
-    case "mithril":
-      return "text-blue-300";
-    case "adamantite":
-      return "text-green-300";
-    case "runic":
-      return "text-teal-300";
-    case "demon":
-      return "text-red-400";
-    case "ruinous":
-      return "text-purple-400";
-    case "aether":
-      return "text-pink-400";
-    default:
-      return "text-zinc-300";
-  }
-}
 
 
 // Get the user session
@@ -186,14 +162,13 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
 
           <div class="flex flex-wrap gap-2 mt-2">
             <span v-for="tag in quest.quest.tags" :key="tag" class="bg-green-600 text-white text-xs px-2 py-1 rounded">
-              {{ tag }}
+              {{ languageFormatter(tag) }}
             </span>
           </div>
 
-
-          <div class="flex justify-between items-center mt-2">
+          <div v-if="quest.quest.status != 'NotEstimated'" class="flex justify-between items-center mt-2">
             <span :class="`text-sm ${getStatusTextColour(quest.quest.status.toString())} font-semibold`">
-              {{ getStatusFormatter(quest.quest.status) }}
+              {{ statusFormatter(quest.quest.status) }}
             </span>
           </div>
 
@@ -208,11 +183,11 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
 
             <div class="flex gap-4">
               <NuxtLink v-if="userType == 'Dev'" :to="`/quest/estimation/${quest.quest.questId}`"
-                class="text-sm text-white hover:underline hover:text-teal-300">
+                class="text-base text-white hover:underline hover:text-teal-300">
                 Estimations
               </NuxtLink>
               <NuxtLink :to="`/quest/${quest.quest.questId}`"
-                class="text-sm text-white hover:underline hover:text-teal-300">
+                class="text-base text-white hover:underline hover:text-teal-300">
                 Details
               </NuxtLink>
             </div>
@@ -231,8 +206,13 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
 
       <!-- Pagination Controls -->
       <template v-if="!loading && questsWithReward.length > 0 && totalQuests > itemsPerPage">
-        <PaginationRoot v-model:page="currentPage" :total="totalQuests" :items-per-page="itemsPerPage"
-          :sibling-count="1" show-edges class="mt-8 flex justify-center">
+        <PaginationRoot 
+          v-model:page="currentPage"
+          :total="totalQuests"
+          :items-per-page="itemsPerPage"
+          :sibling-count="1" 
+          show-edges class="mt-8 flex justify-center"
+        >
 
           <PaginationList v-slot="{ items }" class="flex items-center gap-1 text-stone-700 dark:text-white">
             <PaginationFirst

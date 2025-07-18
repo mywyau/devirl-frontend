@@ -8,3 +8,21 @@ export const languageFormatter = (language: string): string => {
       return language;
   }
 }
+
+export const languageOptions = [
+  'C',
+  'CPlusPlus',
+  'CSharp',
+  'Go',
+  'Java',
+  'JavaScript',
+  'Kotlin',
+  'PHP',
+  'Python',
+  'Ruby',
+  'Rust',
+  'Scala',
+  'Sql',
+  'Swift',
+  'TypeScript'
+];

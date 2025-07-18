@@ -19,15 +19,18 @@ export const getStatusTextColour = (
   }
 };
 
-export const getStatusFormatter = (status: string): string => {
+export const statusFormatter = (status: string): string => {
   switch (status) {
+    case "NotStarted":
+      return "Not Started";
     case "NotEstimated":
       return "Not Estimated";
     case "InProgress":
       return "In Progress";
-    case "NotStarted":
-      return "Not Started";
+    case "PaidOut":
+      return "Paid Out";
     default:
       return status;
   }
 };
+

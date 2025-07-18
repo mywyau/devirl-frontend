@@ -1,9 +1,9 @@
 <script setup lang="ts">
-
 import { useAuthUser } from "@/composables/useAuthUser";
+import { userRegistrationSchema, type UserRegistrationForm } from "@/types/schema/UserRegistration";
 import { ref } from "vue";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/old/button";
 import {
   Select,
   SelectContent,
@@ -11,36 +11,46 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/old/select";
 
 import Input from '@/components/reka/Input.vue';
 import { submitRegisterUser } from "@/controllers/RegistrationController";
 
-const userTypeForm = ref({
+const userTypeForm = ref<UserRegistrationForm>({
   username: "",
   firstName: "",
   lastName: "",
-  userType: "",
+  userType: "" as any,
 });
 
-const userTypeSuccess = ref(false);
-const userTypeError = ref("");
+const registrationSuccess = ref(false);
+const registrationError = ref("");
+const validationErrors = ref<Partial<Record<keyof UserRegistrationForm, string>>>({});
 
 const { data: user } = useAuthUser();
 
-const updateRole = async () => {
+const registerUser = async () => {
+  registrationError.value = "";
+  registrationSuccess.value = false;
+  validationErrors.value = {};
 
-  userTypeError.value = "";
-  userTypeSuccess.value = false;
+  const parseResult = userRegistrationSchema.safeParse(userTypeForm.value);
+
+  if (!parseResult.success) {
+    for (const issue of parseResult.error.issues) {
+      const field = issue.path[0] as keyof UserRegistrationForm;
+      validationErrors.value[field] = issue.message;
+    }
+    return;
+  }
 
   const safeUserId = user.value?.sub;
-
   const result = await submitRegisterUser(safeUserId, userTypeForm.value);
 
   if (result.success) {
-    userTypeSuccess.value = true;
+    registrationSuccess.value = true;
   } else {
-    userTypeError.value = result.error || "Error when submitting registration details";
+    registrationError.value = result.error || "Error when submitting registration details";
   }
 };
 
@@ -55,14 +65,14 @@ const updateRole = async () => {
           Complete Your Signup
         </h1>
 
-        <div v-if="userTypeError" class="text-red-600 text-sm text-center">
-          {{ userTypeError }}
+        <div v-if="registrationError" class="text-red-600 text-sm text-center">
+          {{ registrationError }}
         </div>
-        <div v-else-if="userTypeSuccess" class="text-green-600 text-sm text-center">
-          Role updated successfully!
+        <div v-else-if="registrationSuccess" class="text-green-600 text-sm text-center">
+          Registration Successful
         </div>
 
-        <form @submit.prevent="updateRole" class="space-y-6">
+        <form @submit.prevent="registerUser" class="space-y-6">
 
           <div class="space-y-2">
 
@@ -70,27 +80,32 @@ const updateRole = async () => {
               Username
             </label>
 
+            <p v-if="validationErrors.username" class="text-sm text-red-500">
+              {{ validationErrors.username }}
+            </p>
+
             <Input id="username" v-model="userTypeForm.username" placeholder="Username" class="w-full" />
-
             <p class="mt-1 text-sm text-zinc-400">Max 20 characters</p>
-
 
             <label for="firstname" class="block text-sm font-medium text-white">
               First Name
             </label>
-
+            <p v-if="validationErrors.firstName" class="text-sm text-red-500">
+              {{ validationErrors.firstName }}
+            </p>
             <Input id="firstname" v-model="userTypeForm.firstName" placeholder="First Name" class="w-full" />
-
             <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
 
 
             <label for="lastname" class="block text-sm font-medium text-white">
               Last Name
             </label>
-
+            <p v-if="validationErrors.lastName" class="text-sm text-red-500">
+              {{ validationErrors.lastName }}
+            </p>
             <Input id="lastname" v-model="userTypeForm.lastName" placeholder="Last Name" class="w-full" />
-
             <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
+
           </div>
 
           <div class="flex flex-col space-y-2">

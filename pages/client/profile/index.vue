@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 
-import ProfileItem from "@/components/ui/profile/ProfileItem";
+import ProfileItem from "@/components/old/profile/ProfileItem";
 import { useAuthUser } from "@/composables/useAuthUser";
 import { deleteUser, getUser } from "@/controllers/UserDataController";
 import {
@@ -115,30 +115,20 @@ onMounted(() => {
             <div v-if="userProfile">
 
               <div class="space-y-4 mb-6">
-                <ProfileItem textColor="text-white" labelColor="text-white" label="First Name"
-                  :value="`${userProfile.firstName}`" />
-
-                <ProfileItem textColor="text-white" labelColor="text-white" label="Last Name"
-                  :value="`${userProfile.lastName}`" />
-
-                <ProfileItem textColor="text-white" labelColor="text-white" label="Username"
-                  :value="userProfile.username" />
-
-                <ProfileItem textColor="text-white" labelColor="text-white" label="Email" :value="userProfile.email" />
-                <ProfileItem textColor="text-white" labelColor="text-white" label="Role"
-                  :value="userProfile.userType ?? '—'" />
+                <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white" textColor="text-green-400" />
+                <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-red-400" />
+                <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white" textColor="text-cyan-400" />
+                <ProfileItem label="First Name" labelColor="text-white" textColor="text-blue-400" :value="userProfile.firstName" />
+                <ProfileItem label="Last Name" labelColor="text-white" textColor="text-blue-400" :value="userProfile.lastName" />
               </div>
 
 
-              <ConfirmDialog 
-                :data-testid="`delete-user-profile`"
-                title="Are you sure you want to delete your profile?"
-                description="Are you sure you want to delete your profile? This action cannot be undone and all your data will be removed."
+              <ConfirmDialog :data-testid="`delete-user-profile`" title="Are you sure you want to delete your profile?"
+                description="Please confirm if you wish to delete your profile. This action cannot be undone and all your data will be removed."
                 triggerText="Delete profile" triggerClass="px-4 py-2 bg-red-500 hover:bg-red-400 rounded text-white"
                 actionText="Yes, delete my profile"
                 actionClass="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded text-sm font-sans"
-                @confirm="handleDeleteUser" 
-              />
+                @confirm="handleDeleteUser" />
 
 
               <p v-if="deleteError" class="text-red-500 mt-4 text-center text-sm">

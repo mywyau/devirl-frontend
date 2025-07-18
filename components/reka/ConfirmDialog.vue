@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from 'reka-ui';
 
-import { Button } from "@/components/ui/button/variants";
+import { Button } from "@/components/old/button/variants";
 
 
 defineProps<{

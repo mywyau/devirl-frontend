@@ -1,14 +1,13 @@
 <script setup lang="ts">
 
 import { useAuthUser } from "@/composables/useAuthUser";
-import { createQuest } from "@/controllers/QuestController"; // <- updated import
+import { createQuest } from "@/controllers/QuestController";
 import { CreateQuestSchema } from "@/types/schema/QuestStatusSchema";
+import { languageFormatter, languageOptions } from "@/utils/LanguageUtils";
+import { rankOptions } from "@/utils/QuestRankUtil";
 import { computed, ref, watch } from "vue";
 
 import { Icon } from '@iconify/vue';
-
-import { languageFormatter } from "@/utils/LanguageFormatter";
-
 
 import {
   ComboboxAnchor,
@@ -51,35 +50,6 @@ import TextArea from '@/components/reka/TextArea.vue';
 const query = ref('')
 const { contains } = useFilter({ sensitivity: 'base' })
 
-const rankOptions = [
-  { value: "Bronze", label: "Bronze" },
-  { value: "Iron", label: "Iron" },
-  { value: "Steel", label: "Steel" },
-  { value: "Mithril", label: "Mithril" },
-  { value: "Adamantite", label: "Adamantite" },
-  { value: "Runic", label: "Runic" },
-  { value: "Ruinous", label: "Ruinous" },
-  { value: "Demon", label: "Demon" },
-  { value: "Aether", label: "Aether" },
-];
-
-const languageOptions = [
-  'C',
-  'CPlusPlus',
-  'CSharp',
-  'Go',
-  'Java',
-  'JavaScript',
-  'Kotlin',
-  'PHP',
-  'Python',
-  'Ruby',
-  'Rust',
-  'Scala',
-  'Sql',
-  'Swift',
-  'TypeScript'
-];
 
 const filteredOptions = computed(() =>
   languageOptions.filter(
@@ -185,6 +155,7 @@ async function handleSubmit() {
   <NuxtLayout>
 
     <div class="p-6 max-w-4xl mx-auto">
+      
       <h1 class="text-3xl text-green-300 font-bold mb-6">Create a New Quest</h1>
 
       <form @submit.prevent="handleSubmit" class="">
