@@ -4,18 +4,11 @@ import { getHiscoreLanguage } from '@/controllers/LanguageController';
 import { useRoute } from 'nuxt/app';
 import { ref, watch } from 'vue';
 
+
 import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
 
-const languageFormatter = (language: string): string => {
-  switch (language) {
-    case "CPlusPlus":
-      return "C++";
-    case "CSharp":
-      return "C#";
-    default:
-      return language;
-  }
-}
+import { languageFormatter } from "@/utils/LanguageFormatter";
+
 
 const route = useRoute();
 

@@ -7,6 +7,9 @@ import { computed, ref, watch } from "vue";
 
 import { Icon } from '@iconify/vue';
 
+import { languageFormatter } from "@/utils/LanguageFormatter";
+
+
 import {
   ComboboxAnchor,
   ComboboxContent,
@@ -44,17 +47,6 @@ import {
 
 import Input from '@/components/reka/Input.vue';
 import TextArea from '@/components/reka/TextArea.vue';
-
-const languageFormatter = (language: string): string => {
-  switch (language) {
-    case "CPlusPlus":
-      return "C++";
-    case "CSharp":
-      return "C#";
-    default:
-      return language;
-  }
-}
 
 const query = ref('')
 const { contains } = useFilter({ sensitivity: 'base' })

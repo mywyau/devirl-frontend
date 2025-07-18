@@ -4,17 +4,8 @@ import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewpor
 import { getHiscoreSkill } from '@/controllers/SkillController';
 import { useAsyncData } from 'nuxt/app';
 import { useRoute } from 'vue-router';
+import { languageFormatter } from "@/utils/LanguageFormatter";
 
-const languageFormatter = (language: string): string => {
-  switch (language) {
-    case "CPlusPlus":
-      return "C++";
-    case "CSharp":
-      return "C#";
-    default:
-      return language;
-  }
-}
 
 const route = useRoute()
 const skillId = route.params.skill?.toString() || 'questing'
@@ -98,18 +89,6 @@ const languageLinks = [
                         </li>
                     </ul>
                 </div>
-
-                <!-- <div>
-                    <h2 class="text-lg font-bold mb-2">Language Hiscores</h2>
-                    <ul class="space-y-2">
-                        <li v-for="lang in languageLinks" :key="lang">
-                            <NuxtLink :to="`/hiscores/languages/${lang}`"
-                                class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
-                                {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
-                            </NuxtLink>
-                        </li>
-                    </ul>
-                </div> -->
 
                 <ScrollAreaRoot class="h-96 relative overflow-hidden" style="--scrollbar-size: 10px">
                     <div class="mb-2">
