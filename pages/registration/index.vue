@@ -1,6 +1,6 @@
 <script setup lang="ts">
-
 import { useAuthUser } from "@/composables/useAuthUser";
+import { userRegistrationSchema, type UserRegistrationForm } from "@/types/schema/UserRegistration";
 import { ref } from "vue";
 
 import { Button } from "@/components/ui/button";
@@ -16,25 +16,35 @@ import {
 import Input from '@/components/reka/Input.vue';
 import { submitRegisterUser } from "@/controllers/RegistrationController";
 
-const userTypeForm = ref({
+const userTypeForm = ref<UserRegistrationForm>({
   username: "",
   firstName: "",
   lastName: "",
-  userType: "",
+  userType: "" as any,
 });
 
 const userTypeSuccess = ref(false);
 const userTypeError = ref("");
+const validationErrors = ref<Partial<Record<keyof UserRegistrationForm, string>>>({});
 
 const { data: user } = useAuthUser();
 
 const updateRole = async () => {
-
   userTypeError.value = "";
   userTypeSuccess.value = false;
+  validationErrors.value = {};
+
+  const parseResult = userRegistrationSchema.safeParse(userTypeForm.value);
+
+  if (!parseResult.success) {
+    for (const issue of parseResult.error.issues) {
+      const field = issue.path[0] as keyof UserRegistrationForm;
+      validationErrors.value[field] = issue.message;
+    }
+    return;
+  }
 
   const safeUserId = user.value?.sub;
-
   const result = await submitRegisterUser(safeUserId, userTypeForm.value);
 
   if (result.success) {
@@ -43,7 +53,6 @@ const updateRole = async () => {
     userTypeError.value = result.error || "Error when submitting registration details";
   }
 };
-
 </script>
 
 <template>
@@ -71,8 +80,10 @@ const updateRole = async () => {
             </label>
 
             <Input id="username" v-model="userTypeForm.username" placeholder="Username" class="w-full" />
-
             <p class="mt-1 text-sm text-zinc-400">Max 20 characters</p>
+            <p v-if="validationErrors.username" class="text-sm text-red-500">
+              {{ validationErrors.username }}
+            </p>
 
 
             <label for="firstname" class="block text-sm font-medium text-white">
@@ -80,8 +91,10 @@ const updateRole = async () => {
             </label>
 
             <Input id="firstname" v-model="userTypeForm.firstName" placeholder="First Name" class="w-full" />
-
             <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
+            <p v-if="validationErrors.firstName" class="text-sm text-red-500">
+              {{ validationErrors.firstName }}
+            </p>
 
 
             <label for="lastname" class="block text-sm font-medium text-white">
@@ -89,8 +102,10 @@ const updateRole = async () => {
             </label>
 
             <Input id="lastname" v-model="userTypeForm.lastName" placeholder="Last Name" class="w-full" />
-
             <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
+            <p v-if="validationErrors.lastName" class="text-sm text-red-500">
+              {{ validationErrors.lastName }}
+            </p>
           </div>
 
           <div class="flex flex-col space-y-2">
