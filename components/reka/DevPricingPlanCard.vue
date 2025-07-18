@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-// ./components/reka/PricingPlanCard.vue
+// ./components/reka/DevPricingPlanCard.vue
 
 defineProps<{
   plan: {
@@ -32,7 +32,7 @@ defineProps<{
 
     <ul class="space-y-2 text-sm text-gray-700 flex-1">
       <li>📌 Max Active Quests: <strong>{{ plan.maxActiveQuests }}</strong></li>
-      <li>🔍 Dev Pool Access: <strong>{{ plan.devPool }}</strong></li>
+      <li>🔍 Number of Quests Access: <strong>{{ plan.devPool }}</strong></li>
     </ul>
 
     <button class="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-xl transition">
