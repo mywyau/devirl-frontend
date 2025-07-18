@@ -2,10 +2,13 @@
 import Input from '@/components/reka/Input.vue';
 import { useAuthUser } from '@/composables/useAuthUser';
 import { loadConfig } from '@/configuration/ConfigLoader';
+import { addRewardSchema } from "@/types/schema/AddRewardForm";
 import { Icon } from '@iconify/vue';
 import { AccordionContent, AccordionHeader, AccordionItem, AccordionRoot, AccordionTrigger } from 'reka-ui';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+
+import { useQuestFeeCalculations } from "@/service/AddRewardService";
 
 const route = useRoute();
 const questIdFromRoute = route.params.id as string;
@@ -17,78 +20,70 @@ const baseUrl = `${config.devQuestBackend.baseUrl}/`
 const { data: user } = await useAuthUser()
 const safeUserId = computed(() => user.value?.sub)
 
-function roundUpTo2DP(value: number): number {
-  return Math.ceil(value * 100) / 100
-}
+const platformFeePercent = 2.5;
+const timeRewardAmount = ref(0);
+const completionRewardAmount = ref(0);
 
-const platformFeePercent = 2.5 // e.g., 2.5%
+const {
+  timeOnlyFee,
+  completionOnlyFee,
+  timeAndCompletionFee,
+  totalToPay,
+} = useQuestFeeCalculations(timeRewardAmount, completionRewardAmount, platformFeePercent);
 
-const completionRewardAmount = ref<number>(0)
 const completionSuccess = ref(false)
 const completionError = ref<string | null>(null)
 
-const timeRewardAmount = ref<number>(0)
+// const timeRewardAmount = ref<number>(0)
 const timeSuccess = ref(false)
 const timeError = ref<string | null>(null)
 
-const timeOnlyFee = computed(() => {
-  return timeRewardAmount.value ? roundUpTo2DP(timeRewardAmount.value * (platformFeePercent / 100)) : 0
-})
-
-const completionOnlyFee = computed(() => {
-  return completionRewardAmount.value ? roundUpTo2DP(completionRewardAmount.value * (platformFeePercent / 100)) : 0
-})
-
-const timeAndCompletionfee = computed(() => {
-  return completionRewardAmount.value + timeRewardAmount.value ? roundUpTo2DP((completionRewardAmount.value + timeRewardAmount.value) * (platformFeePercent / 100)) : 0
-})
-
-
-const totalToPay = computed(() => {
-  const devReward = timeRewardAmount.value + completionRewardAmount.value
-  const fee = timeAndCompletionfee.value
-  return devReward ? roundUpTo2DP(devReward + fee) : 0
-})
-
 async function submitCompletionReward() {
+  timeError.value = null;
+  completionError.value = null;
+  timeSuccess.value = false;
+  completionSuccess.value = false;
 
-  if (timeRewardAmount.value < 0) {
-    timeError.value = 'You cannot enter a negative monetary reward value'
-    return
-  }
+  const validation = addRewardSchema.safeParse({
+    timeRewardAmount: timeRewardAmount.value,
+    completionRewardAmount: completionRewardAmount.value,
+  });
 
-  if (completionRewardAmount.value < 0) {
-    completionError.value = 'You cannot enter a negative monetary reward value'
-    return
+  if (!validation.success) {
+    for (const issue of validation.error.issues) {
+      if (issue.path[0] === "timeRewardAmount") {
+        timeError.value = issue.message;
+      }
+      if (issue.path[0] === "completionRewardAmount") {
+        completionError.value = issue.message;
+      }
+    }
+    return;
   }
 
   try {
-
-    const timeRewardCents = Math.round(timeRewardAmount.value * 100)
-    const completionRewardCents = Math.round(completionRewardAmount.value * 100)
+    const timeRewardCents = Math.round(timeRewardAmount.value * 100);
+    const completionRewardCents = Math.round(completionRewardAmount.value * 100);
 
     await $fetch(`${baseUrl}reward/create/${encodeURIComponent(safeUserId.value)}`, {
-      method: 'POST',
+      method: "POST",
       credentials: "include",
       body: {
-        questId: questId,
+        questId,
         timeRewardValue: timeRewardCents,
-        completionRewardValue: completionRewardCents
-      }
-    })
+        completionRewardValue: completionRewardCents,
+      },
+    });
 
-    completionSuccess.value = true
-    completionError.value = null
-
-    timeSuccess.value = true
-    timeError.value = null
-
+    timeSuccess.value = true;
+    completionSuccess.value = true;
   } catch (e: any) {
-    timeError.value = 'Failed to save time reward. Please try again.'
-    completionError.value = 'Failed to save completion reward. Please try again.'
-    console.error(e)
+    timeError.value = "Failed to save time reward. Please try again.";
+    completionError.value = "Failed to save completion reward. Please try again.";
+    console.error(e);
   }
 }
+
 
 const openPanels = ref<string[]>([]) // or [] to have them all closed initially
 
@@ -157,8 +152,13 @@ const accordionItems = [
 
             <label for="time-reward-amount" class="block text-base text-green-400 font-semibold mb-2">Time Reward
               ($)</label>
-            <Input id="time-reward-amount" type="number" v-model="timeRewardAmount" placeholder="For example 20.00"
-              class="w-1/3" />
+            <Input 
+              id="time-reward-amount"
+              type="number"
+              v-model="timeRewardAmount"
+              placeholder="For example 20.00"
+              class="w-1/3" 
+            />
             <p v-if="timeError" class="mt-4 text-red-400">{{ timeError }}</p>
           </div>
         </div>
@@ -170,8 +170,13 @@ const accordionItems = [
             <label for="completion-reward-amount"
               class="block text-base text-green-400 font-semibold mt-2 mb-2">Completion Reward
               ($)</label>
-            <Input id="completion-reward-amount" type="number" v-model="completionRewardAmount"
-              placeholder="For example 20.00" class="w-1/3" />
+            <Input 
+              id="completion-reward-amount"
+              type="number" 
+              v-model="completionRewardAmount"
+              placeholder="For example 20.00" 
+              class="w-1/3" 
+            />
             <p v-if="completionError" class="mt-4 text-red-400">{{ completionError }}</p>
           </div>
 
@@ -179,7 +184,7 @@ const accordionItems = [
           <div v-if="completionRewardAmount > 0 && timeRewardAmount > 0"
             class="mt-4 mb-6 text-base text-zinc-300 space-y-2">
             <p><strong>Developer Reward:</strong> ${{ (completionRewardAmount + timeRewardAmount).toFixed(2) }}</p>
-            <p><strong>Platform Fee ({{ platformFeePercent }}%):</strong> ${{ timeAndCompletionfee.toFixed(2) }}</p>
+            <p><strong>Platform Fee ({{ platformFeePercent }}%):</strong> ${{ timeAndCompletionFee.toFixed(2) }}</p>
             <p class="text-green-300 font-semibold">
               <strong>Total:</strong> ${{ totalToPay.toFixed(2) }}
             </p>
