@@ -14,7 +14,7 @@ import {
 import { useAuthUser } from "@/composables/useAuthUser";
 import { Button } from "@/components/ui/button/variants";
 import { useCookie } from "nuxt/app";
-import { getStatusTextColour, getStatusFormatter } from "@/utils/QuestStatusUtils"
+import { getStatusTextColour, statusFormatter } from "@/utils/QuestStatusUtils"
 
 import { useRouter } from 'vue-router';
 
@@ -126,7 +126,7 @@ const reportError = ref(false);
           <span class="font-semibold">Status: </span>
 
           <span :class="`font-semibold mb-4 ${getStatusTextColour(result?.status?.toString())}`">
-            {{ getStatusFormatter(result?.status.toString()) }}
+            {{ statusFormatter(result?.status.toString()) }}
           </span>
         </div>
 

@@ -14,7 +14,7 @@ import {
 
 import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 
-import { getStatusFormatter } from '@/utils/QuestStatusUtils';
+import { statusFormatter } from '@/utils/QuestStatusUtils';
 
 import { deleteQuest, getQuest, updateQuestStatus } from "@/controllers/QuestController";
 import {
@@ -189,7 +189,7 @@ async function loadEstimates() {
               <span class="text-white font-semibold">Status: </span>
 
               <span :class="`capitalize ${getStatusTextColour(result?.status?.toString())}`">
-                {{getStatusFormatter(result?.status.toString())}}
+                {{statusFormatter(result?.status.toString())}}
               </span>
             </div>
 
