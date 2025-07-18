@@ -1,8 +1,10 @@
 <script setup lang="ts">
 
 import { loadConfig } from "@/configuration/ConfigLoader";
-import { onMounted, ref } from 'vue';
 import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
+import { onMounted, ref } from 'vue';
+import { languageFormatter } from "@/utils/LanguageFormatter";
+
 
 
 const config = loadConfig();
@@ -26,8 +28,8 @@ const skillLinks = [
 // languages as strings representing enums must be capital with camelcase to match backend enums
 const languageLinks = [
   'C',
-  'C++',
-  'C#',
+  'CPlusPlus',
+  'CSharp',
   'Go',
   'Java',
   'JavaScript',
@@ -85,18 +87,6 @@ onMounted(async () => {
           </ul>
         </div>
 
-        <!-- <div>
-          <h2 class="font-heading text-lg font-semibold mb-2">Language Hiscores</h2>
-          <ul class="space-y-2">
-            <li v-for="lang in languageLinks" :key="lang">
-              <NuxtLink :to="`/hiscores/languages/${lang}`"
-                class="font-sans block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
-                {{ lang }}
-              </NuxtLink>
-            </li>
-          </ul>
-        </div> -->
-
         <ScrollAreaRoot class="h-96 relative overflow-hidden" style="--scrollbar-size: 10px">
           <div class="mb-2">
             <h2 class="text-lg font-bold">Language Hiscores</h2>
@@ -107,7 +97,7 @@ onMounted(async () => {
               <li v-for="lang in languageLinks" :key="lang">
                 <NuxtLink :to="`/hiscores/languages/${encodeURIComponent(lang)}`"
                   class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
-                  {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
+                  {{ languageFormatter(lang.charAt(0).toUpperCase() + lang.slice(1)) }}
                 </NuxtLink>
               </li>
             </ul>
