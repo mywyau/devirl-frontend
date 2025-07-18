@@ -6,6 +6,16 @@ import { ref, watch } from 'vue';
 
 import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
 
+const languageFormatter = (language: string): string => {
+  switch (language) {
+    case "CPlusPlus":
+      return "C++";
+    case "CSharp":
+      return "C#";
+    default:
+      return language;
+  }
+}
 
 const route = useRoute();
 
@@ -19,7 +29,7 @@ const fetchData = async () => {
   try {
     loading.value = true;
     error.value = null;
-    const res = await getHiscoreLanguage(languageId.value);
+    const res = await getHiscoreLanguage(languageFormatter(languageId.value));
     languageData.value = res;
   } catch (err) {
     error.value = err;
@@ -55,8 +65,8 @@ const skillLinks = [
 // languages as strings representing enums must be capital with camelcase to match backend enums
 const languageLinks = [
   'C',
-  'C++',
-  'C#',
+  'CPlusPlus',
+  'CSharp',
   'Go',
   'Java',
   'JavaScript',
@@ -121,7 +131,7 @@ const languageLinks = [
                     'bg-indigo-500/70 text-white font-semibold': lang === languageId,
                     'hover:bg-teal-400/60': lang !== languageId
                   }">
-                  {{ lang.charAt(0).toUpperCase() + lang.slice(1) }}
+                  {{ languageFormatter(lang.charAt(0).toUpperCase() + lang.slice(1)) }}
                 </NuxtLink>
               </li>
             </ul>
@@ -144,7 +154,7 @@ const languageLinks = [
       <!-- Main Content -->
       <div class="flex-1">
 
-        <h1 class="font-heading text-3xl text-blue-400 font-bold mb-6 text-center">{{ titleCase(languageId) }}</h1>
+        <h1 class="font-heading text-3xl text-blue-400 font-bold mb-6 text-center">{{ titleCase(languageFormatter(languageId)) }}</h1>
 
         <div class="w-full overflow-x-auto">
           <table class="w-full min-w-[500px] table-auto text-left border-collapse mb-10">
