@@ -74,7 +74,7 @@ onMounted(() => {
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
       <h1 class="text-3xl font-bold mb-4 text-cyan-300">Open</h1>
-      <p class="text-lg mb-6 text-zinc-400">
+      <p class="text-lg mb-6 text-cyan-400">
         Below are all the quests that are open for devs to pick up.
       </p>
 

@@ -34,6 +34,7 @@ const skillLinks = [
 ]
 
 const loadError = ref(false);
+const hasLoaded = ref(false)
 
 async function fetchTotalCount() {
   try {
@@ -61,6 +62,7 @@ async function fetchDataForPage(page: number) {
 watch(currentPage, async (page) => {
   await fetchTotalCount()
   await fetchDataForPage(page)
+  hasLoaded.value = true
 }, { immediate: true })
 
 </script>
@@ -124,17 +126,17 @@ watch(currentPage, async (page) => {
       <!-- Main Content -->
       <div class="flex-1 mr-20 ml-20">
 
-        <h1 class="font-heading text-3xl font-semibold mb-6 text-center">Total Level</h1>
+        <h1 class="font-heading text-3xl font-semibold mb-6 text-center text-teal-300">Total Level</h1>
 
         <p v-if="loadError" class="text-red-400 mt-4">
           Could not load leaderboard. Please try again later.
         </p>
 
-
         <div v-else-if="!loadError" class="w-full overflow-x-auto">
 
-          <!-- <TotalLevelPaginationControls v-if="!loading && pagedData.length > 0 && totalItems > itemsPerPage" :page="currentPage"
-            :total="totalItems" :items-per-page="itemsPerPage" @update:page="(newPage) => currentPage = newPage" /> -->
+          <p v-if="hasLoaded" class="text-center w-full text-white mb-10">
+            There {{ totalItems === 1 ? 'is' : 'are' }} <span class="text-teal-300 font-bold">{{ totalItems }}</span> developer{{ totalItems === 1 ? '' : 's' }}
+          </p>
 
           <table class="w-full min-w-[500px] table-auto text-left border-collapse mb-10">
             <thead class="border-b border-white/10 text-white">

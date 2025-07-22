@@ -76,7 +76,7 @@ function goToStatusPage(key: string) {
                 </div>
 
                 <div class="mt-10 border-t border-zinc-700 pt-6">
-                  <h2 class="text-xl text-emerald-400 font-semibold mb-4 text-center">
+                  <h2 class="text-xl text-teal-300 font-semibold mb-4 text-center">
                     Stats
                   </h2>
 

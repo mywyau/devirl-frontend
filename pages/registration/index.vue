@@ -61,7 +61,7 @@ const registerUser = async () => {
     <div class="min-h-screen flex items-center justify-center px-4">
       <div class="max-w-md w-full bg-white/20 rounded-2xl shadow-lg p-8 space-y-6">
 
-        <h1 class="text-3xl font-semibold text-center text-teal-400">
+        <h1 class="text-3xl font-semibold text-center text-teal-300">
           Complete Your Signup
         </h1>
 
