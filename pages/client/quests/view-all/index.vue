@@ -6,48 +6,10 @@ import { useRouter } from "vue-router";
 import { useAuthUser } from "@/composables/useAuthUser";
 import { streamAllQuestsForUser } from "@/controllers/QuestController";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
-import { getStatusTextColour } from "@/utils/QuestStatusUtils";
+import { getStatusTextColour, statusFormatter } from "@/utils/QuestStatusUtils";
+import { languageFormatter } from "@/utils/LanguageUtils";
+import { rankClass } from "@/utils/QuestRankUtil";
 
-
-function rankClass(rank: string): string {
-  switch (rank.toLowerCase()) {
-    case "bronze":
-      return "text-yellow-400";
-    case "iron":
-      return "text-gray-400";
-    case "steel":
-      return "text-gray-300";
-    case "mithril":
-      return "text-blue-300";
-    case "adamantite":
-      return "text-green-300";
-    case "runic":
-      return "text-teal-300";
-    case "demon":
-      return "text-red-400";
-    case "ruinous":
-      return "text-purple-400";
-    case "aether":
-      return "text-pink-400";
-    default:
-      return "text-zinc-300";
-  }
-}
-
-function statusFormatter(questStatus: string): string {
-  switch (questStatus) {
-    case "NotStarted":
-      return "Not Started"
-    case "NotEstimated":
-      return "Not Estimated"
-    case "InProgress":
-      return "In Progress"
-    case "PaidOut":
-      return "Paid Out"
-    default:
-      return questStatus
-  }
-}
 
 // 1) Resolve the logged‐in user (SSR will forward the cookie via useAuthUser)
 const { data: user } = await useAuthUser();
@@ -138,7 +100,7 @@ function refreshPage() {
               <div class="flex flex-wrap gap-2 mt-4">
                 <span v-for="tag in quest.quest.tags" :key="tag"
                   class="bg-green-600 text-white text-xs px-2 py-1 rounded">
-                  {{ tag }}
+                  {{ languageFormatter(tag) }}
                 </span>
               </div>
             </div>

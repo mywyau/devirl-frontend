@@ -1,13 +1,16 @@
 <script setup lang="ts">
 
 import { loadConfig } from "@/configuration/ConfigLoader";
-import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
-import { onMounted, ref } from 'vue';
-import { languageFormatter } from "@/utils/LanguageFormatter";
+import { languageFormatter, languageOptions } from "@/utils/LanguageUtils";
+import {
+  ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport
+} from 'reka-ui';
+import { ref, watch } from 'vue';
 
-
+import TotalLevelPaginationControls from "@/components/ui/hiscores/TotalLevelPaginationControls.vue";
 
 const config = loadConfig();
+
 const baseUrl = config.devQuestBackend.baseUrl.replace(/\/$/, "");
 
 type TotalLevel = {
@@ -17,43 +20,49 @@ type TotalLevel = {
   totalXP: number
 }
 
-const leaderboard = ref<TotalLevel[]>([])
+const currentPage = ref(1)
+const itemsPerPage = 2
+const totalItems = ref(1)
+const pagedData = ref<TotalLevel[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
+
 
 const skillLinks = [
   'questing',
   'estimating',
-  // 'testing'
 ]
 
-// languages as strings representing enums must be capital with camelcase to match backend enums
-const languageLinks = [
-  'C',
-  'CPlusPlus',
-  'CSharp',
-  'Go',
-  'Java',
-  'JavaScript',
-  'Kotlin',
-  'PHP',
-  'Python',
-  'Ruby',
-  'Rust',
-  'Scala',
-  'Sql',
-  'Swift',
-  'TypeScript'
-];
+const loadError = ref(false);
 
-onMounted(async () => {
+async function fetchTotalCount() {
   try {
-    const res = await fetch(`${baseUrl}/hiscore/total/level`)
-    if (!res.ok) throw new Error('Failed to fetch hiscores')
-    const data = await res.json()
-    leaderboard.value = data.sort((a: TotalLevel, b: TotalLevel) => b.totalLevel - a.totalLevel)
+    const res = await $fetch<{ numberOfDevs: number }>(`${baseUrl}/hiscore/total-level/count`)
+    console.log("Fetched total count:", res.numberOfDevs);
+    totalItems.value = res.numberOfDevs
   } catch (err) {
-    console.error('Error loading leaderboard:', err)
+    error.value = "Failed to fetch total count"
   }
-})
+}
+
+async function fetchDataForPage(page: number) {
+  loading.value = true
+  try {
+    const offset = (page - 1) * itemsPerPage
+    const res = await $fetch<TotalLevel[]>(`${baseUrl}/hiscore/total-level?page=${page}&limit=${itemsPerPage}`)
+    pagedData.value = res
+  } catch (err) {
+    error.value = "Failed to fetch data"
+  } finally {
+    loading.value = false
+  }
+}
+
+watch(currentPage, async (page) => {
+  await fetchTotalCount()
+  await fetchDataForPage(page)
+}, { immediate: true })
+
 </script>
 
 
@@ -94,7 +103,7 @@ onMounted(async () => {
 
           <ScrollAreaViewport class="w-full h-full pr-2">
             <ul class="space-y-2">
-              <li v-for="lang in languageLinks" :key="lang">
+              <li v-for="lang in languageOptions" :key="lang">
                 <NuxtLink :to="`/hiscores/languages/${encodeURIComponent(lang)}`"
                   class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                   {{ languageFormatter(lang.charAt(0).toUpperCase() + lang.slice(1)) }}
@@ -112,13 +121,21 @@ onMounted(async () => {
         </ScrollAreaRoot>
       </aside>
 
-
       <!-- Main Content -->
-      <div class="flex-1">
+      <div class="flex-1 mr-20 ml-20">
 
         <h1 class="font-heading text-3xl font-semibold mb-6 text-center">Total Level</h1>
 
-        <div class="w-full overflow-x-auto">
+        <p v-if="loadError" class="text-red-400 mt-4">
+          Could not load leaderboard. Please try again later.
+        </p>
+
+
+        <div v-else-if="!loadError" class="w-full overflow-x-auto">
+
+          <!-- <TotalLevelPaginationControls v-if="!loading && pagedData.length > 0 && totalItems > itemsPerPage" :page="currentPage"
+            :total="totalItems" :items-per-page="itemsPerPage" @update:page="(newPage) => currentPage = newPage" /> -->
+
           <table class="w-full min-w-[500px] table-auto text-left border-collapse mb-10">
             <thead class="border-b border-white/10 text-white">
               <tr>
@@ -129,8 +146,9 @@ onMounted(async () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(dev, i) in leaderboard" :key="dev.username" class="border-b border-white/5">
-                <td class="font-sans py-2">{{ i + 1 }}</td>
+              <tr v-for="(dev, i) in pagedData" :key="dev.username" class="border-b border-white/5">
+                <!-- <td class="font-sans py-2">{{ i + 1 }}</td> -->
+                <td class="font-sans py-2">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
                 <td class="font-sans py-2">
                   <NuxtLink :to="`/profile/dev/${dev.username}`"
                     class="text-indigo-300 hover:underline hover:text-indigo-400">
@@ -142,10 +160,14 @@ onMounted(async () => {
               </tr>
             </tbody>
           </table>
+
+          <TotalLevelPaginationControls v-if="!loading && pagedData.length > 0 && totalItems > itemsPerPage"
+            :page="currentPage" :total="totalItems" :items-per-page="itemsPerPage"
+            @update:page="(newPage) => currentPage = newPage" />
+
         </div>
+
       </div>
-
-
     </div>
   </NuxtLayout>
 </template>

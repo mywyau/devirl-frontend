@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import PricingPlanCard from "@/components/reka/ClientPricingPlanCard.vue";
+import PricingPlanCard from "@/components/reka/DevPricingPlanCard.vue";
 
 const plans = [
   {

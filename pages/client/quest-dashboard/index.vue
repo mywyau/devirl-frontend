@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button/variants";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/old/button/variants";
+import { Card, CardContent } from "@/components/old/card";
+import { Separator } from "@/components/old/separator";
 import {
   ContextMenuContent,
   ContextMenuItem,
@@ -9,6 +9,7 @@ import {
   ContextMenuRoot,
   ContextMenuTrigger,
 } from "reka-ui";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -56,9 +57,12 @@ function goToStatusPage(key: string) {
       <ContextMenuRoot>
         <!-- Entire card is right-clickable and clickable -->
         <ContextMenuTrigger as-child>
+
           <div class="cursor-default">
+
             <Card class="bg-white/5 text-white hover:bg-white/10 transition">
               <CardContent class="p-6 space-y-6">
+                
                 <div class="flex items-center justify-between mb-4">
                   <h1 class="font-heading text-4xl font-extrabold tracking-tight">
                     Quest Dashboard
@@ -67,7 +71,7 @@ function goToStatusPage(key: string) {
 
                 <!--  DESKTOP HINT -->
 
-                <div class="hidden md:block text-base text-white mt-2">
+                <div class="hidden md:block text-base text-green-400 mt-2">
                   Right-click anywhere on the card for more actions
                 </div>
 

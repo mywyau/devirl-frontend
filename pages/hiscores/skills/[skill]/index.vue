@@ -1,58 +1,69 @@
 <script setup lang="ts">
+
+import { loadConfig } from "@/configuration/ConfigLoader";
 import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
 
-import { getHiscoreSkill } from '@/controllers/SkillController';
-import { useAsyncData } from 'nuxt/app';
+import { languageFormatter, languageOptions } from "@/utils/LanguageUtils";
+import { capitalize } from "@/utils/StringUtils";
 import { useRoute } from 'vue-router';
-import { languageFormatter } from "@/utils/LanguageFormatter";
 
+import type { SkillData } from '@/types/schema/SkillDataSchema';
+import { ref, watch } from 'vue';
+
+import TotalLevelPaginationControls from "@/components/ui/hiscores/TotalLevelPaginationControls.vue";
+
+const config = loadConfig();
+const baseUrl = config.devQuestBackend.baseUrl.replace(/\/$/, "");
 
 const route = useRoute()
-const skillId = route.params.skill?.toString() || 'questing'
+const skillId = route.params.skill?.toString() || 'Questing'
 
-// Fetch skill data via useAsyncData (runs on server, then hydrates)
-const {
-    data: skillData,
-    pending,
-    error: fetchError,
-} = await useAsyncData(
-    `hiscore-${skillId}`,
-    () => getHiscoreSkill(skillId),
-    {
-        server: true,
-        default: () => [],
-    }
-);
-
-const titleCase = (str: string) =>
-    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-
+const currentPage = ref(1)
+const itemsPerPage = 2
+const totalItems = ref(1)
+const pagedData = ref<SkillData[]>([])
+const hasLoaded = ref(false)
+const loading = ref(false)
+const error = ref<string | null>(null)
 
 const skillLinks = [
     "questing",
     "estimating",
-    // "testing"
 ]
 
-// languages as strings representing enums must be capital with camelcase to match backend enums
-const languageLinks = [
-  'C',
-  'CPlusPlus',
-  'CSharp',
-  'Go',
-  'Java',
-  'JavaScript',
-  'Kotlin',
-  'PHP',
-  'Python',
-  'Ruby',
-  'Rust',
-  'Scala',
-  'Sql',
-  'Swift',
-  'TypeScript'
-];
+async function fetchTotalCount(skill: string) {
+    try {
+        const res = await $fetch<{ numberOfDevs: number }>(`${baseUrl}/hiscore/skill/count/${skill.toString()}`)
+        console.log("Fetched total count:", res.numberOfDevs);
+        totalItems.value = res.numberOfDevs
+    } catch (err) {
+        error.value = "Failed to fetch total count"
+    }
+}
 
+async function fetchDataForPage(page: number, skill: string) {
+    loading.value = true
+    try {
+        const offset = (page - 1) * itemsPerPage
+        const res = await $fetch<SkillData[]>(`${baseUrl}/hiscore/skill/${skill.toString()}?page=${page}&limit=${itemsPerPage}`)
+        pagedData.value = res
+    } catch (err) {
+        error.value = "Failed to fetch data"
+    } finally {
+        loading.value = false
+    }
+}
+
+watch([currentPage, () => route.params.skill], async ([page, skill]) => {
+    const newSkill = skill?.toString() || '';
+    await fetchTotalCount(newSkill);
+    await fetchDataForPage(page, newSkill);
+    hasLoaded.value = true
+}, { immediate: true });
+
+watch(() => route.params.skill, () => {
+    currentPage.value = 1;
+});
 
 </script>
 
@@ -97,7 +108,7 @@ const languageLinks = [
 
                     <ScrollAreaViewport class="w-full h-full pr-2">
                         <ul class="space-y-2">
-                            <li v-for="lang in languageLinks" :key="lang">
+                            <li v-for="lang in languageOptions" :key="lang">
                                 <NuxtLink :to="`/hiscores/languages/${encodeURIComponent(lang)}`"
                                     class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                                     {{ languageFormatter(lang.charAt(0).toUpperCase() + lang.slice(1)) }}
@@ -118,9 +129,14 @@ const languageLinks = [
             </aside>
 
             <!-- Main Content -->
-            <div class="flex-1">
+            <div class="flex-1 mr-20 ml-20">
 
-                <h1 class="text-3xl text-rose-400 font-bold mb-6 text-center">{{ titleCase(skillId) }}</h1>
+                <h1 class="text-3xl text-rose-400 font-bold mb-6 text-center">{{ capitalize(skillId) }}</h1>
+
+                <p v-if="hasLoaded" class="text-center w-full text-green-400 mb-10">
+                    There {{ totalItems === 1 ? 'is' : 'are' }} {{ totalItems }} developer{{ totalItems === 1 ? '' : 's'}}
+                    for the {{ capitalize(skillId) }} skill
+                </p>
 
                 <div class="w-full overflow-x-auto">
                     <table class="w-full min-w-[500px] table-auto text-left border-collapse mb-10">
@@ -133,15 +149,21 @@ const languageLinks = [
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(dev, i) in skillData" :key="`${dev.devId}-${dev.skill}`"
+                            <tr v-for="(dev, i) in pagedData" :key="`${dev.devId}-${dev.skill}`"
                                 class="border-b border-white/5 text-white">
-                                <td class="py-2">{{ i + 1 }}</td>
+                                <!-- <td class="py-2">{{ i + 1 }}</td> -->
+                                <td class="py-2">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
                                 <td class="py-2 text-indigo-300">{{ dev.username }}</td>
                                 <td class="py-2">{{ dev.level }}</td>
                                 <td class="py-2">{{ dev.xp.toLocaleString() }}</td>
                             </tr>
                         </tbody>
                     </table>
+
+                    <TotalLevelPaginationControls v-if="!loading && pagedData.length > 0 && totalItems > itemsPerPage"
+                        :page="currentPage" :total="totalItems" :items-per-page="itemsPerPage"
+                        @update:page="(newPage) => currentPage = newPage" />
+
                 </div>
             </div>
 

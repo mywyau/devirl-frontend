@@ -73,8 +73,8 @@ onMounted(() => {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-zinc-300">Estimated</h1>
-      <p class="text-lg mb-6 text-zinc-400">
+      <h1 class="text-3xl font-bold mb-4 text-orange-300">Estimated</h1>
+      <p class="text-lg mb-6 text-orange-400">
         Below are all the quests that have been estimated.
       </p>
 

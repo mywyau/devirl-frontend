@@ -1,6 +1,6 @@
 <!-- src/pages/ClientNotStartedQuests.vue -->
 <script setup lang="ts">
-import { Button } from "@/components/ui/button/variants";
+import { Button } from "@/components/old/button/variants";
 import { useAuthUser } from "@/composables/useAuthUser";
 import {
   streamAllQuestsByStatusDev,

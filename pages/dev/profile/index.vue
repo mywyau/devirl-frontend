@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
-import { Button } from "@/components/ui/button/variants";
-import ProfileItem from "@/components/ui/profile/ProfileItem";
+import { Button } from "@/components/old/button/variants";
+import ProfileItem from "@/components/old/profile/ProfileItem";
 import { loadConfig } from '@/configuration/ConfigLoader';
 import { deleteUser, getUser } from "@/controllers/UserDataController";
 import type { AuthUser } from "@/types/AuthUser";
@@ -110,17 +110,17 @@ async function startStripeOnboarding() {
           <div v-else-if="userProfile">
             <div class="space-y-4">
 
-              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white" textColor="text-white" />
-              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-white" />
-              <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white" textColor="text-white" />
-              <ProfileItem label="First Name" labelColor="text-white" textColor="text-white" :value="userProfile.firstName" />
-              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-white" :value="userProfile.lastName" />
+              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white" textColor="text-green-400" />
+              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-red-400" />
+              <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white" textColor="text-cyan-400" />
+              <ProfileItem label="First Name" labelColor="text-white" textColor="text-blue-400" :value="userProfile.firstName" />
+              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-blue-400" :value="userProfile.lastName" />
 
               <ConfirmDialog 
                 actionConfirmId="delete-profile-confirm-button"
                 :data-testid="`delete-user-profile`" 
                 title="Are you sure you want to delete your profile?"
-                description="Are you sure you want to delete your profile? This action cannot be undone and all your data will be removed."
+                description="Please confirm if you wish to delete your profile. This action cannot be undone and all your data will be removed."
                 triggerText="Delete profile"
                 triggerClass="px-4 py-2 bg-red-500 hover:bg-red-400 rounded text-white"
                 actionText="Yes, delete my profile"

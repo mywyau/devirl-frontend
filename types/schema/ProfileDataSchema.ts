@@ -25,4 +25,6 @@ export const ProfileDataSchema = z.object({
   skillData: z.array(ProfileSkillDataSchema),
   languageData: z.array(ProfileLanguageDataSchema),
 });
+
+
 export type ProfileData = z.infer<typeof ProfileDataSchema>;

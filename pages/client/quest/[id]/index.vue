@@ -12,9 +12,17 @@ import {
   ContextMenuTrigger,
 } from "reka-ui";
 
+import {
+  AccordionContent,
+  AccordionHeader,
+  AccordionItem,
+  AccordionRoot,
+  AccordionTrigger,
+} from 'reka-ui';
+
 import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 
-import { getStatusFormatter } from '@/utils/QuestStatusUtils';
+import { statusFormatter } from '@/utils/QuestStatusUtils';
 
 import { deleteQuest, getQuest, updateQuestStatus } from "@/controllers/QuestController";
 import {
@@ -28,6 +36,15 @@ import { getEstimatesRequest } from "@/controllers/EstimateController";
 import type { GetEstimate } from "@/types/schema/EstimateSchema";
 import { useRouter } from "vue-router";
 
+function normalizeTestId(input: string): string {
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-') // replace non-alphanumerics with `-`
+    .replace(/^-+|-+$/g, '');    // trim leading/trailing dashes
+}
+
+const openPanels = ref<string[]>(['description', 'acceptance']) // or [] to have them all closed initially
 
 const showDeleteConfirm = ref(false);
 const showReopenConfirm = ref(false);
@@ -158,9 +175,10 @@ async function loadEstimates() {
 
   <NuxtLayout>
 
-    <div class="p-4 sm:p-6 max-w-4xl mx-auto">
+    <div class="p-6 max-w-4xl mx-auto text-white">
 
-      <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-pink-300">Quest Details</h1>
+      <!-- <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-pink-300">Quest Details</h1> -->
+      <h1 class="text-3xl font-bold mb-6 text-pink-300">Quest Details</h1>
 
       <div v-if="isLoading" class="text-zinc-400">Loading quest…</div>
 
@@ -176,118 +194,160 @@ async function loadEstimates() {
       <ContextMenuRoot>
         <ContextMenuTrigger as-child>
 
-          <div class="mt-6 bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10 shadow cursor-context-menu">
+          <div
+            class="mt-6 bg-zinc-800 backdrop-blur p-6 rounded-xl shadow cursor-context-menu mb-6 hover:bg-white/10 transition"
+            :data-testid="`quest-card-${normalizeTestId(result?.title || '')}`" 
+          >
 
-            <h2 :id="`quest-title`"
-              :class="`text-2xl font-semibold ${getStatusTextColour(result?.status?.toString())} mb-2`">
-              {{ result?.title }}
-            </h2>
+          <h2 :id="`quest-title`" data-testid="quest-title"
+            :class="`text-2xl font-semibold ${getStatusTextColour(result?.status?.toString())} mb-2`">
+            {{ result?.title }}
+          </h2>
 
-            <p class="text-zinc-300 text-sm break-words">{{ result?.description }}</p>
+          <p class="text-zinc-300 text-sm break-words">{{ result?.description }}</p>
 
-            <div>
-              <span class="text-white font-semibold">Status: </span>
+          <div>
+            <span class="text-white font-semibold">Status: </span>
 
-              <span :class="`capitalize ${getStatusTextColour(result?.status?.toString())}`">
-                {{getStatusFormatter(result?.status.toString())}}
-              </span>
-            </div>
-
-            <div class="hidden md:block text-base text-white mt-2">
-              Right-click anywhere on the card for more actions
-            </div>
-
-            <!-- Past Reviews -->
-            <div v-if="errorEstimates" class="text-red-400 pt-4">{{ errorEstimates }}</div>
-
-            <div class="mt-10" v-if="retrievedEstimates && retrievedEstimates.calculatedEstimate.length > 0">
-              <h3 class="text-white text-lg font-semibold mb-4">Recent Estimations</h3>
-              <ul class="space-y-3">
-                <li v-for="(est, i) in retrievedEstimates.calculatedEstimate" :key="i"
-                  class="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
-                  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1">
-                    <span class="text-white font-bold">{{ est.username }}</span>
-                    <span class="text-sm text-white">{{ est.rank }}</span>
-                  </div>
-                  <p class="text-zinc-300 text-sm break-words">{{ est.comment }}</p>
-                </li>
-              </ul>
-            </div>
-
-            <p v-if="deleteSuccess" class="text-green-500 text-sm pt-4">
-              Quest Deleted successfully!
-            </p>
-
-            <p v-if="deleteError" class="text-red-500 text-sm">
-              Delete quest unsuccessful!
-            </p>
+            <span :class="`capitalize ${getStatusTextColour(result?.status?.toString())}`">
+              {{ statusFormatter(result?.status.toString()) }}
+            </span>
           </div>
-        </ContextMenuTrigger>
 
-        <ContextMenuPortal>
-          <ContextMenuContent
-            class="min-w-[220px] z-50 bg-white rounded-lg p-1 shadow-xl border border-teal-200 text-sm text-teal-900">
-            <ContextMenuItem
-              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
-              @click="router.push(`/client/quest/download/${questId}`)">
-              Download File
-            </ContextMenuItem>
+          <div class="hidden md:block text-base text-white mt-2">
+            Right-click anywhere on the card for more actions
+          </div>
 
-            <ContextMenuItem v-if="result?.status.toString() == 'Open' || result?.status.toString() == 'Estimated'"
-              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
-              @click="loadEstimates">
-              Load Estimates
-            </ContextMenuItem>
+          <!-- Past Reviews -->
+          <div v-if="errorEstimates" class="text-red-400 pt-4">{{ errorEstimates }}</div>
 
-            <ContextMenuItem v-if="result?.status.toString() == 'NotEstimated'"
-              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
-              @click="router.push(`/client/quest/edit/${questId}`)">
-              Edit Quest
-            </ContextMenuItem>
+          <div class="mt-10" v-if="retrievedEstimates && retrievedEstimates.calculatedEstimate.length > 0">
+            <h3 class="text-white text-lg font-semibold mb-4">Recent Estimations</h3>
+            <ul class="space-y-3">
+              <li v-for="(est, i) in retrievedEstimates.calculatedEstimate" :key="i"
+                class="bg-zinc-800 p-4 rounded-lg border border-zinc-700">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1">
+                  <span class="text-white font-bold">{{ est.username }}</span>
+                  <span class="text-sm text-white">{{ est.rank }}</span>
+                </div>
+                <p class="text-zinc-300 text-sm break-words">{{ est.comment }}</p>
+              </li>
+            </ul>
+          </div>
 
-            <ContextMenuItem v-if="['Open', 'NotEstimated', 'Estimated'].includes(result?.status.toString())"
-              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
-              @click="router.push(`/client/quest/reward/add/${questId}`)">
-              Add a Reward
-            </ContextMenuItem>
+          <p v-if="deleteSuccess" class="text-green-500 text-sm pt-4">
+            Quest Deleted successfully!
+          </p>
 
-            <ContextMenuItem
-              v-if="['NotEstimated', 'Estimated', 'Open', 'NotStarted', 'Completed'].includes(result?.status.toString())"
-              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
-              @click="showDeleteConfirm = true">
-              Delete Quest
-            </ContextMenuItem>
-            
-            <ContextMenuItem v-if="result?.status.toString() === 'Estimated'" @click="showReopenConfirm = true"
-              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition">
-              Set to Open
-            </ContextMenuItem>
+          <p v-if="deleteError" class="text-red-500 text-sm">
+            Delete quest unsuccessful!
+          </p>
+    </div>
 
-            <ContextMenuItem v-if="['Open', 'NotEstimated'].includes(result?.status.toString())"
-              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
-              @click="router.push(`/payment/${questId}`)">
-              Make Payment
-            </ContextMenuItem>
-          </ContextMenuContent>
-        </ContextMenuPortal>
-      </ContextMenuRoot>
+    <div>
+      <AccordionRoot class="rounded-lg border border-zinc-700 bg-zinc-900 mb-6" :default-value="['description']"
+        v-model="openPanels" type="multiple" :collapsible="true">
+        <AccordionItem
+          class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg border-b border-zinc-700 focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-emerald-500"
+          value="description">
+          <AccordionHeader class="flex">
+            <AccordionTrigger
+              class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-teal-300 bg-zinc-800 hover:bg-zinc-700 transition-colors duration-200 group">
+              <span>Description</span>
+              <Icon icon="radix-icons:chevron-down"
+                class="text-white transition-transform duration-300 group-data-[state=open]:rotate-180"
+                aria-label="Expand/Collapse" />
+            </AccordionTrigger>
+          </AccordionHeader>
+          <AccordionContent
+            class="bg-zinc-800 text-zinc-300 text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+            <div class="px-4 py-3">
+              {{ result?.description || "No description was given" }}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
 
-      <ConfirmDialog v-model:open="showDeleteConfirm"
-        title="Confirm Deletion"
-        description="Are you sure you want to permanently delete this quest? This cannot be undone."
-        triggerText="Delete Quest" 
-        :triggerClass="'hidden'" 
-        @confirm="handleDeleteQuest" 
-      />
+        <AccordionItem
+          class="mt-px overflow-hidden last:rounded-b-lg border-b border-zinc-700 focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-emerald-500"
+          value="acceptance">
+          <AccordionHeader class="flex">
+            <AccordionTrigger
+              class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-teal-300 bg-zinc-800 hover:bg-zinc-700 transition-colors duration-200 group">
+              <span>Acceptance Criteria</span>
+              <Icon icon="radix-icons:chevron-down"
+                class="text-white transition-transform duration-300 group-data-[state=open]:rotate-180"
+                aria-label="Expand/Collapse" />
+            </AccordionTrigger>
+          </AccordionHeader>
+          <AccordionContent
+            class="bg-zinc-800 text-zinc-300 text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+            <div class="px-4 py-3">
+              {{ result?.acceptanceCriteria || "No acceptance criteria were provided" }}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </AccordionRoot>
+    </div>
+    </ContextMenuTrigger>
 
-      <ConfirmDialog v-model:open="showReopenConfirm" 
-        title="Confirm Status Change to Open"
-        description="Are you sure you want to set this quest to Open? This will allow developers to accept this quest as a job. This cannot be undone."
-        triggerText="Set to Open" 
-        :triggerClass="'hidden'" 
-        actionClass="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-sans"
-        @confirm="handleChangeToOpenRequest" 
-      />
+    <ContextMenuPortal>
+      <ContextMenuContent
+        class="min-w-[220px] z-50 bg-white rounded-lg p-1 shadow-xl border border-teal-200 text-sm text-teal-900">
+
+        <ContextMenuItem v-if="['Open', 'NotEstimated', 'Estimated'].includes(result?.status.toString())"
+          class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
+          @click="router.push(`/client/quest/reward/add/${questId}`)">
+          Add a Reward
+        </ContextMenuItem>
+
+        <ContextMenuItem v-if="result?.status.toString() == 'NotEstimated'"
+          class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
+          @click="router.push(`/client/quest/edit/${questId}`)">
+          Edit Quest
+        </ContextMenuItem>
+
+        <ContextMenuItem
+          class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
+          @click="router.push(`/client/quest/download/${questId}`)">
+          Check Downloads
+        </ContextMenuItem>
+
+        <ContextMenuItem v-if="result?.status.toString() == 'Open' || result?.status.toString() == 'Estimated'"
+          class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
+          @click="loadEstimates">
+          Load Estimates
+        </ContextMenuItem>
+
+        <ContextMenuItem v-if="result?.status.toString() === 'Estimated'" @click="showReopenConfirm = true"
+          class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition">
+          Set to Open
+        </ContextMenuItem>
+
+        <ContextMenuItem v-if="['Open', 'NotEstimated'].includes(result?.status.toString())"
+          class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
+          @click="router.push(`/payment/${questId}`)">
+          Make Payment
+        </ContextMenuItem>
+
+        <ContextMenuItem
+          v-if="['NotEstimated', 'Estimated', 'Open', 'NotStarted', 'Completed'].includes(result?.status.toString())"
+          class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
+          @click="showDeleteConfirm = true">
+          Delete Quest
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenuPortal>
+    </ContextMenuRoot>
+
+    <ConfirmDialog v-model:open="showDeleteConfirm" title="Confirm Deletion"
+      description="Are you sure you want to permanently delete this quest? This cannot be undone."
+      triggerText="Delete Quest" :triggerClass="'hidden'" @confirm="handleDeleteQuest" />
+
+    <ConfirmDialog v-model:open="showReopenConfirm" title="Confirm Status Change to Open"
+      description="Are you sure you want to set this quest to Open? This will allow developers to accept this quest as a job. This cannot be undone."
+      triggerText="Set to Open" :triggerClass="'hidden'"
+      actionClass="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-sans"
+      @confirm="handleChangeToOpenRequest" />
 
     </div>
   </NuxtLayout>

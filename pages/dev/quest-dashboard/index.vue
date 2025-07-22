@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button/variants";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/old/button/variants";
+import { Card, CardContent } from "@/components/old/card";
+import { Separator } from "@/components/old/separator";
 import {
   ContextMenuContent,
   ContextMenuItem,
@@ -14,7 +14,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const statuses = [
-  { key: "estimated", label: "Estimated", color: "gray" },
+  // { key: "estimated", label: "Estimated", color: "gray" },
   { key: "not-started", label: "Not Started", color: "gray" },
   { key: "in-progress", label: "In Progress", color: "yellow" },
   { key: "review", label: "Review", color: "blue" },
@@ -56,8 +56,8 @@ function goToStatusPage(key: string) {
                   </h1>
                 </div>
 
-                <div class="hidden md:block text-base text-white">
-                  Right-click anywhere on the card to open the status menu
+                <div class="hidden md:block text-base text-green-400 mt-2">
+                  Right-click anywhere on the card to open the menu
                 </div>
 
                 <div class="mt-10 border-t border-zinc-700 pt-6">
