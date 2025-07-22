@@ -70,7 +70,7 @@ function refreshPage() {
     <div class="p-6 max-w-4xl mx-auto">
 
       <div class="mt-6 flex justify-between items-center">
-        <h1 class="text-3xl font-bold mb-6 text-pink-300">My Quests</h1>
+        <h1 class="text-3xl font-bold mb-6 text-teal-300">My Quests</h1>
         <button @click="refreshPage" class="text-white underline text-sm">
           Refresh
         </button>

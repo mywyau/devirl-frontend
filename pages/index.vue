@@ -56,7 +56,7 @@
             </div>
             <div>
               <h3 class="text-2xl font-semibold mb-2">Review & Reward</h3>
-              <p>Get working code, review submissions. Only pay when it’s right. Simple.</p>
+              <p>Get working code, review submissions. Pay developers for their efforts. Reward those who do solid work.</p>
             </div>
             <div>
               <h3 class="text-2xl font-semibold mb-2">Earn Trust</h3>
@@ -69,7 +69,7 @@
       <!-- Reputation & Community Section -->
       <div class="bg-zinc-800 py-16 px-6">
         <div class="max-w-5xl mx-auto text-center space-y-10">
-          <h2 class="font-heading text-3xl md:text-4xl font-bold text-teal-400">
+          <h2 class="font-heading text-3xl md:text-4xl font-bold text-teal-300">
             Built on Trust and Respect
           </h2>
           <p class="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
@@ -79,11 +79,11 @@
           <div class="grid md:grid-cols-3 gap-8 text-left">
             <div class="bg-zinc-950 p-6 rounded-2xl shadow">
               <h3 class="font-heading text-xl font-semibold mb-2">Reputation Counts</h3>
-              <p>Do good work. be kind, and earn some rep. Let the industry see your skills and talents.</p>
+              <p>Do good work, be kind, and earn some rep. Let the industry see your skills and talents.</p>
             </div>
             <div class="bg-zinc-950 p-6 rounded-2xl shadow">
               <h3 class="font-heading text-xl font-semibold mb-2">No Surprises</h3>
-              <p>Every quest has estimates from randomised and multiple individuals. So you won't be flying blind. Gain insight on your problems from multiple valuble perspectives.</p>
+              <p>Every quest has estimates from multiple individuals and are randomised from the community. So you won't be flying blind. Gain insight on your problems from multiple valuble perspectives.</p>
             </div>
             <div class="bg-zinc-950 p-6 rounded-2xl shadow">
               <h3 class="font-heading text-xl font-semibold mb-2">Good Vibes Only</h3>

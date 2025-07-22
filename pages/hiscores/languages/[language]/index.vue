@@ -137,13 +137,12 @@ const skillLinks = [
       <!-- Main Content -->
       <div class="flex-1 mr-20 ml-20">
 
-        <h1 class="font-heading text-3xl text-blue-400 font-bold mb-6 text-center">
+        <h1 class="font-heading text-3xl text-teal-300 font-bold mb-6 text-center">
           {{ capitalize(languageFormatter(languageId)) }}
         </h1>
 
-        <p v-if="hasLoaded" class="text-center w-full text-green-400 mb-10">
-          There {{ totalItems === 1 ? 'is' : 'are' }} {{ totalItems }} developer{{ totalItems === 1 ? '' : 's' }}
-          for {{ capitalize(languageFormatter(languageId)) }}
+        <p v-if="hasLoaded" class="text-center w-full text-white mb-10">
+          There {{ totalItems === 1 ? 'is' : 'are' }} <span class="text-teal-300 font-bold">{{ totalItems }}</span> developer{{ totalItems === 1 ? '' : 's' }}
         </p>          
 
         <div class="w-full overflow-x-auto">

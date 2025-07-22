@@ -116,7 +116,7 @@ const reportError = ref(false);
 
     <div class="p-6 max-w-4xl mx-auto text-white">
 
-      <h1 class="text-3xl font-bold mb-6 text-pink-300">Quest Details</h1>
+      <h1 class="text-3xl font-bold mb-6 text-teal-300">Quest Details</h1>
 
       <div v-if="isLoading" class="text-zinc-400">Loading quest...</div>
       <div v-else-if="error" class="text-red-500">{{ error }}</div>

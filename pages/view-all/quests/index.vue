@@ -4,11 +4,11 @@ import { useAuthUser } from "@/composables/useAuthUser";
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { streamAllQuestsReward } from "@/controllers/QuestController";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
-import { statusFormatter, getStatusTextColour } from "@/utils/QuestStatusUtils";
-import { useCookie } from "nuxt/app";
-import { computed, ref, watch } from "vue"; 
 import { languageFormatter } from "@/utils/LanguageUtils";
 import { rankClass } from "@/utils/QuestRankUtil";
+import { getStatusTextColour, statusFormatter } from "@/utils/QuestStatusUtils";
+import { useCookie } from "nuxt/app";
+import { computed, ref, watch } from "vue";
 
 import { Icon } from '@iconify/vue';
 import {
@@ -39,6 +39,7 @@ async function fetchTotalQuestCount() {
 }
 
 const loading = ref(false);
+const hasLoaded = ref(false);
 const error = ref<string | null>(null);
 
 
@@ -47,34 +48,39 @@ const { data: user, pending: authPending } = useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
 
 const currentPage = ref(1);
-const itemsPerPage = 5;
-
+const itemsPerPage = 20;
 
 async function fetchQuestsForPage(page: number) {
   if (!safeUserId.value) return;
 
   loading.value = true;
   error.value = null;
-  questsWithReward.value = [];
-  showFeedback.value = false;
+  showFeedback.value = false;      // hide any previous loading/message
+  const newList: QuestWithReward[] = [];
 
-  // Delay feedback appearance (300–500ms is ideal)
+  // Delay feedback appearance
   const feedbackTimer = setTimeout(() => {
     showFeedback.value = true;
   }, 400);
 
   try {
+    // stream into a local array, not directly into questsWithReward
     for await (const quest of streamAllQuestsReward(safeUserId.value, page, itemsPerPage)) {
-      questsWithReward.value.push(quest);
+      newList.push(quest);
     }
+    // once everything is here, swap
+    questsWithReward.value = newList;
+    hasLoaded.value = true
   } catch (err) {
     console.error(err);
     error.value = "Failed to fetch quests.";
   } finally {
+    clearTimeout(feedbackTimer);
     loading.value = false;
-    showFeedback.value = true; // ensure it eventually becomes true
+    showFeedback.value = true;
   }
 }
+
 
 watch([currentPage, safeUserId], async ([page, uid]) => {
   if (uid) {
@@ -90,7 +96,7 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
 
     <div class="p-6 max-w-4xl mx-auto">
 
-      <h1 class="text-3xl font-bold mb-6 text-pink-300">
+      <h1 class="text-3xl font-bold mb-6 text-teal-300">
         All Available Quests
       </h1>
 
@@ -107,41 +113,43 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
       <div v-if="error" class="text-red-500">{{ error }}</div>
 
       <!-- Pagination Controls -->
-      <template v-if="!loading && questsWithReward.length > 0 && totalQuests > itemsPerPage">
-        <PaginationRoot v-model:page="currentPage" :total="totalQuests" :items-per-page="itemsPerPage"
-          :sibling-count="1" show-edges class="mt-8 flex justify-center">
+      <div class="sticky top-6 z-20 bg-zinc-900/80 backdrop-blur-md py-4">
+        <template v-if="hasLoaded && questsWithReward.length > 0 && totalQuests > itemsPerPage">
+          <PaginationRoot v-model:page="currentPage" :total="totalQuests" :items-per-page="itemsPerPage"
+            :sibling-count="1" show-edges class="mt-8 flex justify-center">
 
-          <PaginationList v-slot="{ items }" class="flex items-center gap-1 text-stone-700 dark:text-white">
-            <PaginationFirst
-              class="w-9 h-9 flex items-center justify-center hover:bg-white dark:hover:bg-stone-700/70 rounded-lg">
-              <Icon icon="radix-icons:double-arrow-left" />
-            </PaginationFirst>
-            <PaginationPrev
-              class="w-9 h-9 flex items-center justify-center hover:bg-white dark:hover:bg-stone-700/70 rounded-lg mr-4">
-              <Icon icon="radix-icons:chevron-left" />
-            </PaginationPrev>
+            <PaginationList v-slot="{ items }" class="flex items-center gap-1 text-stone-700 dark:text-white">
+              <PaginationFirst
+                class="w-9 h-9 flex items-center justify-center hover:bg-white dark:hover:bg-stone-700/70 rounded-lg">
+                <Icon icon="radix-icons:double-arrow-left" />
+              </PaginationFirst>
+              <PaginationPrev
+                class="w-9 h-9 flex items-center justify-center hover:bg-white dark:hover:bg-stone-700/70 rounded-lg mr-4">
+                <Icon icon="radix-icons:chevron-left" />
+              </PaginationPrev>
 
-            <template v-for="(page, index) in items" :key="index">
-              <PaginationListItem v-if="page.type === 'page'" :value="page.value"
-                class="w-9 h-9  rounded-lg data-[selected]:!bg-white data-[selected]:shadow-sm data-[selected]:text-black hover:bg-white dark:hover:bg-stone-500/70 transition">
-                {{ page.value }}
-              </PaginationListItem>
-              <PaginationEllipsis v-else :index="index" class="w-9 h-9 flex items-center justify-center">
-                &hellip;
-              </PaginationEllipsis>
-            </template>
+              <template v-for="(page, index) in items" :key="index">
+                <PaginationListItem v-if="page.type === 'page'" :value="page.value"
+                  class="w-9 h-9  rounded-lg data-[selected]:!bg-white data-[selected]:shadow-sm data-[selected]:text-black hover:bg-white dark:hover:bg-stone-500/70 transition">
+                  {{ page.value }}
+                </PaginationListItem>
+                <PaginationEllipsis v-else :index="index" class="w-9 h-9 flex items-center justify-center">
+                  &hellip;
+                </PaginationEllipsis>
+              </template>
 
-            <PaginationNext
-              class="w-9 h-9 flex items-center justify-center hover:bg-white dark:hover:bg-stone-700/70 rounded-lg ml-4">
-              <Icon icon="radix-icons:chevron-right" />
-            </PaginationNext>
-            <PaginationLast
-              class="w-9 h-9 flex items-center justify-center hover:bg-white dark:hover:bg-stone-700/70 rounded-lg">
-              <Icon icon="radix-icons:double-arrow-right" />
-            </PaginationLast>
-          </PaginationList>
-        </PaginationRoot>
-      </template>
+              <PaginationNext
+                class="w-9 h-9 flex items-center justify-center hover:bg-white dark:hover:bg-stone-700/70 rounded-lg ml-4">
+                <Icon icon="radix-icons:chevron-right" />
+              </PaginationNext>
+              <PaginationLast
+                class="w-9 h-9 flex items-center justify-center hover:bg-white dark:hover:bg-stone-700/70 rounded-lg">
+                <Icon icon="radix-icons:double-arrow-right" />
+              </PaginationLast>
+            </PaginationList>
+          </PaginationRoot>
+        </template>
+      </div>
 
       <div class="grid gap-6 mt-6" v-if="questsWithReward.length > 0">
         <div v-for="(quest, index) in questsWithReward" :key="quest.quest.questId"
@@ -205,14 +213,9 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
       </div>
 
       <!-- Pagination Controls -->
-      <template v-if="!loading && questsWithReward.length > 0 && totalQuests > itemsPerPage">
-        <PaginationRoot 
-          v-model:page="currentPage"
-          :total="totalQuests"
-          :items-per-page="itemsPerPage"
-          :sibling-count="1" 
-          show-edges class="mt-8 flex justify-center"
-        >
+      <template v-if="hasLoaded && questsWithReward.length > 0 && totalQuests > itemsPerPage">
+        <PaginationRoot v-model:page="currentPage" :total="totalQuests" :items-per-page="itemsPerPage"
+          :sibling-count="1" show-edges class="mt-8 flex justify-center">
 
           <PaginationList v-slot="{ items }" class="flex items-center gap-1 text-stone-700 dark:text-white">
             <PaginationFirst

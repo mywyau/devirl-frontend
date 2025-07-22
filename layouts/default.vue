@@ -90,7 +90,6 @@ if (error.value) {
       <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <h2 id="footer-dev-irl" class="text-white font-semibold text-base mb-1">Dev IRL</h2>
-          <p class="text-zinc-400 text-sm">Start your journey</p>
         </div>
 
         <div>

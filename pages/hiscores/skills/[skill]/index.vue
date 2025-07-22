@@ -131,11 +131,10 @@ watch(() => route.params.skill, () => {
             <!-- Main Content -->
             <div class="flex-1 mr-20 ml-20">
 
-                <h1 class="text-3xl text-rose-400 font-bold mb-6 text-center">{{ capitalize(skillId) }}</h1>
+                <h1 class="text-3xl text-teal-300 font-bold mb-6 text-center">{{ capitalize(skillId) }}</h1>
 
-                <p v-if="hasLoaded" class="text-center w-full text-green-400 mb-10">
-                    There {{ totalItems === 1 ? 'is' : 'are' }} {{ totalItems }} developer{{ totalItems === 1 ? '' : 's'}}
-                    for the {{ capitalize(skillId) }} skill
+                <p v-if="hasLoaded" class="text-center w-full text-white mb-10">
+                    There {{ totalItems === 1 ? 'is' : 'are' }} <span class="text-teal-300 font-bold">{{ totalItems }}</span> developer{{ totalItems === 1 ? '' : 's'}}
                 </p>
 
                 <div class="w-full overflow-x-auto">
