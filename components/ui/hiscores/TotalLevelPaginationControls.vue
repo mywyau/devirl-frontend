@@ -20,6 +20,7 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'update:page', value: number): void
 }>()
+
 </script>
 
 <template>

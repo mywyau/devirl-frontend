@@ -3,7 +3,7 @@
 import { useAuthUser } from "@/composables/useAuthUser";
 import { createQuest } from "@/controllers/QuestController";
 import { CreateQuestSchema } from "@/types/schema/QuestStatusSchema";
-import { languageFormatter, languageOptions } from "@/utils/LanguageUtils";
+import { languageFormatter, languageOptions } from "@/utils/HiscoresUtils";
 import { rankOptions } from "@/utils/QuestRankUtil";
 import { computed, ref, watch } from "vue";
 
