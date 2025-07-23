@@ -4,7 +4,7 @@ import { useAuthUser } from "@/composables/useAuthUser";
 import { loadConfig } from "@/configuration/ConfigLoader";
 import { streamAllQuestsReward } from "@/controllers/QuestController";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
-import { languageFormatter } from "@/utils/LanguageUtils";
+import { languageFormatter } from "@/utils/HiscoresUtils";
 import { rankClass } from "@/utils/QuestRankUtil";
 import { getStatusTextColour, statusFormatter } from "@/utils/QuestStatusUtils";
 import { useCookie } from "nuxt/app";
@@ -30,8 +30,7 @@ const userType = useCookie("user_type"); // reads cookie on client and SSR
 
 const showFeedback = ref(false);
 const questsWithReward = ref<QuestWithReward[]>([]);
-const totalQuests = ref(0); // or call /quest/count/:userId later
-// const totalQuests = ref(0);
+const totalQuests = ref(0); 
 
 async function fetchTotalQuestCount() {
   const { numberOfQuests } = await $fetch<{ numberOfQuests: number }>(`${baseUrl}/quest/count/not-estimated/and/open`);
@@ -80,7 +79,6 @@ async function fetchQuestsForPage(page: number) {
     showFeedback.value = true;
   }
 }
-
 
 watch([currentPage, safeUserId], async ([page, uid]) => {
   if (uid) {

@@ -7,7 +7,7 @@ import { useAuthUser } from "@/composables/useAuthUser";
 import { streamAllQuestsForUser } from "@/controllers/QuestController";
 import type { QuestWithReward } from "@/types/schema/QuestStatusSchema";
 import { getStatusTextColour, statusFormatter } from "@/utils/QuestStatusUtils";
-import { languageFormatter } from "@/utils/LanguageUtils";
+import { languageFormatter } from "@/utils/HiscoresUtils";
 import { rankClass } from "@/utils/QuestRankUtil";
 
 

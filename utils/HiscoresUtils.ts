@@ -26,3 +26,8 @@ export const languageOptions = [
   'Swift',
   'TypeScript'
 ];
+
+export const skillOptions = [
+  'questing',
+  'estimating',
+];

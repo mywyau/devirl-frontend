@@ -5,7 +5,7 @@ import { getQuest, updateQuest } from "@/controllers/QuestController";
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
-import { languageFormatter, languageOptions } from "@/utils/LanguageUtils";
+import { languageFormatter, languageOptions } from "@/utils/HiscoresUtils";
 import { rankOptions } from "@/utils/QuestRankUtil";
 
 import { Icon } from '@iconify/vue';

@@ -1,37 +1,29 @@
 <script setup lang="ts">
 
-import { loadConfig } from "@/configuration/ConfigLoader";
-import { languageFormatter, languageOptions } from "@/utils/LanguageUtils";
+import { ref, watch } from 'vue';
+
 import {
   ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport
 } from 'reka-ui';
-import { ref, watch } from 'vue';
 
+import { loadConfig } from "@/configuration/ConfigLoader";
+import { languageFormatter, languageOptions, skillOptions } from "@/utils/HiscoresUtils";
+
+import HiscoreMobileSelect from '@/components/ui/hiscores/HiscoreMobileSelect.vue';
+import TotalDevCountMessage from "@/components/ui/hiscores/TotalDevCountMessage.vue";
 import TotalLevelPaginationControls from "@/components/ui/hiscores/TotalLevelPaginationControls.vue";
+import TotalLevelTable from "@/components/ui/hiscores/totalLevel/TotalLevelTable.vue";
+import type { TotalLevel } from '@/types/schema/TotalLevelSchema';
 
 const config = loadConfig();
-
 const baseUrl = config.devQuestBackend.baseUrl.replace(/\/$/, "");
-
-type TotalLevel = {
-  devId: string
-  username: string
-  totalLevel: number
-  totalXP: number
-}
 
 const currentPage = ref(1)
 const itemsPerPage = 2
 const totalItems = ref(1)
-const pagedData = ref<TotalLevel[]>([])
+const pagedTotalLevelData = ref<TotalLevel[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
-
-
-const skillLinks = [
-  'questing',
-  'estimating',
-]
 
 const loadError = ref(false);
 const hasLoaded = ref(false)
@@ -51,13 +43,15 @@ async function fetchDataForPage(page: number) {
   try {
     const offset = (page - 1) * itemsPerPage
     const res = await $fetch<TotalLevel[]>(`${baseUrl}/hiscore/total-level?page=${page}&limit=${itemsPerPage}`)
-    pagedData.value = res
+    pagedTotalLevelData.value = res
   } catch (err) {
     error.value = "Failed to fetch data"
   } finally {
     loading.value = false
   }
 }
+
+const mobileView = ref("");
 
 watch(currentPage, async (page) => {
   await fetchTotalCount()
@@ -73,12 +67,12 @@ watch(currentPage, async (page) => {
 
     <div class="w-full max-w-screen-2xl mx-auto px-4 pt-10 flex flex-col md:flex-row gap-6 text-white min-h-screen">
 
-      <aside class="w-full md:w-64 shrink-0 mb-8 md:mb-0">
+      <aside class="hidden lg:block w-full md:w-64 shrink-0 mb-6 md:mb-0">
         <div class="mb-8">
           <h2 class="font-heading text-lg font-semibold mb-2">Hiscores</h2>
           <ul class="space-y-2">
             <li>
-              <NuxtLink :to="`/hiscores`"
+              <NuxtLink :to="`/hiscores/total-level`"
                 class="font-sans block px-3 py-2 rounded text-sm text-white/90 hover:text-white bg-indigo-500/70 font-semibold">
                 Total Level
               </NuxtLink>
@@ -89,7 +83,7 @@ watch(currentPage, async (page) => {
         <div class="mb-8">
           <h2 class="font-heading text-lg font-semibold mb-2">Skill Hiscores</h2>
           <ul class="space-y-2">
-            <li v-for="skill in skillLinks" :key="skill">
+            <li v-for="skill in skillOptions" :key="skill">
               <NuxtLink :to="`/hiscores/skills/${skill}`"
                 class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                 {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
@@ -124,52 +118,24 @@ watch(currentPage, async (page) => {
       </aside>
 
       <!-- Main Content -->
-      <div class="flex-1 mr-20 ml-20">
+      <div v-if="hasLoaded" class="flex-1 mx-4 md:mx-20">
+
+        <HiscoreMobileSelect v-model="mobileView" />
 
         <h1 class="font-heading text-3xl font-semibold mb-6 text-center text-teal-300">Total Level</h1>
 
-        <p v-if="loadError" class="text-red-400 mt-4">
-          Could not load leaderboard. Please try again later.
-        </p>
+        <TotalDevCountMessage :total-items="totalItems" :has-loaded="hasLoaded" />
 
-        <div v-else-if="!loadError" class="w-full overflow-x-auto">
+        <TotalLevelTable :paged-total-level-data="pagedTotalLevelData" :items-per-page="itemsPerPage"
+          :current-page="currentPage" />
 
-          <p v-if="hasLoaded" class="text-center w-full text-white mb-10">
-            There {{ totalItems === 1 ? 'is' : 'are' }} <span class="text-teal-300 font-bold">{{ totalItems }}</span> developer{{ totalItems === 1 ? '' : 's' }}
-          </p>
-
-          <table class="w-full min-w-[500px] table-auto text-left border-collapse mb-10">
-            <thead class="border-b border-white/10 text-white">
-              <tr>
-                <th class="font-heading py-2">Rank</th>
-                <th class="font-heading py-2">Username</th>
-                <th class="font-heading py-2">Total Level</th>
-                <th class="font-heading py-2">Total XP</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(dev, i) in pagedData" :key="dev.username" class="border-b border-white/5">
-                <!-- <td class="font-sans py-2">{{ i + 1 }}</td> -->
-                <td class="font-sans py-2">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
-                <td class="font-sans py-2">
-                  <NuxtLink :to="`/profile/dev/${dev.username}`"
-                    class="text-indigo-300 hover:underline hover:text-indigo-400">
-                    {{ dev.username }}
-                  </NuxtLink>
-                </td>
-                <td class="font-sans py-2">{{ dev.totalLevel }}</td>
-                <td class="font-sans py-2">{{ dev.totalXP.toLocaleString() }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <TotalLevelPaginationControls v-if="!loading && pagedData.length > 0 && totalItems > itemsPerPage"
-            :page="currentPage" :total="totalItems" :items-per-page="itemsPerPage"
-            @update:page="(newPage) => currentPage = newPage" />
-
-        </div>
+        <TotalLevelPaginationControls v-if="!loading && pagedTotalLevelData.length > 0 && totalItems > itemsPerPage"
+          :page="currentPage" :total="totalItems" :items-per-page="itemsPerPage"
+          @update:page="(newPage) => currentPage = newPage" />
 
       </div>
+
+
     </div>
   </NuxtLayout>
 </template>

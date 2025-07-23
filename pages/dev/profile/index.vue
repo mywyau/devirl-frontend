@@ -110,11 +110,11 @@ async function startStripeOnboarding() {
           <div v-else-if="userProfile">
             <div class="space-y-4">
 
-              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white" textColor="text-green-400" />
-              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-red-400" />
-              <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white" textColor="text-cyan-400" />
-              <ProfileItem label="First Name" labelColor="text-white" textColor="text-blue-400" :value="userProfile.firstName" />
-              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-blue-400" :value="userProfile.lastName" />
+              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white" textColor="text-teal-300" />
+              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-teal-300" />
+              <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white" textColor="text-teal-300" />
+              <ProfileItem label="First Name" labelColor="text-white" textColor="text-teal-300" :value="userProfile.firstName" />
+              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-teal-300" :value="userProfile.lastName" />
 
               <ConfirmDialog 
                 actionConfirmId="delete-profile-confirm-button"
