@@ -23,7 +23,7 @@ const skillId = route.params.skill?.toString() || 'Questing'
 
 const currentPage = ref(1)
 const itemsPerPage = 2
-const totalItems = ref(1)
+const totalItems = ref(0)
 const pagedSkillData = ref<SkillData[]>([])
 const hasLoaded = ref(false)
 const loading = ref(false)

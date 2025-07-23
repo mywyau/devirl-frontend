@@ -20,7 +20,7 @@ const baseUrl = config.devQuestBackend.baseUrl.replace(/\/$/, "");
 
 const currentPage = ref(1)
 const itemsPerPage = 2
-const totalItems = ref(1)
+const totalItems = ref(0)
 const pagedTotalLevelData = ref<TotalLevel[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
