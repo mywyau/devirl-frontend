@@ -21,5 +21,5 @@ defineEmits<{
         : ($event.target as HTMLInputElement).value
     )
     " v-bind="$attrs"
-    class="text-sm px-4 py-2 bg-white text-black border border-zinc-700 rounded focus:outline-none focus:ring-2 focus:ring-teal-400" />
+    class="text-sm px-4 py-2 bg-white text-black placeholder-zinc-500 border border-zinc-700 rounded  focus:outline-none focus:ring-2 focus:ring-teal-400" />
 </template>

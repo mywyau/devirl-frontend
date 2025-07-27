@@ -7,17 +7,28 @@ import { Icon } from '@iconify/vue';
 import { useCookie } from "nuxt/app";
 import { computed, ref } from "vue";
 
-
 const mobileOpen = ref(false);
 
 const { data: user, pending: authPending, error } = useAuthUser();
+
+const authResolved = computed(() => !authPending.value);
 
 const userType = useCookie("user_type"); // reads cookie on client and SSR
 
 const isLoggedIn = computed(() => !!user.value);
 const isLoggingIn = computed(() => authPending.value && !user.value);
+
+const isRegistered = computed(() =>
+  authResolved.value &&
+  isLoggedIn.value &&
+  (userType.value === "Dev" || userType.value === "Client")
+);
+
 const shouldShowLogin = computed(() => !isLoggedIn.value || isLoggingIn.value);
 const shouldShowLogout = computed(() => isLoggedIn.value);
+
+const readyToRender = computed(() => process.client && authResolved.value);
+
 
 if (error.value) {
   console.error("Failed to load auth session:", error.value);
@@ -27,7 +38,7 @@ if (error.value) {
 <template>
 
   <div class="flex flex-col overflow-x-hidden bg-zinc-900 min-h-screen font-sans">
-    
+
     <header class="px-6 py-4 flex justify-between items-center relative">
 
       <NuxtLink to="/" class="font-heading text-2xl font-bold text-white hover:text-teal-400">
@@ -40,19 +51,20 @@ if (error.value) {
       </button>
 
       <!-- Desktop nav -->
-      <nav class="space-x-6 hidden md:flex items-center">
+      <nav v-if="readyToRender"  class="space-x-6 hidden md:flex items-center">
         <!-- <template v-if="user"> -->
 
         <NuxtLink to="/hiscores/total-level" class="font-heading text-white hover:text-indigo-400">
           Hiscores
         </NuxtLink>
 
-        <template v-if="isLoggedIn">
+        <template v-if="authResolved && isLoggedIn">
 
-          <NuxtLink to="/view-all/quests" class="font-heading text-white hover:text-green-400">View all quests</NuxtLink>
+          <NuxtLink v-if="isRegistered" to="/view-all/quests" class="font-heading text-white hover:text-green-400">View all quests</NuxtLink>
 
-          <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="font-heading text-white hover:text-indigo-400">
-            Skills</NuxtLink>
+          <NuxtLink v-else to="/registration" class="font-heading text-white hover:text-green-400">Registration</NuxtLink>
+
+          <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="font-heading text-white hover:text-indigo-400">Skills</NuxtLink>
 
           <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard"
             class="font-heading text-white hover:text-blue-400">Dashboard</NuxtLink>

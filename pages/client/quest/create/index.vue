@@ -263,8 +263,12 @@ async function handleSubmit() {
             Quest Title
           </label>
 
-          <Input id="quest-title" v-model="questCreatePayload.title" placeholder="Add a title to your quest post"
-            class="w-full" />
+          <Input 
+            id="quest-title"
+            v-model="questCreatePayload.title" 
+            placeholder="Add a title to your quest post"
+            class="w-full" 
+          />
 
           <p class="mt-1 text-sm text-zinc-400">Max 100 characters</p>
         </div>
@@ -274,8 +278,11 @@ async function handleSubmit() {
             Description (optional)
           </label>
 
-          <TextArea id="quest-description" v-model="questCreatePayload.description"
-            placeholder="What needs to be done? Be as clear and helpful as possible." />
+          <TextArea 
+            id="quest-description" 
+            v-model="questCreatePayload.description"
+            placeholder="What needs to be done? Be as clear and helpful as possible."
+          />
         </div>
 
         <div class="mb-6">
