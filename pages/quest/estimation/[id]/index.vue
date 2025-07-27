@@ -8,7 +8,7 @@ import { CreateEstimateSchema, type CalculatedEstimate } from "@/types/schema/Es
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { useRoute } from "nuxt/app";
 import { Label } from 'reka-ui';
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 
@@ -154,6 +154,12 @@ onMounted(async () => {
     try {
         retrievedQuestData.value = await getQuest(safeUserId.value || "userId not found", questIdFromRoute);
         console.debug(`[Estimation Page][getQuest]${retrievedQuestData.value}`);
+
+        if (retrievedQuestData.value?.estimationCloseAt) {
+            updateCountdown();
+            countdownInterval.value = window.setInterval(updateCountdown, 1000);
+        }
+
     } catch (e) {
         console.error(e);
         error.value = "[Estimation Page] Failed to load quest.";
@@ -185,8 +191,43 @@ onMounted(async () => {
     } finally {
         isLoadingEstimates.value = false;
     }
-
 });
+
+
+const countdown = ref<string | null>(null);
+const countdownInterval = ref<number | null>(null);
+const estimationCloseAt = computed(() => retrievedQuestData.value?.estimationCloseAt || null);
+
+function updateCountdown() {
+    if (!estimationCloseAt.value) return;
+
+    const targetTime = new Date(estimationCloseAt.value).getTime();
+    console.log(targetTime)
+    const now = Date.now();
+    const diff = targetTime - now;
+
+    if (diff <= 0) {
+        countdown.value = "Estimation period has ended.";
+        if (countdownInterval.value !== null) {
+            clearInterval(countdownInterval.value);
+        }
+        return;
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    countdown.value = `${hours}h ${minutes}m ${seconds}s`;
+}
+
+onUnmounted(() => {
+    if (countdownInterval.value !== null) {
+        clearInterval(countdownInterval.value);
+    }
+});
+
+
 
 </script>
 
@@ -197,6 +238,10 @@ onMounted(async () => {
 
             <div class="">
                 <h1 class="text-3xl font-bold mb-4">Estimate Difficulty</h1>
+            </div>
+
+            <div v-if="estimationCloseAt" class="text-white font-sans text-lg mb-4">
+                Time remaining to estimate: <span class="text-red-300 font-sans text-lg">{{ countdown }} </span> 
             </div>
 
             <div v-if="!isLoadingEstimates">
@@ -258,8 +303,7 @@ onMounted(async () => {
                             triggerText="Submit Estimate" actionText="Yes, submit" :disabled="isSubmitting"
                             @confirm="submitEstimation"
                             triggerClass="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white"
-                            actionClass="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-medium"
-                        />
+                            actionClass="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-medium" />
 
                     </div>
                 </div>

@@ -49,8 +49,7 @@ if (error.value) {
 
         <template v-if="isLoggedIn">
 
-          <NuxtLink to="/view-all/quests" class="font-heading text-white hover:text-green-400">View all quests
-          </NuxtLink>
+          <NuxtLink to="/view-all/quests" class="font-heading text-white hover:text-green-400">View all quests</NuxtLink>
 
           <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="font-heading text-white hover:text-indigo-400">
             Skills</NuxtLink>

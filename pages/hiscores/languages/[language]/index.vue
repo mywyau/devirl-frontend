@@ -64,6 +64,7 @@ watch(currentPage, async (page) => {
 
 
 const mobileView = ref("");           // initially goes to Total
+
 watch(route, () => {
   // keep select in sync if the URL changes
   mobileView.value = route.params.skill
