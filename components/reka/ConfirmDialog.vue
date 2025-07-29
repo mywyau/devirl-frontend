@@ -52,17 +52,17 @@ const emit = defineEmits<{
         </AlertDialogDescription>
 
         <div class="flex justify-end gap-4 mt-6">
+          <AlertDialogCancel 
+            id="cancel-button"
+            class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
+            Cancel
+          </AlertDialogCancel>
           <AlertDialogAction 
             :id="actionConfirmId || 'confirm-button'"
             :class="actionClass || 'bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded text-sm font-medium'"
             @click="emit('confirm')">
             {{ actionText || 'Confirm' }}
           </AlertDialogAction>
-          <AlertDialogCancel 
-            id="cancel-button"
-            class="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm font-medium">
-            Cancel
-          </AlertDialogCancel>
         </div>
       </AlertDialogContent>
     </AlertDialogPortal>

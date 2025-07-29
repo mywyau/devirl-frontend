@@ -16,6 +16,7 @@ import {
 
 import Input from '@/components/reka/Input.vue';
 import { submitRegisterUser } from "@/controllers/RegistrationController";
+import { useRouter } from "nuxt/app";
 
 const userTypeForm = ref<UserRegistrationForm>({
   username: "",
@@ -24,6 +25,7 @@ const userTypeForm = ref<UserRegistrationForm>({
   userType: "" as any,
 });
 
+const router = useRouter()
 const registrationSuccess = ref(false);
 const registrationError = ref("");
 const validationErrors = ref<Partial<Record<keyof UserRegistrationForm, string>>>({});
@@ -50,6 +52,7 @@ const registerUser = async () => {
 
   if (result.success) {
     registrationSuccess.value = true;
+    await router.push('/')
   } else {
     registrationError.value = result.error || "Error when submitting registration details";
   }

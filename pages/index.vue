@@ -83,7 +83,7 @@
             </div>
             <div class="bg-zinc-950 p-6 rounded-2xl shadow">
               <h3 class="font-heading text-xl font-semibold mb-2">No Surprises</h3>
-              <p>Every quest has estimates from multiple individuals and are randomised from the community. So you won't be flying blind. Gain insight on your problems from multiple valuble perspectives.</p>
+              <p>Every quest has estimates from multiple individuals and are randomised from the community. So you won't be flying blind. Gain insight on your problems from multiple perspectives.</p>
             </div>
             <div class="bg-zinc-950 p-6 rounded-2xl shadow">
               <h3 class="font-heading text-xl font-semibold mb-2">Good Vibes Only</h3>

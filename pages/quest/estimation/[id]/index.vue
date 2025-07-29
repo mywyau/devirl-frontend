@@ -1,19 +1,28 @@
 <script setup lang="ts">
 import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
+import Input from '@/components/reka/Input.vue';
 import TextArea from '@/components/reka/TextArea.vue';
 import { useAuthUser } from "@/composables/useAuthUser";
 import { createEstimate, getEstimatesRequest } from "@/controllers/EstimateController"; // <- updated import
 import { getQuest } from "@/controllers/QuestController";
 import { CreateEstimateSchema, type CalculatedEstimate } from "@/types/schema/EstimateSchema";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
+import { formatCountdown } from "@/utils/EstimateUtils";
+import { rankClass } from "@/utils/QuestRankUtil";
 import { useRoute } from "nuxt/app";
 import { Label } from 'reka-ui';
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import { useRouter } from "vue-router";
 
+import {
+    AccordionContent,
+    AccordionHeader,
+    AccordionItem,
+    AccordionRoot,
+    AccordionTrigger,
+} from 'reka-ui';
 
+import { Icon } from '@iconify/vue';
 
-const router = useRouter();
 
 // 1) Grab the route param
 const route = useRoute();
@@ -23,16 +32,11 @@ const questIdFromRoute = route.params.id as string;
 const { data: user, error: userError } = await useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
 
-function refreshPage() {
-    router.go(0);
-}
+const openPanels = ref<string[]>(['description', 'acceptance']) // or [] to have them all closed initially
 
-// const rank = ref<string | null>(null);
 const score = ref(0);
 const days = ref(0);
 const comment = ref("");
-
-import Input from '@/components/reka/Input.vue';
 
 const isSubmitting = ref(false);
 const submissionSuccess = ref(false);
@@ -41,6 +45,20 @@ const submissionError = ref<string | null>(null);
 const scoreError = ref<string | null>(null);
 const daysError = ref<string | null>(null);
 const commentError = ref<string | null>(null);
+
+const formattedEstimationCloseAt = computed(() => {
+    if (!estimationCloseAt.value) return null;
+    const date = new Date(estimationCloseAt.value);
+    return date.toLocaleString(undefined, {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short',
+    });
+});
 
 async function submitEstimation() {
 
@@ -201,24 +219,11 @@ const estimationCloseAt = computed(() => retrievedQuestData.value?.estimationClo
 function updateCountdown() {
     if (!estimationCloseAt.value) return;
 
-    const targetTime = new Date(estimationCloseAt.value).getTime();
-    console.log(targetTime)
-    const now = Date.now();
-    const diff = targetTime - now;
+    countdown.value = formatCountdown(Date.now(), estimationCloseAt.value);
 
-    if (diff <= 0) {
-        countdown.value = "Estimation period has ended.";
-        if (countdownInterval.value !== null) {
-            clearInterval(countdownInterval.value);
-        }
-        return;
+    if (countdown.value === "Estimation period has ended." && countdownInterval.value !== null) {
+        clearInterval(countdownInterval.value);
     }
-
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    countdown.value = `${hours}h ${minutes}m ${seconds}s`;
 }
 
 onUnmounted(() => {
@@ -226,8 +231,6 @@ onUnmounted(() => {
         clearInterval(countdownInterval.value);
     }
 });
-
-
 
 </script>
 
@@ -240,11 +243,14 @@ onUnmounted(() => {
                 <h1 class="text-3xl font-bold mb-4">Estimate Difficulty</h1>
             </div>
 
-            <div v-if="estimationCloseAt" class="text-white font-sans text-lg mb-4">
-                Time remaining to estimate: <span class="text-red-300 font-sans text-lg">{{ countdown }} </span> 
+            <div v-if="estimationCloseAt && !estimationIsClosed" class="text-white font-sans text-lg mb-4">
+                Estimations close at: <span class="text-blue-300 font-semibold">{{ formattedEstimationCloseAt }}</span>
+                <br />
+                Time remaining: <span class="text-red-300 font-mono">{{ countdown }}</span>
             </div>
 
             <div v-if="!isLoadingEstimates">
+
                 <div v-if="!estimationIsClosed">
 
                     <div v-if="submissionSuccess" class="text-green-400 mb-4">
@@ -256,15 +262,55 @@ onUnmounted(() => {
                     </div>
 
                     <!-- Estimate Details -->
-                    <div class="bg-teal-300/70 p-6 rounded mb-6 space-y-4">
+                    <div class="bg-teal-300 p-6 rounded mb-6 space-y-4">
                         <h2 class="text-black text-2xl font-semibold">{{ retrievedQuestData?.title }}</h2>
-                        <h3 class="text-zinc-900 text-xl font-semibold underline">Description</h3>
-                        <p class="text-zinc-800 text-base mt-2">
-                            {{ retrievedQuestData?.description || "No description was given" }}
-                        </p>
-                        <h3 class="text-zinc-900 text-xl font-semibold underline">Acceptance Criteria</h3>
-                        <p class="text-zinc-800 text-base mt-2">{{ retrievedQuestData?.acceptanceCriteria }}</p>
                     </div>
+
+                    <div>
+                        <AccordionRoot class="rounded-lg mb-6" :default-value="['description']" v-model="openPanels"
+                            type="multiple" :collapsible="true">
+                            <AccordionItem
+                                class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-white"
+                                value="description">
+                                <AccordionHeader class="flex">
+                                    <AccordionTrigger
+                                        class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-black bg-teal-400 hover:bg-teal-200 transition-colors duration-200 group">
+                                        <span>Description</span>
+                                        <Icon icon="radix-icons:chevron-down"
+                                            class="text-black transition-transform duration-300 group-data-[state=open]:rotate-180"
+                                            aria-label="Expand/Collapse" />
+                                    </AccordionTrigger>
+                                </AccordionHeader>
+                                <AccordionContent
+                                    class="bg-white text-black text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+                                    <div class="px-4 py-3">
+                                        {{ retrievedQuestData?.description || "No description was given" }}
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+
+                            <AccordionItem
+                                class="mt-px overflow-hidden last:rounded-b-lg focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-white"
+                                value="acceptance">
+                                <AccordionHeader class="flex">
+                                    <AccordionTrigger
+                                        class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-black bg-teal-400 hover:bg-teal-200 transition-colors duration-200 group">
+                                        <span>Acceptance Criteria</span>
+                                        <Icon icon="radix-icons:chevron-down"
+                                            class="text-black transition-transform duration-300 group-data-[state=open]:rotate-180"
+                                            aria-label="Expand/Collapse" />
+                                    </AccordionTrigger>
+                                </AccordionHeader>
+                                <AccordionContent
+                                    class="bg-white text-black text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+                                    <div class="px-4 py-3">
+                                        {{ retrievedQuestData?.acceptanceCriteria || "No acceptance criteria were provided" }}
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </AccordionRoot>
+                    </div>
+
 
                     <!-- Form -->
                     <div class="mb-10">
@@ -308,7 +354,7 @@ onUnmounted(() => {
                     </div>
                 </div>
 
-                <div v-else class="text-yellow-400 text-lg font-semibold mt-6">
+                <div v-else class="text-red-400 text-lg font-semibold mt-6">
                     Estimations are closed for this quest.
                 </div>
             </div>
@@ -323,9 +369,11 @@ onUnmounted(() => {
                 <ul class="space-y-3">
                     <li v-for="(est, i) in retrievedEstimates" :key="i" class="bg-zinc-800 p-4 rounded">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="font-bold">{{ est.username }}</span>
-                            <span class="text-sm text-zinc-400">
-                                Score: {{ est.score }} | Est. Days: {{ est.days }} | {{ est.rank }}
+                            <span class="text-indigo-300 font-bold">{{ est.username }}</span>
+                            <span class="text-sm text-white">
+                                Score: <span class="text-green-400">{{ est.score }}</span> | Est. Days: <span
+                                    class="text-green-400">{{ est.days }}</span> | <span
+                                    :class="`text-sm ${rankClass(est.rank)}`">{{ est.rank }}</span>
                             </span>
                         </div>
                         <p class="text-zinc-300 text-sm">{{ est.comment }}</p>
