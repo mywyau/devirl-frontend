@@ -1,63 +1,101 @@
 <script setup lang="ts">
-import { useAuthUser } from "@/composables/useAuthUser";
-import { userRegistrationSchema, type UserRegistrationForm } from "@/types/schema/UserRegistration";
-import { ref } from "vue";
-
-import { Button } from "@/components/old/button";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/old/select";
+import { Button } from '@/components/old/button';
 
 import Input from '@/components/reka/Input.vue';
-import { submitRegisterUser } from "@/controllers/RegistrationController";
-import { useRouter } from "nuxt/app";
+import { useAuthUser } from '@/composables/useAuthUser';
+import { submitRegisterUser } from '@/controllers/RegistrationController';
+import { ErrorsResponseSchema } from "@/types/schema/ErrorResponseSchema";
+import { userRegistrationSchema, type UserRegistrationForm } from '@/types/schema/UserRegistration';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useRouter } from 'nuxt/app';
+import { useForm } from 'vee-validate';
+import { ref } from 'vue';
 
-const userTypeForm = ref<UserRegistrationForm>({
-  username: "",
-  firstName: "",
-  lastName: "",
-  userType: "" as any,
-});
+import {
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectItemIndicator,
+  SelectItemText,
+  SelectLabel,
+  SelectPortal,
+  SelectRoot,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectTrigger,
+  SelectValue,
+  SelectViewport
+} from 'reka-ui';
 
-const router = useRouter()
-const registrationSuccess = ref(false);
-const registrationError = ref("");
-const validationErrors = ref<Partial<Record<keyof UserRegistrationForm, string>>>({});
+import { Icon } from '@iconify/vue';
 
+const router = useRouter();
 const { data: user } = useAuthUser();
 
-const registerUser = async () => {
-  registrationError.value = "";
+const {
+  handleSubmit,
+  defineField,
+  errors,
+  isSubmitting,
+  setFieldError,
+  setErrors,
+} = useForm<UserRegistrationForm>({
+  validationSchema: toTypedSchema(userRegistrationSchema),
+});
+
+const [username, usernameAttrs] = defineField('username');
+const [firstName, firstNameAttrs] = defineField('firstName');
+const [lastName, lastNameAttrs] = defineField('lastName');
+const [userType, userTypeAttrs] = defineField('userType');
+
+const registrationError = ref('');
+const registrationSuccess = ref(false);
+
+// backend error code based messages
+const userFriendlyMessages: Record<string, string> = {
+  DUPLICATE: 'This username is already taken. Please choose another.',
+  DATA_TOO_LONG: 'This value is too long. Please shorten it.',
+  VALIDATION_ERROR: 'There was a validation problem. Please check your input.',
+  UNKNOWN_ERROR: 'An unknown error occurred. Please try again.',
+};
+
+const userTypeOptions = [
+  { value: "Client", label: "Client" },
+  { value: "Dev", label: "Dev" },
+];
+
+const onSubmit = handleSubmit(async (values) => {
+
+  registrationError.value = '';
   registrationSuccess.value = false;
-  validationErrors.value = {};
 
-  const parseResult = userRegistrationSchema.safeParse(userTypeForm.value);
-
-  if (!parseResult.success) {
-    for (const issue of parseResult.error.issues) {
-      const field = issue.path[0] as keyof UserRegistrationForm;
-      validationErrors.value[field] = issue.message;
-    }
-    return;
-  }
-
-  const safeUserId = user.value?.sub;
-  const result = await submitRegisterUser(safeUserId, userTypeForm.value);
+  const result = await submitRegisterUser(user.value?.sub, values);
 
   if (result.success) {
     registrationSuccess.value = true;
-    await router.push('/')
-  } else {
-    registrationError.value = result.error || "Error when submitting registration details";
-  }
-};
+    await router.push('/');
+  } else if (result.status === 400 && ErrorsResponseSchema.safeParse(result.structuredErrors).success) {
+    const parsedErrors = ErrorsResponseSchema.parse(result.structuredErrors);
 
+    let hasFieldLevelError = false;
+
+    for (const err of parsedErrors) {
+      if (err.column) {
+        setFieldError(err.column as keyof UserRegistrationForm, userFriendlyMessages[err.code] || err.message);
+        hasFieldLevelError = true;
+      }
+    }
+
+    if (!hasFieldLevelError) {
+      // fallback to show all messages globally
+      registrationError.value = parsedErrors
+        .map((e) => userFriendlyMessages[e.code] || e.message)
+        .join(" ");
+    }
+  } else {
+    registrationError.value = result.error || 'Something went wrong. Please try again.';
+  }
+});
 </script>
 
 <template>
@@ -72,78 +110,76 @@ const registerUser = async () => {
         <div v-if="registrationError" class="text-red-600 text-sm text-center">
           {{ registrationError }}
         </div>
+        
         <div v-else-if="registrationSuccess" class="text-green-600 text-sm text-center">
           Registration Successful
         </div>
 
-        <form @submit.prevent="registerUser" class="space-y-6">
+        <form @submit.prevent="onSubmit" class="space-y-6">
 
           <div class="space-y-2">
+            <label for="username" class="block text-sm font-medium text-white">Username</label>
+            <Input id="username" v-model="username" v-bind="usernameAttrs" class="w-full" />
+            <p class="text-sm text-zinc-300">Max 20 characters</p>
+            <p v-if="errors.username" class="text-sm text-red-500">{{ errors.username }}</p>
 
-            <label for="username" class="block text-sm font-medium text-white">
-              Username
-            </label>
+            <label for="firstname" class="block text-sm font-medium text-white">First Name</label>
+            <Input id="firstname" v-model="firstName" v-bind="firstNameAttrs" class="w-full" />
+            <p class="text-sm text-zinc-300">Max 50 characters</p>
+            <p v-if="errors.firstName" class="text-sm text-red-500">{{ errors.firstName }}</p>
 
-            <p v-if="validationErrors.username" class="text-sm text-red-500">
-              {{ validationErrors.username }}
-            </p>
-
-            <Input id="username" v-model="userTypeForm.username" placeholder="Username" class="w-full" />
-            <p class="mt-1 text-sm text-zinc-400">Max 20 characters</p>
-
-            <label for="firstname" class="block text-sm font-medium text-white">
-              First Name
-            </label>
-            <p v-if="validationErrors.firstName" class="text-sm text-red-500">
-              {{ validationErrors.firstName }}
-            </p>
-            <Input id="firstname" v-model="userTypeForm.firstName" placeholder="First Name" class="w-full" />
-            <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
-
-
-            <label for="lastname" class="block text-sm font-medium text-white">
-              Last Name
-            </label>
-            <p v-if="validationErrors.lastName" class="text-sm text-red-500">
-              {{ validationErrors.lastName }}
-            </p>
-            <Input id="lastname" v-model="userTypeForm.lastName" placeholder="Last Name" class="w-full" />
-            <p class="mt-1 text-sm text-zinc-400">Max 50 characters</p>
-
+            <label for="lastname" class="block text-sm font-medium text-white">Last Name</label>
+            <Input id="lastname" v-model="lastName" v-bind="lastNameAttrs" class="w-full" />
+            <p class="text-sm text-zinc-300">Max 50 characters</p>
+            <p v-if="errors.lastName" class="text-sm text-red-500">{{ errors.lastName }}</p>
           </div>
 
           <div class="flex flex-col space-y-2">
 
-            <label for="role-select" class="text-sm font-medium text-white">
-              Select Your Role
-            </label>
+            <label for="role-select" class="text-sm font-medium text-white">Select Your Role</label>
 
-            <Select v-model="userTypeForm.userType">
-              <!-- Give the trigger a stable test ID -->
-              <SelectTrigger id="role-select" data-testid="role-select-trigger"
-                class="w-full flex justify-between items-center rounded-lg border border-green-400 bg-white px-4 py-2 text-sm text-black focus:outline-none focus:ring-3 focus:ring-green">
-                <SelectValue placeholder="Choose one…" />
+            <SelectRoot v-model="userType">
+              <SelectTrigger id="role-select"
+                class="inline-flex min-w-[160px] items-center justify-between rounded px-[15px] text-sm leading-none h-[40px] gap-[5px] bg-white text-black hover:bg-stone-50 border shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none"
+                aria-label="User Type">
+                <SelectValue placeholder="Choose User Type" />
+                <Icon icon="radix-icons:chevron-down" class="h-4 w-4" />
               </SelectTrigger>
 
-              <SelectContent data-testid="role-select-content"
-                class="w-full bg-white rounded-lg border border-zinc-400">
-                <SelectLabel class="px-4 py-2 text-xs font-medium text-zinc-500">
-                  Roles
-                </SelectLabel>
-                <SelectItem value="Client" data-testid="role-select-item-Client"
-                  class="w-full px-4 py-2 text-black hover:bg-zinc-100">
-                  Client
-                </SelectItem>
-                <SelectItem value="Dev" data-testid="role-select-item-Dev"
-                  class="w-full px-4 py-2 text-black hover:bg-zinc-100">
-                  Dev
-                </SelectItem>
-              </SelectContent>
-            </Select>
+              <SelectPortal>
+                <SelectContent class="min-w-[160px] bg-white rounded border shadow-sm z-[100]" :side-offset="5">
+                  <SelectScrollUpButton
+                    class="flex items-center justify-center h-[25px] bg-white text-black cursor-default">
+                    <Icon icon="radix-icons:chevron-up" />
+                  </SelectScrollUpButton>
+
+                  <SelectViewport class="p-[5px]">
+                    <SelectLabel class="px-4 text-xs font-medium text-zinc-500 mb-1">User Type</SelectLabel>
+                    <SelectGroup>
+                      <SelectItem v-for="option in userTypeOptions" :id="`user-type-option-${option.value}`"
+                        :key="option.value" :value="option.value"
+                        class="text-sm leading-none text-black rounded flex items-center h-[30px] pr-[35px] pl-[25px] relative select-none data-[highlighted]:bg-green-100 data-[highlighted]:text-black">
+                        <SelectItemIndicator class="absolute left-0 w-[25px] inline-flex items-center justify-center">
+                          <Icon icon="radix-icons:check" />
+                        </SelectItemIndicator>
+                        <SelectItemText>{{ option.label }}</SelectItemText>
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectViewport>
+
+                  <SelectScrollDownButton
+                    class="flex items-center justify-center h-[25px] bg-white text-black cursor-default">
+                    <Icon icon="radix-icons:chevron-down" />
+                  </SelectScrollDownButton>
+                </SelectContent>
+              </SelectPortal>
+            </SelectRoot>
+
+            <p v-if="errors.userType" class="text-sm text-red-500">{{ errors.userType }}</p>
           </div>
 
-          <Button type="submit" :disabled="!userTypeForm.username || !userTypeForm.userType"
-            class="w-full bg-green-500 hover:bg-green-400 disabled:bg-zinc-300 disabled:text-zinc-800 text-white">
+
+          <Button type="submit" :disabled="isSubmitting" class="w-full bg-green-500 text-white hover:bg-green-400">
             Continue
           </Button>
         </form>

@@ -40,9 +40,21 @@ export type UpdateQuestStatus = z.infer<typeof UpdateQuestStatusSchema>;
 
 export const CreateQuestSchema = z.object({
   rank: z.string(),
-  title: z.string(),
-  description: z.string().nullable().optional(),
-  acceptanceCriteria: z.string().nonempty("Acceptance criteria is required"),
+  title: z
+    .string()
+    .nonempty({ message: "Required" })
+    .max(100, { message: "Quest Title must be 100 characters or less." }),
+  description: z
+    .string()
+    .max(5000, { message: "Description must be 5000 characters or less." })
+    .nullable()
+    .optional(),
+  acceptanceCriteria: z
+    .string()
+    .nonempty({ message: "Required" })
+    .max(5000, {
+      message: "Acceptance criteria must be 5000 characters or less.",
+    }),
   tags: z
     .array(z.string())
     .min(1, "At least one tag is required")
@@ -50,6 +62,28 @@ export const CreateQuestSchema = z.object({
 });
 
 export type CreateQuestSchema = z.infer<typeof CreateQuestSchema>;
+
+export const UpdateQuestSchema = z.object({
+  rank: z.string(),
+  title: z
+    .string()
+    .nonempty({ message: "Required" })
+    .max(100, { message: "Quest Title must be 100 characters or less." }),
+  description: z
+    .string()
+    .max(5000, { message: "Description must be 5000 characters or less." })
+    .nullable()
+    .optional(),
+  acceptanceCriteria: z.string().nonempty({ message: "Required" }).max(5000, {
+    message: "Acceptance criteria must be 5000 characters or less.",
+  }),
+  tags: z
+    .array(z.string())
+    .min(1, "At least one tag is required")
+    .max(5, "You can choose up to 5 tags"),
+});
+
+export type UpdateQuestSchema = z.infer<typeof UpdateQuestSchema>;
 
 export const CompleteQuestSchema = z.object({
   rank: z.string(),

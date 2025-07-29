@@ -4,30 +4,47 @@ import { z } from "zod";
 const pluralize = (count: number, noun: string) =>
   `${count} ${noun}${count === 1 ? "" : "s"}`;
 
-const usernameRegex = /^[a-z][a-z0-9_]*$/;
-const nameRegex = /^[a-z]+(?:[-' ][a-z]+)*$/;
-
 export const userRegistrationSchema = z.object({
   username: z
     .string()
     .trim()
     .min(1, "Username is required")
     .max(20, { message: `Max ${pluralize(20, "character")}` })
-    .regex(
-      usernameRegex,
-      "Usernames must be lowercase and only contain letters, numbers, and underscores"
-    ),
+    .superRefine((val, ctx) => {
+      // 1. Must start with a lowercase letter
+      if (!/^[a-z]/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Username must start with a lowercase letter",
+        });
+      }
+      // 2. Must contain only lowercase letters, numbers, and underscores
+      if (!/^[a-z][a-z0-9_]*$/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Username can only contain lowercase letters, numbers, and underscores",
+        });
+      }
+    }),
   firstName: z
     .string()
     .trim()
     .min(1, "First name is required")
     .max(50, { message: `Max ${pluralize(50, "character")}` })
     .superRefine((val, ctx) => {
-      if (val.length > 0 && !nameRegex.test(val)) {
+      if (!/^[a-z]/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "First name must start with a lowercase letter",
+        });
+      }
+
+      if (!/^[a-z]+(?:[-' ][a-z]+)*$/.test(val)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message:
-            "First name must be lowercase and only contain letters, hyphens, or apostrophes",
+            "First name may contain only lowercase letters, hyphens, apostrophes, or spaces",
         });
       }
     }),
@@ -37,13 +54,26 @@ export const userRegistrationSchema = z.object({
     .min(1, "Last name is required")
     .max(50, { message: `Max ${pluralize(50, "character")}` })
     .superRefine((val, ctx) => {
-      if (val.length > 0 && !nameRegex.test(val)) {
+      if (!/^[a-z]/.test(val)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Last name must start with a lowercase letter",
+        });
+      }
+
+      if (!/^[a-z]+(?:[-' ][a-z]+)*$/.test(val)) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message:
-            "Last name must be lowercase and only contain letters, hyphens, or apostrophes",
+            "Last name may contain only lowercase letters, hyphens, apostrophes, or spaces",
         });
       }
+    }),
+  userType: z
+    .string()
+    .min(1, "Please select a role")
+    .refine((val) => val === "Client" || val === "Dev", {
+      message: "Invalid role selection",
     }),
 });
 

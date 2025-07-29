@@ -8,7 +8,7 @@ describe("RewardDataSchema", () => {
     devId: "dev-789",
     timeRewardValue: 10,
     completionRewardValue: 100,
-    paid: true,
+    paid: "NotPaid",
   };
 
   it("validates a fully populated reward object", () => {
@@ -20,7 +20,7 @@ describe("RewardDataSchema", () => {
     const partialData = {
       questId: "quest-abc",
       clientId: "client-def",
-      paid: false,
+      paid: "NotPaid",
     };
     const result = RewardDataSchema.safeParse(partialData);
     expect(result.success).toBe(true);
@@ -33,7 +33,7 @@ describe("RewardDataSchema", () => {
       devId: null,
       timeRewardValue: null,
       completionRewardValue: null,
-      paid: false,
+      paid: "NotPaid",
     };
     const result = RewardDataSchema.safeParse(data);
     expect(result.success).toBe(true);

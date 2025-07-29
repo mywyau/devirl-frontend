@@ -2,16 +2,14 @@
 import { loadConfig } from "@/configuration/ConfigLoader";
 import type { FetchOptions } from "@/types/FetchOptions";
 import type { AcceptQuestPayload } from "@/types/quest/AcceptQuestPayload";
-import type { CreateQuestPayload } from "@/types/quest/CreateQuestPayload";
-import type { UpdateQuestPayload } from "@/types/quest/UpdateQuestPayload";
 import type {
   CompleteQuestPayload,
   CreateQuestSchema,
   QuestStatus,
+  UpdateQuestSchema,
   UpdateQuestStatus,
 } from "@/types/schema/QuestStatusSchema";
 import { $fetch } from "ofetch";
-
 
 const config = loadConfig();
 const baseUrl = config.devQuestBackend.baseUrl.replace(/\/$/, "");
@@ -39,8 +37,9 @@ export const url = {
     `${baseUrl}/quest/stream/all/${encodeURIComponent(userId)}`,
 
   streamRewarded: (userId: string, page: number, limit: number) =>
-    `${baseUrl}/quest/reward/stream/${encodeURIComponent(userId)}?page=${page}&limit=${limit}`
-  ,
+    `${baseUrl}/quest/reward/stream/${encodeURIComponent(
+      userId
+    )}?page=${page}&limit=${limit}`,
   streamByStatus: (userId: string, status: QuestStatus, page = 1, limit = 10) =>
     `${baseUrl}/quest/stream/client/new/${encodeURIComponent(
       userId
@@ -82,7 +81,7 @@ export async function createQuestRequest(
 export async function updateQuestRequest(
   userId: string,
   questId: string,
-  body: UpdateQuestPayload
+  body: UpdateQuestSchema
 ) {
   return $fetch(url.updateQuest(userId, questId), {
     method: "PUT",

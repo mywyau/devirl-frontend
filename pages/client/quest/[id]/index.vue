@@ -47,7 +47,7 @@ function normalizeTestId(input: string): string {
     .replace(/^-+|-+$/g, '');    // trim leading/trailing dashes
 }
 
-const openPanels = ref<string[]>(['description', 'acceptance']) // or [] to have them all closed initially
+const openPanels = ref<string[]>([]) // or [] to have them all closed initially
 
 const showDeleteConfirm = ref(false);
 const showReopenConfirm = ref(false);
@@ -74,13 +74,13 @@ const {
   `quest-${questId}`,
   () => {
     if (safeUserId.value) {
-      // return getQuest(safeUserId.value, questId);
       return getQuest(safeUserId.value, questId, { headers: requestHeaders });
     }
     return Promise.resolve(null);
   },
   {
     server: true, // run on SSR
+    client: false,
     lazy: true, // do NOT re‐fetch on client
     default: () => null,
   }
@@ -245,8 +245,8 @@ async function loadEstimates() {
                   </AccordionTrigger>
                 </AccordionHeader>
                 <AccordionContent
-                  class="bg-zinc-800 text-zinc-300 text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
-                  <div class="px-4 py-3">
+                  class="bg-zinc-800 text-white text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+                  <div class="px-4 py-3 whitespace-pre-wrap">
                     {{ result?.description || "No description was given" }}
                   </div>
                 </AccordionContent>
@@ -265,8 +265,8 @@ async function loadEstimates() {
                   </AccordionTrigger>
                 </AccordionHeader>
                 <AccordionContent
-                  class="bg-zinc-800 text-zinc-300 text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
-                  <div class="px-4 py-3">
+                  class="bg-zinc-800 text-white text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+                  <div class="px-4 py-3 whitespace-pre-wrap">
                     {{ result?.acceptanceCriteria || "No acceptance criteria were provided" }}
                   </div>
                 </AccordionContent>
@@ -279,11 +279,13 @@ async function loadEstimates() {
           <ContextMenuContent
             class="min-w-[220px] z-50 bg-white rounded-lg p-1 shadow-xl border border-teal-200 text-sm text-teal-900">
 
-            <ContextMenuItem v-if="['Open', 'NotEstimated', 'Estimated'].includes(result?.status.toString())"
+            <ContextMenuItem
               class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
-              @click="router.push(`/client/quest/reward/add/${questId}`)">
-              Add a Reward
+              @click="router.push(`/client/quest/download/${questId}`)">
+              Check Downloads
             </ContextMenuItem>
+
+            <div class="border-t my-2 border-teal-200" />
 
             <ContextMenuItem v-if="result?.status.toString() == 'NotEstimated'"
               class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
@@ -291,21 +293,18 @@ async function loadEstimates() {
               Edit Quest
             </ContextMenuItem>
 
-            <ContextMenuItem
+            <div class="border-t my-2 border-teal-200" />
+
+            <ContextMenuItem v-if="['Open', 'NotEstimated', 'Estimated'].includes(result?.status.toString())"
               class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
-              @click="router.push(`/client/quest/download/${questId}`)">
-              Check Downloads
+              @click="router.push(`/client/quest/reward/bonus/add/${questId}`)">
+              Completion Bonus
             </ContextMenuItem>
 
-            <ContextMenuItem v-if="result?.status.toString() == 'Open' || result?.status.toString() == 'Estimated'"
+            <ContextMenuItem v-if="['Open', 'NotEstimated', 'Estimated'].includes(result?.status.toString())"
               class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
-              @click="loadEstimates">
-              Load Estimates
-            </ContextMenuItem>
-
-            <ContextMenuItem v-if="result?.status.toString() === 'Estimated'" @click="showReopenConfirm = true"
-              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition">
-              Set to Open
+              @click="router.push(`/client/quest/reward/time/add/${questId}`)">
+              Time Reward
             </ContextMenuItem>
 
             <ContextMenuItem v-if="['Open', 'NotEstimated'].includes(result?.status.toString())"
@@ -313,6 +312,24 @@ async function loadEstimates() {
               @click="router.push(`/payment/${questId}`)">
               Make Payment
             </ContextMenuItem>
+
+            <div v-if="result?.status.toString() == 'Open' || result?.status.toString() == 'Estimated'"
+              class="border-t my-2 border-teal-200" />
+
+            <ContextMenuItem v-if="result?.status.toString() == 'Open' || result?.status.toString() == 'Estimated'"
+              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
+              @click="loadEstimates">
+              Load Estimates
+            </ContextMenuItem>
+
+            <div v-if="result?.status.toString() === 'Estimated'" class="border-t my-2 border-teal-200" />
+
+            <ContextMenuItem v-if="result?.status.toString() === 'Estimated'" @click="showReopenConfirm = true"
+              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition">
+              Set to Open
+            </ContextMenuItem>
+
+            <div class="border-t my-2 border-teal-200" />
 
             <ContextMenuItem
               v-if="['NotEstimated', 'Estimated', 'Open', 'NotStarted', 'Completed'].includes(result?.status.toString())"

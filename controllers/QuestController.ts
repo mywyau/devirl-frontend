@@ -9,6 +9,7 @@ import type {
   CreateQuestSchema,
   QuestPartial,
   QuestStatus,
+  UpdateQuestSchema,
   UpdateQuestStatus,
 } from "@/types/schema/QuestStatusSchema";
 import { QuestPartialSchema } from "@/types/schema/QuestStatusSchema";
@@ -45,7 +46,7 @@ export const createQuest = (userId: string, payload: CreateQuestSchema) =>
 export const updateQuest = (
   userId: string,
   questId: string,
-  payload: UpdateQuestPayload
+  payload: UpdateQuestSchema
 ) => updateQuestRequest(userId, questId, payload);
 
 export const completeQuest = (

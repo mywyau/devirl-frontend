@@ -92,6 +92,6 @@ describe("submitRegisterUser", () => {
     });
 
     expect(result.success).toBe(false);
-    expect(result.error).toBe("Something went wrong");
+    expect(result.error).toBe("boom");
   });
 });

@@ -1,16 +1,20 @@
 // service/questRewardService.ts
 import { computed, type ComputedRef, type Ref } from "vue";
 
+export const PLATFORM_FEE_PERCENT = 2.5;
+
 // Rounds up to 2 decimal places
 export const roundUpTo2DP = (value: number): number => {
   return Math.ceil(value * 100) / 100;
 };
 
-export function useQuestFeeCalculations(
+
+export function timeFeeCalculations(
   timeRewardAmount: Ref<number>,
   completionRewardAmount: Ref<number>,
   platformFeePercent: number
 ) {
+  
   const timeOnlyFee: ComputedRef = computed(() =>
     timeRewardAmount.value
       ? roundUpTo2DP(timeRewardAmount.value * (platformFeePercent / 100))

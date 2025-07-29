@@ -32,7 +32,7 @@ const questIdFromRoute = route.params.id as string;
 const { data: user, error: userError } = await useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
 
-const openPanels = ref<string[]>(['description', 'acceptance']) // or [] to have them all closed initially
+const openPanels = ref<string[]>([]) // or [] to have them all closed initially
 
 const score = ref(0);
 const days = ref(0);
@@ -283,7 +283,7 @@ onUnmounted(() => {
                                 </AccordionHeader>
                                 <AccordionContent
                                     class="bg-white text-black text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
-                                    <div class="px-4 py-3">
+                                    <div class="px-4 py-3 whitespace-pre-wrap">
                                         {{ retrievedQuestData?.description || "No description was given" }}
                                     </div>
                                 </AccordionContent>
@@ -303,7 +303,7 @@ onUnmounted(() => {
                                 </AccordionHeader>
                                 <AccordionContent
                                     class="bg-white text-black text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
-                                    <div class="px-4 py-3">
+                                    <div class="px-4 py-3 whitespace-pre-wrap">
                                         {{ retrievedQuestData?.acceptanceCriteria || "No acceptance criteria were provided" }}
                                     </div>
                                 </AccordionContent>
@@ -317,32 +317,39 @@ onUnmounted(() => {
 
                         <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
                             for="difficulty">
-                            Difficulty Score (1-100)
+                            Difficulty Score
                         </Label>
 
-                        <div>
+                        <div class="mb-3">
                             <Input id="difficulty-score" type="number" v-model="score" placeholder="0" class="w-1/4" />
+                            <p class="text-sm text-zinc-300 mt-1">1-100 points</p>
                             <p v-if="scoreError" class="text-sm text-red-400 mt-1">{{ scoreError }}</p>
                         </div>
 
                         <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
                             for="number-of-days">
-                            Number of Days (1-10)
+                            Number of Days
                         </Label>
 
-                        <div>
+                        <div class="mb-3">
                             <Input id="number-of-day" type="number" v-model="days" placeholder="0" class="w-1/4" />
+                            <p class="text-sm text-zinc-300 mt-1">1-10 days</p>
                             <p v-if="daysError" class="text-sm text-red-400 mt-1">{{ daysError }}</p>
                         </div>
-                        <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
-                            for="comment">
-                            Comments
-                        </Label>
 
-                        <TextArea id="comment" v-model="comment"
-                            placeholder="Thoughts, considerations, or reasoning behind your estimate..." />
+                        <div class="mb-3">
+                            <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
+                                for="comment">
+                                Comments
+                            </Label>
 
-                        <p v-if="commentError" class="text-sm text-red-400 mt-1">{{ commentError }}</p>
+                            <TextArea id="comment" v-model="comment"
+                                placeholder="Thoughts, considerations, or reasoning behind your estimate..." />
+                            <p class="text-sm text-zinc-300 mt-1">
+                                {{ comment.length }}/2000 characters
+                            </p>
+                            <p v-if="commentError" class="text-sm text-red-400 mt-1">{{ commentError }}</p>
+                        </div>
 
                         <ConfirmDialog title="Confirm Estimate Submission"
                             description="Are you sure you want to submit this estimate? You can only submit once and it cannot be changed."

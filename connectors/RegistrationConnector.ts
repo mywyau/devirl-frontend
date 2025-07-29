@@ -28,11 +28,10 @@ export async function createUserNuxtServerToScalaServer(
   });
 }
 
-export async function registerUserRequest(
-  userId: string,
-  payload: RegistrationPayload
-) {
+export async function registerUserRequest(userId: string,payload: RegistrationPayload) {
+
   const url = registrationUrl("update/user/type", userId);
+
   return await $fetch(url, {
     method: "PUT",
     credentials: "include",

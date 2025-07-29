@@ -51,45 +51,50 @@ if (error.value) {
       </button>
 
       <!-- Desktop nav -->
-      <nav v-if="readyToRender"  class="space-x-6 hidden md:flex items-center">
-        <!-- <template v-if="user"> -->
+      <ClientOnly>
+        <nav v-if="readyToRender" class="space-x-6 hidden md:flex items-center">
+          <!-- <template v-if="user"> -->
 
-        <NuxtLink to="/hiscores/total-level" class="font-heading text-white hover:text-indigo-400">
-          Hiscores
-        </NuxtLink>
+          <NuxtLink to="/hiscores/total-level" class="font-heading text-white hover:text-indigo-400">
+            Hiscores
+          </NuxtLink>
 
-        <template v-if="authResolved && isLoggedIn">
+          <template v-if="authResolved && isLoggedIn">
 
-          <NuxtLink v-if="isRegistered" to="/view-all/quests" class="font-heading text-white hover:text-green-400">View all quests</NuxtLink>
+            <NuxtLink v-if="isRegistered" to="/view-all/quests" class="font-heading text-white hover:text-green-400">
+              View all quests</NuxtLink>
 
-          <NuxtLink v-else to="/registration" class="font-heading text-white hover:text-green-400">Registration</NuxtLink>
+            <NuxtLink v-else to="/registration" class="font-heading text-white hover:text-green-400">Registration
+            </NuxtLink>
 
-          <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="font-heading text-white hover:text-indigo-400">Skills</NuxtLink>
+            <NuxtLink v-if="userType === 'Dev'" to="/dev/skills" class="font-heading text-white hover:text-indigo-400">
+              Skills</NuxtLink>
 
-          <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard"
-            class="font-heading text-white hover:text-blue-400">Dashboard</NuxtLink>
+            <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard"
+              class="font-heading text-white hover:text-blue-400">Dashboard</NuxtLink>
 
-          <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard"
-            class="font-heading text-white hover:text-blue-400">Dashboard</NuxtLink>
+            <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard"
+              class="font-heading text-white hover:text-blue-400">Dashboard</NuxtLink>
 
-          <NuxtLink v-if="userType === 'Dev'" to="/dev/profile" class="font-heading text-white hover:text-blue-400">
-            Profile</NuxtLink>
+            <NuxtLink v-if="userType === 'Dev'" to="/dev/profile" class="font-heading text-white hover:text-blue-400">
+              Profile</NuxtLink>
 
-          <NuxtLink v-if="userType === 'Client'" to="/client/profile"
-            class="font-heading text-white hover:text-blue-400">Profile</NuxtLink>
-        </template>
+            <NuxtLink v-if="userType === 'Client'" to="/client/profile"
+              class="font-heading text-white hover:text-blue-400">Profile</NuxtLink>
+          </template>
 
 
-        <a v-if="shouldShowLogout" :href="logoutUrl()" class="font-heading text-white hover:text-red-400 text-base">
-          Logout
-        </a>
+          <a v-if="shouldShowLogout" :href="logoutUrl()" class="font-heading text-white hover:text-red-400 text-base">
+            Logout
+          </a>
 
-        <!-- Login if nobody’s logged in yet, or we’re still waiting on Auth0 -->
-        <a v-else-if="shouldShowLogin" :href="loginUrl()"
-          class="font-heading text-white hover:text-green-400 text-base">
-          Login
-        </a>
-      </nav>
+          <!-- Login if nobody’s logged in yet, or we’re still waiting on Auth0 -->
+          <a v-else-if="shouldShowLogin" :href="loginUrl()"
+            class="font-heading text-white hover:text-green-400 text-base">
+            Login
+          </a>
+        </nav>
+      </ClientOnly>
 
       <MobileDropdown v-model:mobileOpen="mobileOpen" />
     </header>
