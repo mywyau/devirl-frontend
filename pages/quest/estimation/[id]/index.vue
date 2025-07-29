@@ -354,8 +354,8 @@ onUnmounted(() => {
                     </div>
                 </div>
 
-                <div v-else class="text-red-400 text-lg font-semibold mt-6">
-                    Estimations are closed for this quest.
+                <div v-else class="text-red-400 text-lg font-semibold mt-6 mb-6">
+                    Estimations are closed for this quest
                 </div>
             </div>
 
@@ -363,7 +363,7 @@ onUnmounted(() => {
 
             <div v-if="!isLoadingEstimates && estimationIsClosed && retrievedEstimates.length > 0">
 
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex justify-between items-center">
 
                 </div>
                 <ul class="space-y-3">
@@ -382,7 +382,7 @@ onUnmounted(() => {
             </div>
 
 
-            <div v-else-if="!isLoadingEstimates && !errorEstimates" class="text-zinc-400 text-base">
+            <div class="text-zinc-400 text-base mt-4">
                 <p>
                     There {{ retrievedEstimates?.length === 1 ? 'is' : 'are' }}
                     <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
