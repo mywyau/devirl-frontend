@@ -12,7 +12,6 @@ import { rankClass } from "@/utils/QuestRankUtil";
 import { useRoute } from "nuxt/app";
 import { Label } from 'reka-ui';
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import { useRouter } from "vue-router";
 
 import {
     AccordionContent,
@@ -24,22 +23,6 @@ import {
 
 import { Icon } from '@iconify/vue';
 
-
-const router = useRouter();
-
-const formattedEstimationCloseAt = computed(() => {
-    if (!estimationCloseAt.value) return null;
-    const date = new Date(estimationCloseAt.value);
-    return date.toLocaleString(undefined, {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZoneName: 'short',
-    });
-});
 
 // 1) Grab the route param
 const route = useRoute();
@@ -55,7 +38,6 @@ const score = ref(0);
 const days = ref(0);
 const comment = ref("");
 
-
 const isSubmitting = ref(false);
 const submissionSuccess = ref(false);
 const submissionError = ref<string | null>(null);
@@ -63,6 +45,20 @@ const submissionError = ref<string | null>(null);
 const scoreError = ref<string | null>(null);
 const daysError = ref<string | null>(null);
 const commentError = ref<string | null>(null);
+
+const formattedEstimationCloseAt = computed(() => {
+    if (!estimationCloseAt.value) return null;
+    const date = new Date(estimationCloseAt.value);
+    return date.toLocaleString(undefined, {
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short',
+    });
+});
 
 async function submitEstimation() {
 
@@ -220,29 +216,6 @@ const countdown = ref<string | null>(null);
 const countdownInterval = ref<number | null>(null);
 const estimationCloseAt = computed(() => retrievedQuestData.value?.estimationCloseAt || null);
 
-// function updateCountdown() {
-//     if (!estimationCloseAt.value) return;
-
-//     const targetTime = new Date(estimationCloseAt.value).getTime();
-//     console.log(targetTime)
-//     const now = Date.now();
-//     const diff = targetTime - now;
-
-//     if (diff <= 0) {
-//         countdown.value = "Estimation period has ended.";
-//         if (countdownInterval.value !== null) {
-//             clearInterval(countdownInterval.value);
-//         }
-//         return;
-//     }
-
-//     const hours = Math.floor(diff / (1000 * 60 * 60));
-//     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-//     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-//     countdown.value = `${hours}h ${minutes}m ${seconds}s`;
-// }
-
 function updateCountdown() {
     if (!estimationCloseAt.value) return;
 
@@ -270,11 +243,6 @@ onUnmounted(() => {
                 <h1 class="text-3xl font-bold mb-4">Estimate Difficulty</h1>
             </div>
 
-            <!-- <div v-if="estimationCloseAt && !estimationIsClosed" class="text-white font-sans text-lg mb-4">
-                Time remaining to estimate: <span class="text-red-300 font-sans text-lg">{{ countdown }} </span> {{
-                    estimationCloseAt.valueOf() }}
-            </div> -->
-
             <div v-if="estimationCloseAt && !estimationIsClosed" class="text-white font-sans text-lg mb-4">
                 Estimations close at: <span class="text-blue-300 font-semibold">{{ formattedEstimationCloseAt }}</span>
                 <br />
@@ -299,8 +267,8 @@ onUnmounted(() => {
                     </div>
 
                     <div>
-                        <AccordionRoot class="rounded-lg mb-6"
-                            :default-value="['description']" v-model="openPanels" type="multiple" :collapsible="true">
+                        <AccordionRoot class="rounded-lg mb-6" :default-value="['description']" v-model="openPanels"
+                            type="multiple" :collapsible="true">
                             <AccordionItem
                                 class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-white"
                                 value="description">
@@ -310,8 +278,7 @@ onUnmounted(() => {
                                         <span>Description</span>
                                         <Icon icon="radix-icons:chevron-down"
                                             class="text-black transition-transform duration-300 group-data-[state=open]:rotate-180"
-                                            aria-label="Expand/Collapse" 
-                                        />
+                                            aria-label="Expand/Collapse" />
                                     </AccordionTrigger>
                                 </AccordionHeader>
                                 <AccordionContent
@@ -331,8 +298,7 @@ onUnmounted(() => {
                                         <span>Acceptance Criteria</span>
                                         <Icon icon="radix-icons:chevron-down"
                                             class="text-black transition-transform duration-300 group-data-[state=open]:rotate-180"
-                                            aria-label="Expand/Collapse" 
-                                        />
+                                            aria-label="Expand/Collapse" />
                                     </AccordionTrigger>
                                 </AccordionHeader>
                                 <AccordionContent
@@ -373,11 +339,8 @@ onUnmounted(() => {
                             Comments
                         </Label>
 
-                        <TextArea 
-                            id="comment"
-                            v-model="comment"
-                            placeholder="Thoughts, considerations, or reasoning behind your estimate..." 
-                        />
+                        <TextArea id="comment" v-model="comment"
+                            placeholder="Thoughts, considerations, or reasoning behind your estimate..." />
 
                         <p v-if="commentError" class="text-sm text-red-400 mt-1">{{ commentError }}</p>
 
@@ -408,7 +371,9 @@ onUnmounted(() => {
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-indigo-300 font-bold">{{ est.username }}</span>
                             <span class="text-sm text-white">
-                                Score: <span class="text-green-400">{{ est.score }}</span> | Est. Days: <span class="text-green-400">{{ est.days }}</span> | <span :class="`text-sm ${rankClass(est.rank)}`">{{ est.rank}}</span>
+                                Score: <span class="text-green-400">{{ est.score }}</span> | Est. Days: <span
+                                    class="text-green-400">{{ est.days }}</span> | <span
+                                    :class="`text-sm ${rankClass(est.rank)}`">{{ est.rank }}</span>
                             </span>
                         </div>
                         <p class="text-zinc-300 text-sm">{{ est.comment }}</p>

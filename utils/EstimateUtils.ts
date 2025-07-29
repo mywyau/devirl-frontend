@@ -17,3 +17,4 @@ export const formatCountdown = (
 
   return `${hours}h ${minutes}m ${seconds}s`;
 };
+
