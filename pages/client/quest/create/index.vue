@@ -171,7 +171,7 @@ const onSubmit = handleSubmit(async (values) => {
 
           <ComboboxRoot v-model="tags" multiple ignore-filter class="relative" @select="() => query = ''">
             <ComboboxAnchor
-              class="w-1/2 inline-flex items-center justify-between rounded p-2 text-sm gap-2 bg-white text-black shadow hover:bg-stone-100 focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none">
+              class="w-1/2 inline-flex items-center justify-between rounded p-2 text-sm gap-2 bg-white text-black shadow hover:bg-stone-100 focus:shadow-[0_0_0_2px] focus:shadow-teal-500 outline-none">
 
               <TagsInputRoot v-model="tags" delimiter="" class="flex gap-2 items-center flex-wrap">
                 <TagsInputItem 

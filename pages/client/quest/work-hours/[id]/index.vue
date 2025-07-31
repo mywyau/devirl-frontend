@@ -1,17 +1,16 @@
 <script setup lang="ts">
+
 import Input from '@/components/reka/Input.vue';
 import { useAuthUser } from '@/composables/useAuthUser';
 import { loadConfig } from '@/configuration/ConfigLoader';
-import { WorkHoursSchema } from "@/types/schema/WorkHoursSchema";
+import { WorkHoursSchema, type HoursOfWork } from "@/types/schema/WorkHoursSchema";
 import { computed, onMounted, ref, type ComputedRef } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { roundUpTo2DP } from "@/service/AddRewardService";
-import type { QuestPartial } from '@/types/schema/QuestStatusSchema';
 
 const route = useRoute();
 const questIdFromRoute = route.params.id as string;
-const questId = questIdFromRoute
 
 const config = loadConfig()
 const baseUrl = `${config.devQuestBackend.baseUrl}/`
@@ -33,7 +32,7 @@ const editMode = ref(false)
 const hoursOfWorkSuccess = ref(false)
 const hoursOfWorkError = ref<string | null>(null)
 
-const questGetResult = ref<QuestPartial | null>(null);
+const hoursOfWorkGetResult = ref<HoursOfWork | null>(null);
 
 onMounted(async () => {
 
@@ -42,23 +41,22 @@ onMounted(async () => {
 
   try {
 
-    questGetResult.value = await $fetch(`${baseUrl}quest/${encodeURIComponent(safeUserId)}/${questIdFromRoute}`, {
+    hoursOfWorkGetResult.value = await $fetch(`${baseUrl}quest/hours-of-work/${encodeURIComponent(safeUserId)}/${questIdFromRoute}`, {
       method: "GET",
       credentials: "include",
     });
 
-    if (questGetResult.value) {
-      hoursOfWorkAmount.value = Math.round((questGetResult.value.hoursOfWork || 0) / 100);
+    if (hoursOfWorkGetResult.value) {
+      hoursOfWorkAmount.value = Math.round(hoursOfWorkGetResult.value.hoursOfWork || 0);
       editMode.value = true;
     }
 
 
   } catch (e: any) {
     if (e?.response?.status == 400) {  // Handle Bad Request
-      // No reward yet – totally fine
-      questGetResult.value = null;
+      hoursOfWorkGetResult.value = null;
     } else {
-      hoursOfWorkError.value = "Failed to retrieve reward data.";
+      // hoursOfWorkError.value = "Failed to retrieve the hours of work data.";
       console.error(e);
     }
   } finally {
@@ -86,7 +84,7 @@ async function submitWorkHours() {
 
   try {
 
-    const numberOfHoursOfWork = Math.round(hoursOfWorkAmount.value * 100);
+    const numberOfHoursOfWork = Math.round(hoursOfWorkAmount.value);
 
     await $fetch(`${baseUrl}quest/upsert/hours-of-work/${encodeURIComponent(safeUserId.value)}/${questIdFromRoute}`, {
       method: "PUT",
@@ -98,7 +96,7 @@ async function submitWorkHours() {
 
     hoursOfWorkSuccess.value = true;
   } catch (e: any) {
-    hoursOfWorkError.value = "Failed to save hours of work. Please try again.";
+    // hoursOfWorkError.value = "Failed to save hours of work. Please try again.";
     console.error(e);
   }
 }
@@ -114,7 +112,7 @@ async function submitWorkHours() {
         <h1 class="text-3xl font-bold mb-6 text-green-300">Work Hours</h1>
 
         <p v-if="hoursOfWorkSuccess" class="mt-4 text-green-400 font-semibold">
-          ${{ totalWorkHours.toFixed(2) }} hours of work saved successfully!
+          {{ totalWorkHours.toFixed(2) }} hours of work Saved!
         </p>
 
         <div>
@@ -125,8 +123,8 @@ async function submitWorkHours() {
 
             <label for="time-reward-amount" class="block text-base text-green-400 mb-2">Number of work hours</label>
 
-            <p class="text-sm mb-2">Hint: You can come back and change the expected number of working hours if the quest status
-              is <span class="text-zinc-400 font-medium">Not Estimated</span>
+            <p class="text-sm text-zinc-300 mb-2">Hint: You can come back and change the expected number of working hours if the quest status is 
+              <span class="text-zinc-400 font-medium">Not Estimated</span>
             </p>
 
             <Input id="time-reward-amount" type="number" v-model="hoursOfWorkAmount" placeholder="For example 37.5"
@@ -136,9 +134,25 @@ async function submitWorkHours() {
           </div>
         </div>
 
+        <div v-if="hoursOfWorkAmount > 0" class="mt-4 mb-6 text-base text-white space-y-2">
+          <p class="text-base font-semibold">Approx Number of Working Days: <span class="text-green-300 font-sans">{{
+            (hoursOfWorkAmount / 7.5).toFixed(2) }} days</span></p>
+          <p class="text-sm text-zinc-300">Calculated using <span class="text-green-300 font-sans">7.5 hours</span> per
+            work day.</p>
+        </div>
+
         <div v-if="hoursOfWorkAmount > 0" class="mt-4 mb-6 text-base text-zinc-300 space-y-2">
-          <p class="font-semibold">Approx Number of Working Days: <span class="text-green-300 font-sans">{{ (hoursOfWorkAmount / 7.5).toFixed(2) }}</span></p>
-          <p>Calculated using 7.5 hours per work day</p>
+          <p class="text-base font-semibold">Approx Number of Weeks: <span class="text-green-300 font-sans">{{
+            (hoursOfWorkAmount / (7.5 * 5)).toFixed(2) }} weeks</span></p>
+          <p class="text-sm text-zinc-300">Calculated using <span class="text-green-300 font-sans">37.5 hours</span> per
+            week.</p>
+        </div>
+
+        <div v-if="hoursOfWorkAmount > 0" class="mt-4 mb-6 text-base text-zinc-300 space-y-2">
+          <p class="text-base font-semibold">Approx Number of Months: <span class="text-green-300 font-sans">{{
+            (hoursOfWorkAmount / (7.5 * 5 * 4)).toFixed(2) }} months</span></p>
+          <p class="text-sm text-zinc-300">Calculated using <span class="text-green-300 font-sans">4 weeks</span> per
+            month.</p>
         </div>
 
         <button v-if="editMode" @click="submitWorkHours"
