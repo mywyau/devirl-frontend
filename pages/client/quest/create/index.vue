@@ -5,7 +5,10 @@ import { createQuest } from "@/controllers/QuestController";
 import { CreateQuestSchema } from "@/types/schema/QuestStatusSchema";
 import { languageFormatter, languageOptions } from "@/utils/HiscoresUtils";
 import { rankOptions } from "@/utils/QuestRankUtil";
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
+
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
 
 import { Icon } from '@iconify/vue';
 
@@ -50,104 +53,54 @@ import TextArea from '@/components/reka/TextArea.vue';
 const query = ref('')
 const { contains } = useFilter({ sensitivity: 'base' })
 
-
-const filteredOptions = computed(() =>
-  languageOptions.filter(
-    (option) =>
-      contains(option, query.value) &&
-      !questCreatePayload.value.tags.includes(option)
+const filteredOptions = computed(() => {
+  const currentTags = Array.isArray(tags) ? tags : []
+  return languageOptions.filter(
+    (option) => contains(option, query.value) && !currentTags.includes(option)
   )
-)
+})
 
-const questCreatePayload = ref<CreateQuestSchema>(
-  {
-    rank: "",
-    title: "",
-    description: "",
-    acceptanceCriteria: "",
-    tags: [],
-  }
-);
+const {
+  handleSubmit,
+  defineField,
+  errors,
+  isSubmitting,
+} = useForm<CreateQuestSchema>({
+  validationSchema: toTypedSchema(CreateQuestSchema),
+});
+
+const [rank, rankAttrs] = defineField('rank');
+const [title, titleAttrs] = defineField('title');
+const [description, descriptionAttrs] = defineField('description');
+const [acceptanceCriteria, acceptanceCriteriaAttrs] = defineField('acceptanceCriteria');
+const [tags, tagsAttrs] = defineField('tags');
 
 const { data: user, error } = useAuthUser();
 
-
-if (error.value) {
-  console.error("Failed to load auth session:", error.value);
-}
-
-const isSubmitting = ref(false);
 const submissionSuccess = ref(false);
 const submissionError = ref<string | null>(null);
 
-
-async function handleSubmit() {
-  // ✅ Always clear error first
-  submissionError.value = null;
-  submissionSuccess.value = false;
-
-  const payload = {
-    ...questCreatePayload.value,
-    tags: [...questCreatePayload.value.tags], // unwrap Proxy
-  };
-
-
-  console.log(payload)
-
-  if (payload.tags.length === 0) {
-    submissionError.value = "Please select at least one tag.";
-    return;
-  }
-
-  isSubmitting.value = true;
+const onSubmit = handleSubmit(async (values) => {
 
   const userId = user.value?.sub;
   if (!userId) {
     submissionError.value = "User ID not available.";
-    isSubmitting.value = false;
     return;
   }
 
-  const parsed = CreateQuestSchema.safeParse(payload)
+  try {
+    const result = await createQuest(userId, values);
 
-
-  if (!parsed.success) {
-    submissionError.value = "Validation error: " + JSON.stringify(parsed.error.format());
-    isSubmitting.value = false;
-    return;
-  } else {
-    try {
-      const result = await createQuest(userId, parsed.data);
-
-      if (result) {
-        submissionSuccess.value = true;
-        questCreatePayload.value = {
-          rank: "",
-          title: "",
-          description: "",
-          acceptanceCriteria: "",
-          tags: [],
-        };
-      } else {
-        submissionError.value = "Submission failed. Please try again.";
-      }
-    } catch (err) {
-      console.error(err);
-      submissionError.value = "An unexpected error occurred.";
-    } finally {
-      isSubmitting.value = false;
+    if (result) {
+      submissionSuccess.value = true;
+    } else {
+      submissionError.value = "Submission failed. Please try again.";
     }
+  } catch (err) {
+    submissionError.value = "An unexpected error occurred.";
+    console.error(err);
   }
-
-  watch(
-    () => questCreatePayload.value.tags,
-    () => {
-      query.value = ''
-    },
-    { deep: true }
-  )
-
-}
+});
 
 </script>
 
@@ -155,10 +108,10 @@ async function handleSubmit() {
   <NuxtLayout>
 
     <div class="p-6 max-w-4xl mx-auto">
-      
+
       <h1 class="text-3xl text-green-300 font-bold mb-6">Create a New Quest</h1>
 
-      <form @submit.prevent="handleSubmit" class="">
+      <form @submit.prevent="onSubmit">
 
         <p v-if="submissionSuccess" class="mb-10 text-green-400">
           Quest created successfully!
@@ -170,16 +123,16 @@ async function handleSubmit() {
 
           <label for="rank" class="text-sm font-medium text-white mb-2">Quest Tier</label>
 
-          <SelectRoot v-model="questCreatePayload.rank">
+          <SelectRoot v-model="rank">
             <SelectTrigger id="rank"
-              class="inline-flex min-w-[160px] items-center justify-between rounded-lg px-[15px] text-sm leading-none h-[40px] gap-[5px] bg-white text-black hover:bg-stone-50 border shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none"
+              class="inline-flex min-w-[160px] items-center justify-between rounded px-[15px] text-sm leading-none h-[38px] gap-[5px] bg-white text-black hover:bg-stone-50 border shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none"
               aria-label="Quest Tier">
               <SelectValue placeholder="Choose rank" />
               <Icon icon="radix-icons:chevron-down" class="h-4 w-4" />
             </SelectTrigger>
 
             <SelectPortal>
-              <SelectContent class="min-w-[160px] bg-white rounded-lg border shadow-sm z-[100]" :side-offset="5">
+              <SelectContent class="min-w-[160px] bg-white rounded border shadow-sm z-[100]" :side-offset="5">
                 <SelectScrollUpButton
                   class="flex items-center justify-center h-[25px] bg-white text-black cursor-default">
                   <Icon icon="radix-icons:chevron-up" />
@@ -207,21 +160,27 @@ async function handleSubmit() {
             </SelectPortal>
           </SelectRoot>
 
+          <p v-if="errors.rank" class="text-red-400 text-sm mt-1">{{ errors.rank }}</p>
         </div>
 
         <div class="mb-10">
 
-          <label class="text-sm text-white mb-2 block">Add Language Tags</label>
+          <label class="text-sm text-white font-medium mb-2 block">Add Programming Languages</label>
 
-          <ComboboxRoot v-model="questCreatePayload.tags" multiple ignore-filter class="relative"
-            @select="() => query = ''">
+          <p class="text-zinc-200 text-sm mb-2">Hint: You can type to search for tag options</p>
+
+          <ComboboxRoot v-model="tags" multiple ignore-filter class="relative" @select="() => query = ''">
             <ComboboxAnchor
-              class="w-1/2 inline-flex items-center justify-between rounded-lg p-2 text-sm gap-2 bg-white text-black shadow hover:bg-stone-100 focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none">
+              class="w-1/2 inline-flex items-center justify-between rounded p-2 text-sm gap-2 bg-white text-black shadow hover:bg-stone-100 focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none">
 
-              <TagsInputRoot v-model="questCreatePayload.tags" delimiter="" class="flex gap-2 items-center flex-wrap">
-                <TagsInputItem v-for="item in questCreatePayload.tags" :key="item" :value="languageFormatter(item)"
-                  class="flex items-center gap-2 text-white bg-green-600 rounded px-2 py-1">
-                  <TagsInputItemText class="text-sm" />
+              <TagsInputRoot v-model="tags" delimiter="" class="flex gap-2 items-center flex-wrap">
+                <TagsInputItem 
+                  v-for="item in tags"
+                  :key="item" 
+                  :value="item"
+                  class="flex items-center gap-2 text-white bg-green-600 rounded px-2 py-1"
+                >
+                  <TagsInputItemText class="text-sm" >{{ languageFormatter(item) }}</TagsInputItemText>
                   <TagsInputItemDelete>
                     <Icon icon="lucide:x" />
                   </TagsInputItemDelete>
@@ -244,9 +203,12 @@ async function handleSubmit() {
               <ComboboxViewport class="p-2">
                 <ComboboxGroup v-if="filteredOptions.length">
                   <ComboboxLabel class="px-4 text-xs text-zinc-500">Languages</ComboboxLabel>
-                  <ComboboxItem v-for="(option, index) in filteredOptions" :id="`language-option-${option}`"
+                  <ComboboxItem 
+                    v-for="(option, index) in filteredOptions"
+                    :id="`language-option-${option}`"
                     :key="index" :value="option"
-                    class="text-sm text-black px-4 py-2 rounded hover:bg-green-100 cursor-pointer flex items-center justify-between">
+                    class="text-sm text-black px-4 py-2 rounded hover:bg-green-100 cursor-pointer flex items-center justify-between"
+                  >
                     {{ languageFormatter(option) }}
                     <ComboboxItemIndicator>
                       <Icon icon="radix-icons:check" />
@@ -256,42 +218,68 @@ async function handleSubmit() {
               </ComboboxViewport>
             </ComboboxContent>
           </ComboboxRoot>
+
+          <p class="mt-1 text-sm text-zinc-400">
+            <span :class="(tags?.length || 0) > 5 ? 'text-red-500' : 'text-zinc-400'">
+              {{ tags?.length || 0 }}
+            </span>/5 language tags
+          </p>
+          <p v-if="(tags?.length || 0) > 5" class="text-sm text-red-500">
+            You can only select up to 5 tags
+          </p>
+          <p v-if="errors.tags" class="text-red-400 text-sm mt-1">{{ errors.tags }}</p>
         </div>
 
         <div class="mt-10 mb-6">
+
           <label for="quest-title" class="block mb-1 text-sm font-medium text-white">
             Quest Title
           </label>
 
-          <Input 
-            id="quest-title"
-            v-model="questCreatePayload.title" 
-            placeholder="Add a title to your quest post"
-            class="w-full" 
-          />
-
-          <p class="mt-1 text-sm text-zinc-400">Max 100 characters</p>
+          <Input id="quest-title" v-model="title" v-bind="titleAttrs" class="w-full"
+            placeholder="Add a title to your quest" />
+          <p class="mt-1 text-sm text-zinc-400">
+            <span :class="(title?.length || 0) > 100 ? 'text-red-500' : 'text-zinc-400'">
+              {{ title?.length || 0 }}
+            </span>/100 characters
+          </p>
+          <p v-if="errors.title" class="text-red-400 text-sm mt-1">{{ errors.title }}</p>
         </div>
 
         <div class="mb-6">
+
           <label for="quest-description" class="block mb-1 text-sm font-medium text-white">
-            Description (optional)
+            Description - This is optional
           </label>
 
-          <TextArea 
-            id="quest-description" 
-            v-model="questCreatePayload.description"
+          <TextArea id="quest-description" v-model="description"
             placeholder="What needs to be done? Be as clear and helpful as possible."
           />
+
+          <p class="mt-1 text-sm text-zinc-400">
+            <span :class="(description?.length || 0) > 5000 ? 'text-red-500' : 'text-zinc-400'">
+              {{ description?.length || 0 }}
+            </span>/5000 characters
+          </p>
+          <p v-if="errors.description" class="text-red-400 text-sm mt-1">{{ errors.description }}</p>
         </div>
 
         <div class="mb-6">
+
           <label for="acceptance-criteria" class="block mb-1 text-sm font-medium text-white">
-            Acceptance Criteria (required)
+            Acceptance Criteria
           </label>
 
-          <TextArea id="acceptance-criteria" v-model="questCreatePayload.acceptanceCriteria"
-            placeholder="Add acceptance criteria to help achieve the goal" />
+          <TextArea id="acceptance-criteria" v-model="acceptanceCriteria"
+            placeholder="Add acceptance criteria to help guide devs to achieve the goal." 
+          />
+
+          <p class="mt-1 text-sm text-zinc-400">
+            <span :class="(acceptanceCriteria?.length || 0) > 5000 ? 'text-red-500' : 'text-zinc-400'">
+              {{ acceptanceCriteria?.length || 0 }}
+            </span>/5000 characters
+          </p>
+          <p v-if="errors.acceptanceCriteria" class="text-red-400 text-sm mt-1">{{ errors.acceptanceCriteria }}</p>
         </div>
 
         <div class="mt-10">

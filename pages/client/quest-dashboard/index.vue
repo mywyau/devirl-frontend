@@ -170,6 +170,7 @@ function goToStatusPage(key: string) {
         <!-- 🖱️ DESKTOP CONTEXT MENU -->
 
         <ContextMenuPortal>
+          
           <ContextMenuContent
             class="min-w-[220px] z-50 bg-white rounded-lg p-1 shadow-xl border border-teal-200 text-sm text-teal-900">
             <ContextMenuItem @click="goToViewAll"

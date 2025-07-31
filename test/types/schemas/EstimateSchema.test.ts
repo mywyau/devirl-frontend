@@ -28,7 +28,7 @@ describe("CreateEstimateSchema", () => {
   it("fails if comment is empty", () => {
     const invalidData = { ...validCreate, comment: "" };
     const result = CreateEstimateSchema.safeParse(invalidData);
-    expect(result.success).toBe(true); // Or false, if you add min(1) to schema
+    expect(result.success).toBe(false); 
   });
 });
 

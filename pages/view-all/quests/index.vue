@@ -26,7 +26,7 @@ import {
 const config = loadConfig();
 const baseUrl = config.devQuestBackend.baseUrl.replace(/\/$/, "");
 
-const userType = useCookie("user_type"); // reads cookie on client and SSR
+const userType = useCookie("user_type");
 
 const showFeedback = ref(false);
 const questsWithReward = ref<QuestWithReward[]>([]);
@@ -40,7 +40,6 @@ async function fetchTotalQuestCount() {
 const loading = ref(false);
 const hasLoaded = ref(false);
 const error = ref<string | null>(null);
-
 
 // Get the user session
 const { data: user, pending: authPending } = useAuthUser();
@@ -178,7 +177,8 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
             </span>
           </div>
 
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-4">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mt-4">
+
             <p class="text-sm sm:text-base text-white">
               Time Reward:
               <span v-if="quest.reward?.timeRewardValue != null" class="text-green-400">
@@ -199,8 +199,8 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
             </div>
           </div>
 
-          <p class="text-sm sm:text-base text-white mt-2">
-            Completion Reward:
+          <p class="text-sm sm:text-base text-white">
+            Completion Bonus:
             <span v-if="quest.reward?.completionRewardValue != null" class="text-green-400">
               ${{ (quest.reward.completionRewardValue! / 100).toFixed(2) }}
             </span>

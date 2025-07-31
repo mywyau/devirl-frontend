@@ -8,9 +8,14 @@ import { useRoute } from "vue-router";
 import { languageFormatter, languageOptions } from "@/utils/HiscoresUtils";
 import { rankOptions } from "@/utils/QuestRankUtil";
 
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+
+import Input from '@/components/reka/Input.vue';
+import TextArea from '@/components/reka/TextArea.vue';
+import { UpdateQuestSchema, type QuestPartial } from "@/types/schema/QuestStatusSchema";
+
 import { Icon } from '@iconify/vue';
-
-
 import {
   ComboboxAnchor,
   ComboboxContent,
@@ -46,80 +51,69 @@ import {
   SelectViewport
 } from 'reka-ui';
 
-
-import Input from '@/components/reka/Input.vue';
-import TextArea from '@/components/reka/TextArea.vue';
-
-
-interface UpdateQuestPayload {
-  rank: string,
-  title: string,
-  description: string,
-  acceptanceCriteria: string,
-  tags: string[],
-}
-
-interface QuestPartial {
-  rank: string,
-  title: string,
-  description?: string,
-  acceptanceCriteria: string,
-  status: string,
-  tags: string[],
-}
-
 const route = useRoute();
 const questId = route.params.id as string;
 
-const questTags = ref<string[]>([]); // <- define this
+const auth = await useAuthUser();
+
+const user = auth.data;
+const userError = auth.error;
+
 const { contains } = useFilter({ sensitivity: 'base' });
 
 const query = ref('');
 
-const filteredOptions = computed(() =>
-  languageOptions.filter(
-    (option) =>
-      contains(option, query.value) && !questTags.value.includes(option)
+const filteredOptions = computed(() => {
+  const currentTags = Array.isArray(tags) ? tags : []
+  return languageOptions.filter(
+    (option) => contains(option, query.value) && !currentTags.includes(option)
   )
-);
+})
 
-const success = ref(false);
-const showError = ref(false);
-const isSubmitting = ref(false);
-
-const { data: user, error: userError } = await useAuthUser();
-
-const updateQuestPayload = ref<UpdateQuestPayload>({
-  rank: "",
-  title: "",
-  description: "",
-  acceptanceCriteria: "",
-  tags: [],
+const {
+  handleSubmit,
+  defineField,
+  errors,
+  isSubmitting,
+} = useForm<UpdateQuestSchema>({
+  validationSchema: toTypedSchema(UpdateQuestSchema),
 });
 
+const [rank, rankAttrs] = defineField('rank');
+const [title, titleAttrs] = defineField('title');
+const [description, descriptionAttrs] = defineField('description');
+const [acceptanceCriteria, acceptanceCriteriaAttrs] = defineField('acceptanceCriteria');
+const [tags, tagsAttrs] = defineField('tags');
 
-console.debug(encodeURIComponent(user.value?.sub || "No user id"));
-const safeUserId = user.value?.sub || "No user id";
+const submissionSuccess = ref(false);
+const submissionError = ref<string | null>(null);
 
 const result = ref<QuestPartial | null>(null);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
 onMounted(async () => {
+
+  const safeUserId = user.value?.sub || "No user id";
+  console.debug(encodeURIComponent(safeUserId));
+
   isLoading.value = true;
+
   try {
+
     result.value = await getQuest(safeUserId, questId);
     console.debug(`[Edit Quest Page][getQuest]${result.value}`);
+
     if (result.value) {
-      updateQuestPayload.value = {
-        rank: result.value.rank,
-        title: result.value.title,
-        description: result.value.description ?? "",
-        acceptanceCriteria: result.value.acceptanceCriteria,
-        tags: result.value.tags
-      };
-      questTags.value = result.value.tags ?? [];
+
+      rank.value = result.value.rank
+      title.value = result.value.title
+      description.value = result.value.description ?? "No Description"
+      acceptanceCriteria.value = result.value.acceptanceCriteria ?? "No Acceptance Criteria"
+      tags.value = result.value.tags
     }
+
+
   } catch (e) {
     console.error(e);
     error.value = "[Edit Quest Page] Failed to load quest.";
@@ -129,39 +123,26 @@ onMounted(async () => {
 });
 
 
+const onSubmit = handleSubmit(async (values) => {
 
-async function handleUpdateQuest() {
-  const currentQuestId = route.params.id as string;
-  isSubmitting.value = true;
+  const safeUserId = user.value?.sub || "No user id";
+
+  console.log(values)
 
   try {
+    const result = await updateQuest(safeUserId, questId, values);
 
-    const requestBody: UpdateQuestPayload = {
-      rank: updateQuestPayload.value.rank,
-      title: updateQuestPayload.value.title,
-      description: updateQuestPayload.value.description ?? "",
-      acceptanceCriteria: updateQuestPayload.value.acceptanceCriteria,
-      tags: [...questTags.value],
+    if (result) {
+      submissionSuccess.value = true;
+    } else {
+      submissionError.value = "Submission failed. Please try again.";
     }
-
-    await updateQuest(
-      safeUserId,
-      currentQuestId,
-      requestBody
-    );
-    success.value = true;
-
-    // await new Promise((resolve) => setTimeout(resolve, 750));
-    // Redirect or refresh
-    // navigateTo("/quests");
   } catch (err) {
-    showError.value = true;
-    // await new Promise((resolve) => setTimeout(resolve, 750));
+    submissionError.value = "An unexpected error occurred.";
     console.error(err);
-  } finally {
-    isSubmitting.value = false;
   }
-}
+});
+
 </script>
 
 <template>
@@ -171,23 +152,26 @@ async function handleUpdateQuest() {
 
       <h1 class="text-3xl text-yellow-200 font-bold mb-6">Edit Quest</h1>
 
-      <form v-if="result" @submit.prevent="handleUpdateQuest" class="space-y-4">
+      <p v-if="submissionSuccess" class="text-green-500 text-sm mb-4">
+        Quest updated successfully!
+      </p>
+
+      <p v-if="submissionError" class="mb-10 text-red-400">{{ submissionError }}</p>
+
+      <form v-if="result" @submit.prevent="onSubmit" class="space-y-4">
 
         <div class="flex flex-col mb-6 w-1/3">
 
-          <label for="rank" class="text-sm font-medium text-white mb-2">Quest Tier</label>
-
-          <SelectRoot v-model="updateQuestPayload.rank">
-            <SelectTrigger 
-              id="rank-select"
-              class="inline-flex min-w-[160px] items-center justify-between rounded-lg px-[15px] text-sm leading-none h-[40px] gap-[5px] bg-white text-black hover:bg-stone-50 border shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none"
+          <SelectRoot v-model="rank">
+            <SelectTrigger id="rank"
+              class="inline-flex min-w-[160px] items-center justify-between rounded px-[15px] text-sm leading-none h-[38px] gap-[5px] bg-white text-black hover:bg-stone-50 border shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none"
               aria-label="Quest Tier">
               <SelectValue placeholder="Choose rank" />
               <Icon icon="radix-icons:chevron-down" class="h-4 w-4" />
             </SelectTrigger>
 
             <SelectPortal>
-              <SelectContent class="min-w-[160px] bg-white rounded-lg border shadow-sm z-[100]" :side-offset="5">
+              <SelectContent class="min-w-[160px] bg-white rounded border shadow-sm z-[100]" :side-offset="5">
                 <SelectScrollUpButton
                   class="flex items-center justify-center h-[25px] bg-white text-black cursor-default">
                   <Icon icon="radix-icons:chevron-up" />
@@ -215,20 +199,17 @@ async function handleUpdateQuest() {
             </SelectPortal>
           </SelectRoot>
 
+          <p v-if="errors.rank" class="text-red-400 text-sm mt-1">{{ errors.rank }}</p>
         </div>
 
         <div class="mb-10">
 
-          <label class="text-sm font-medium text-white mb-2">Add Language Tags</label>
-
-          <p class="text-zinc-200 text-sm mb-2">(You can type in to search for languages)</p>
-
-          <ComboboxRoot v-model="questTags" multiple ignore-filter class="relative" @select="() => query = ''">
+          <ComboboxRoot v-model="tags" multiple ignore-filter class="relative" @select="() => query = ''">
             <ComboboxAnchor
-              class="w-1/2 inline-flex items-center justify-between rounded-lg p-2 text-sm gap-2 bg-white text-black shadow hover:bg-stone-100 focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none">
+              class="w-1/2 inline-flex items-center justify-between rounded p-2 text-sm gap-2 bg-white text-black shadow hover:bg-stone-100 focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none">
 
-              <TagsInputRoot v-model="questTags" delimiter="" class="flex gap-2 items-center flex-wrap">
-                <TagsInputItem v-for="item in questTags" :key="item" :value="item"
+              <TagsInputRoot v-model="tags" delimiter="" class="flex gap-2 items-center flex-wrap">
+                <TagsInputItem v-for="item in tags" :key="item" :value="item"
                   class="flex items-center gap-2 text-white bg-green-600 rounded px-2 py-1">
                   <TagsInputItemText class="text-sm">{{ languageFormatter(item) }}</TagsInputItemText>
                   <TagsInputItemDelete>
@@ -265,6 +246,16 @@ async function handleUpdateQuest() {
               </ComboboxViewport>
             </ComboboxContent>
           </ComboboxRoot>
+
+          <p class="mt-1 text-sm text-zinc-400">
+            <span :class="(tags?.length || 0) > 5 ? 'text-red-500' : 'text-zinc-400'">
+              {{ tags?.length || 0 }}
+            </span>/5 language tags
+          </p>
+          <p v-if="(tags?.length || 0) > 5" class="text-sm text-red-500">
+            You can only select up to 5 tags
+          </p>
+          <p v-if="errors.tags" class="text-red-400 text-sm mt-1">{{ errors.tags }}</p>
         </div>
 
         <div class="mt-10 mb-6">
@@ -273,24 +264,42 @@ async function handleUpdateQuest() {
             Quest Title
           </label>
 
-          <Input id="quest-title" v-model="updateQuestPayload.title"
+          <Input id="quest-title" v-model="title" v-bind="titleAttrs"
             placeholder="Write a short, punchy title like 'Fix the broken login page'" class="w-full" />
-
-          <p class="mt-1 text-sm text-zinc-400">Max 100 characters</p>
+          <p class="mt-1 text-sm text-zinc-400">
+            <span :class="(title?.length || 0) > 100 ? 'text-red-500' : 'text-zinc-400'">
+              {{ title?.length || 0 }}
+            </span>/100 characters
+          </p>
+          <p v-if="errors.title" class="text-red-400 text-sm mt-1">{{ errors.title }}</p>
         </div>
 
         <div>
           <label for="quest-description" class="block text-sm font-medium text-white mb-2">
-            Description (optional)
+            Description - This is optional
           </label>
-          <TextArea id="quest-description" v-model="updateQuestPayload.description" placeholder="..." />
+          <TextArea id="quest-description" v-model="description"
+            placeholder="What needs to be done? Be as clear and helpful as possible." />
+          <p class="mt-1 text-sm text-zinc-400">
+            <span :class="(description?.length || 0) > 5000 ? 'text-red-500' : 'text-zinc-400'">
+              {{ description?.length || 0 }}
+            </span>/5000 characters
+          </p>
+          <p v-if="errors.description" class="text-red-400 text-sm mt-1">{{ errors.description }}</p>
         </div>
 
         <div>
           <label for="acceptance-criteria" class="block text-sm font-medium text-white mb-2">
-            Acceptance Criteria (required)
+            Acceptance Criteria
           </label>
-          <TextArea id="acceptance-criteria" v-model="updateQuestPayload.acceptanceCriteria" placeholder="..." />
+          <TextArea id="acceptance-criteria" v-model="acceptanceCriteria"
+            placeholder="Add acceptance criteria to help guide devs to achieve the goal." />
+          <p class="mt-1 text-sm text-zinc-400">
+            <span :class="(acceptanceCriteria?.length || 0) > 5000 ? 'text-red-500' : 'text-zinc-400'">
+              {{ acceptanceCriteria?.length || 0 }}
+            </span>/5000 characters
+          </p>
+          <p v-if="errors.acceptanceCriteria" class="text-red-400 text-sm mt-1">{{ errors.acceptanceCriteria }}</p>
         </div>
 
         <div>
@@ -300,14 +309,6 @@ async function handleUpdateQuest() {
           </button>
         </div>
       </form>
-
-      <p v-if="success" class="text-green-500 text-sm">
-        Quest updated successfully!
-      </p>
-
-      <p v-if="showError" class="text-red-500 text-sm">
-        Quest update unsuccessful!
-      </p>
     </div>
   </NuxtLayout>
 </template>

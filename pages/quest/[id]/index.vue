@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAsyncData } from "#imports"; // Nuxt auto-import
+import { useAsyncData, useRequestHeaders } from "#imports"; // Nuxt auto-import
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 
@@ -30,7 +30,7 @@ import { statusFormatter } from "@/utils/QuestStatusUtils";
 import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 
 
-const openPanels = ref<string[]>(['description', 'acceptance']) // or [] to have them all closed initially
+const openPanels = ref<string[]>([]) // or [] to have them all closed initially
 
 const userType = useCookie("user_type"); // reads cookie on client and SSR
 
@@ -42,17 +42,24 @@ const questIdFromRoute = route.params.id as string;
 const { data: user, error: userError } = await useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
 
-// 3) Fetch quest data via useAsyncData (runs on server, then hydrates)
+const requestHeaders = useRequestHeaders(["cookie"]);
+
 const {
   data: rawQuestData,
   pending,
   error: fetchError,
-} = await useAsyncData(
+} = await useAsyncData<null | Record<string, unknown>>(
   `quest-${questIdFromRoute}`,
-  () => getQuest(safeUserId.value, questIdFromRoute),
+  () => {
+    if (safeUserId.value) {
+      return getQuest(safeUserId.value, questIdFromRoute, { headers: requestHeaders });
+    }
+    return Promise.resolve(null);
+  },
   {
-    server: true, // run on server only
-    client: false, // do NOT run again on the client
+    server: true, // run on SSR
+    client: false,
+    lazy: true, // do NOT re‐fetch on client
     default: () => null,
   }
 );
@@ -176,8 +183,8 @@ const reportError = ref(false);
               </AccordionTrigger>
             </AccordionHeader>
             <AccordionContent
-              class="bg-zinc-800 text-zinc-300 text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
-              <div class="px-4 py-3">
+              class="bg-zinc-800 text-white text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+              <div class="px-4 py-3 whitespace-pre-wrap">
                 {{ result?.description || "No description was given" }}
               </div>
             </AccordionContent>
@@ -196,8 +203,8 @@ const reportError = ref(false);
               </AccordionTrigger>
             </AccordionHeader>
             <AccordionContent
-              class="bg-zinc-800 text-zinc-300 text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
-              <div class="px-4 py-3">
+              class="bg-zinc-800 text-white text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+              <div class="px-4 py-3 whitespace-pre-wrap">
                 {{ result?.acceptanceCriteria || "No acceptance criteria were provided" }}
               </div>
             </AccordionContent>

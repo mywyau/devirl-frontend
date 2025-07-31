@@ -13,13 +13,14 @@ export async function submitRegisterUser(
     lastName: string;
     userType: string;
   }
-): Promise<{ success: boolean; error?: string }> {
-  if (!userId) {
-    return {
-      success: false,
-      error: "User ID is missing. Please log in again.",
-    };
-  }
+): Promise<{success: boolean;error?: string;status?: number;structuredErrors?: unknown;}> {
+
+    if (!userId) {
+      return {
+        success: false,
+        error: "User ID is missing. Please log in again.",
+      };
+    }
 
   try {
     const payload: RegistrationPayload = RegistrationPayloadSchema.parse(form);
@@ -32,6 +33,16 @@ export async function submitRegisterUser(
 
     return { success: true };
   } catch (e: any) {
+    // Structured backend errors from $fetch
+    if (e?.response?.status === 400 && Array.isArray(e?.response?._data)) {
+      return {
+        success: false,
+        status: 400,
+        structuredErrors: e.response._data, // Forward array of error objects
+      };
+    }
+
+    // Zod validation or unexpected errors
     if (e instanceof z.ZodError) {
       return {
         success: false,
@@ -41,7 +52,7 @@ export async function submitRegisterUser(
 
     return {
       success: false,
-      error: e?.data?.message || "Something went wrong",
+      error: e?.data?.message || e.message || "Something went wrong",
     };
   }
 }
