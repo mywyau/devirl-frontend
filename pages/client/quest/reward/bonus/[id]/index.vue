@@ -120,17 +120,20 @@ async function submitCompletionReward() {
         <h1 class="text-3xl font-bold mb-6 text-green-300">Completion Bonus</h1>
 
         <p v-if="completeBonusSuccess" class="mt-4 text-green-400 font-semibold">
-          ${{ totalToPay.toFixed(2) }} Completion Bonus was added successfully!
+          ${{ completeBonusRewardAmount.toFixed(2) }} Completion Bonus Saved!
         </p>
 
         <div>
+
           <div class="mt-6 mb-6">
-            <p class="mb-6">Please add a reward for a completion bonus.</p>
+
+            <p v-if="editMode"class="mb-6">Please update the completion bonus.</p>
+            <p v-else class="mb-6">Please add a completion bonus.</p>
 
             <label for="complete-bonus-reward-amount" class="block text-base text-green-400 mb-2">
               Completion Bonus ($)
             </label>
-            <p class="text-sm mb-2">Hint: You can come back and update the reward amount if the quest is
+            <p class="text-sm mb-2">Hint: You can come back and update the reward amount if the quest staus is
               <span class="text-zinc-400 font-medium">Not Estimated</span> or <span
                 class="text-orange-400 font-medium">Estimated</span>
             </p>
@@ -150,15 +153,15 @@ async function submitCompletionReward() {
 
         <button v-if="editMode === true" @click="submitCompletionReward"
           class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">
-          Update Monetary Reward
+          Update Bonus
         </button>
         <button v-else="" @click="submitCompletionReward"
           class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">
-          Add Monetary Reward
+          Add Bonus
         </button>
       </div>
 
-      <RewardAccordion :items="accordionItems" />
+      <!-- <RewardAccordion :items="accordionItems" /> -->
     </div>
 
 

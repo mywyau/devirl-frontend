@@ -124,16 +124,17 @@ async function submitTimeReward() {
         <h1 class="text-3xl font-bold mb-6 text-green-300">Time Reward</h1>
 
         <p v-if="timeSuccess" class="mt-4 text-green-400 font-semibold">
-          ${{ totalToPay.toFixed(2) }} Time Reward was added successfully!
+          ${{ timeRewardAmount.toFixed(2) }} Time Reward Saved!
         </p>
 
         <div>
           <div class="mt-6 mb-6">
 
-            <p class="mb-6">Please add a reward for the total time worked on the quest.</p>
+            <p v-if="editMode === true" class="mb-6">Please update the time reward.</p>
+            <p v-else class="mb-6">Please add a time reward.</p>
 
             <label for="time-reward-amount" class="block text-base text-green-400 mb-2">Time Reward ($)</label>
-            <p class="text-sm mb-2">Hint: You can come back and update the reward amount if the quest is <span
+            <p class="text-sm mb-2">Hint: You can come back and update the reward amount if the quest status is <span
                 class="text-zinc-400 font-medium">Not Estimated</span> or <span
                 class="text-orange-400 font-medium">Estimated</span></p>
             <Input id="time-reward-amount" type="number" v-model="timeRewardAmount" placeholder="For example 20.00"
@@ -161,7 +162,7 @@ async function submitTimeReward() {
         </button>
       </div>
 
-      <RewardAccordion :items="accordionItems" />
+      <!-- <RewardAccordion :items="accordionItems" /> -->
     </div>
 
 
