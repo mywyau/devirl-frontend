@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { RewardDataSchema } from "./RewardSchema";
+import { nullable } from "zod/v4";
 
 // Zod schema
 export const QuestStatusSchema = z.enum([
@@ -22,6 +23,7 @@ export const QuestPartialSchema = z.object({
   devId: z.string().nullable().optional(),
   rank: z.string(),
   title: z.string(),
+  hoursOfWork: z.number().nullable().optional(),
   description: z.string().nullable().optional(),
   acceptanceCriteria: z.string().nullable().optional(),
   status: QuestStatusSchema,

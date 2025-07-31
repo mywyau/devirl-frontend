@@ -124,13 +124,16 @@ async function submitCompletionReward() {
         </p>
 
         <div>
+
           <div class="mt-6 mb-6">
-            <p class="mb-6">Please add a reward for a completion bonus.</p>
+
+            <p v-if="editMode"class="mb-6">Please update the completion bonus.</p>
+            <p v-else class="mb-6">Please add a completion bonus.</p>
 
             <label for="complete-bonus-reward-amount" class="block text-base text-green-400 mb-2">
               Completion Bonus ($)
             </label>
-            <p class="text-sm mb-2">Hint: You can come back and update the reward amount if the quest is
+            <p class="text-sm mb-2">Hint: You can come back and update the reward amount if the quest staus is
               <span class="text-zinc-400 font-medium">Not Estimated</span> or <span
                 class="text-orange-400 font-medium">Estimated</span>
             </p>
