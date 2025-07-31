@@ -163,7 +163,7 @@ const onSubmit = handleSubmit(async (values) => {
         <div class="flex flex-col mb-6 w-1/3">
 
           <SelectRoot v-model="rank">
-            <SelectTrigger id="rank"
+            <SelectTrigger id="rank-select"
               class="inline-flex min-w-[160px] items-center justify-between rounded px-[15px] text-sm leading-none h-[38px] gap-[5px] bg-white text-black hover:bg-stone-50 border shadow-sm focus:shadow-[0_0_0_2px] focus:shadow-green-500 outline-none"
               aria-label="Quest Tier">
               <SelectValue placeholder="Choose rank" />
