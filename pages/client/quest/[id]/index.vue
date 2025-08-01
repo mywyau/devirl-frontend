@@ -289,6 +289,12 @@ async function loadEstimates() {
 
             <ContextMenuItem v-if="result?.status.toString() == 'NotEstimated'"
               class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
+              @click="router.push(`/bids/client/view/${questId}`)">
+              View Bids
+            </ContextMenuItem>
+
+            <ContextMenuItem v-if="result?.status.toString() == 'NotEstimated'"
+              class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
               @click="router.push(`/client/quest/work-hours/${questId}`)">
               Work Hours
             </ContextMenuItem>
@@ -299,7 +305,7 @@ async function loadEstimates() {
               Edit Quest
             </ContextMenuItem>
 
-            <div class="border-t my-2 border-teal-200" />
+            <div v-if="result?.status.toString() == 'NotEstimated'" class="border-t my-2 border-teal-200" />
 
             <ContextMenuItem v-if="['Open', 'NotEstimated', 'Estimated'].includes(result?.status.toString())"
               class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
