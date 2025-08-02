@@ -120,7 +120,7 @@ function refreshPage() {
                 </span>
 
                 <span v-else class="font-sans text-sm text-zinc-300">
-                  No reward
+                  No reward set
                 </span>
               </p>
 
@@ -140,7 +140,7 @@ function refreshPage() {
               </span>
 
               <span v-else class="font-sans text-sm text-zinc-300">
-                No reward
+                No reward set
               </span>
             </p>
 

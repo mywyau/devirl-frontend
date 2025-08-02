@@ -30,7 +30,7 @@ const userType = useCookie("user_type");
 
 const showFeedback = ref(false);
 const questsWithReward = ref<QuestWithReward[]>([]);
-const totalQuests = ref(0); 
+const totalQuests = ref(0);
 
 async function fetchTotalQuestCount() {
   const { numberOfQuests } = await $fetch<{ numberOfQuests: number }>(`${baseUrl}/quest/count/not-estimated/and/open`);
@@ -184,10 +184,14 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
               <span v-if="quest.reward?.timeRewardValue != null" class="text-green-400">
                 ${{ (quest.reward.timeRewardValue! / 100).toFixed(2) }}
               </span>
-              <span v-else class="text-zinc-300">No reward</span>
+              <span v-else class="text-zinc-300">No reward yet set</span>
             </p>
 
             <div class="flex gap-4">
+              <NuxtLink v-if="userType == 'Dev'" :to="`/bids/${quest.quest.questId}`"
+                class="text-base text-white hover:underline hover:text-teal-300">
+                Bids
+              </NuxtLink>
               <NuxtLink v-if="userType == 'Dev'" :to="`/quest/estimation/${quest.quest.questId}`"
                 class="text-base text-white hover:underline hover:text-teal-300">
                 Estimations
@@ -204,7 +208,7 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
             <span v-if="quest.reward?.completionRewardValue != null" class="text-green-400">
               ${{ (quest.reward.completionRewardValue! / 100).toFixed(2) }}
             </span>
-            <span v-else class="text-zinc-300">No reward</span>
+            <span v-else class="text-zinc-300">No reward yet set</span>
           </p>
 
         </div>

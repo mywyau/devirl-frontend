@@ -129,9 +129,11 @@ watch(currentPage, async (page) => {
         <TotalLevelTable :paged-total-level-data="pagedTotalLevelData" :items-per-page="itemsPerPage"
           :current-page="currentPage" />
 
-        <TotalLevelPaginationControls v-if="!loading && pagedTotalLevelData.length > 0 && totalItems > itemsPerPage"
+        <TotalLevelPaginationControls 
+          v-if="!loading && pagedTotalLevelData.length > 0 && totalItems > itemsPerPage"
           :page="currentPage" :total="totalItems" :items-per-page="itemsPerPage"
-          @update:page="(newPage) => currentPage = newPage" />
+          @update:page="(newPage) => currentPage = newPage" 
+        />
 
       </div>
 
