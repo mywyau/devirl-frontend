@@ -10,7 +10,7 @@ describe("CreateEstimateSchema", () => {
   const validCreate = {
     questId: "abc123",
     score: 80,
-    days: 5,
+    hours: 40,
     comment: "Seems intermediate difficulty.",
   };
 
@@ -28,7 +28,7 @@ describe("CreateEstimateSchema", () => {
   it("fails if comment is empty", () => {
     const invalidData = { ...validCreate, comment: "" };
     const result = CreateEstimateSchema.safeParse(invalidData);
-    expect(result.success).toBe(false); 
+    expect(result.success).toBe(false);
   });
 });
 
@@ -37,7 +37,7 @@ describe("GetEstimateSchema", () => {
     {
       username: "username",
       score: 80,
-      days: 5,
+      hours: 40,
       rank: "Iron",
       comment: "Challenging but manageable",
     },
@@ -58,7 +58,9 @@ describe("GetEstimateSchema", () => {
   it("fails if username is missing", () => {
     const invalidData = {
       ...validGet,
-      calculatedEstimate: [{ ...mockCalculatedEstimate[0], username: undefined }],
+      calculatedEstimate: [
+        { ...mockCalculatedEstimate[0], username: undefined },
+      ],
     };
     const result = GetEstimateSchema.safeParse(invalidData);
     expect(result.success).toBe(false);

@@ -192,13 +192,17 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
                 class="text-base text-white hover:underline hover:text-teal-300">
                 Bids
               </NuxtLink>
+              <NuxtLink :to="`/quest/${quest.quest.questId}`"
+                class="text-base text-white hover:underline hover:text-teal-300">
+                Details
+              </NuxtLink>
               <NuxtLink v-if="userType == 'Dev'" :to="`/quest/estimation/${quest.quest.questId}`"
                 class="text-base text-white hover:underline hover:text-teal-300">
                 Estimations
               </NuxtLink>
-              <NuxtLink :to="`/quest/${quest.quest.questId}`"
+              <NuxtLink v-if="userType == 'Dev' || userType == 'Client'" :to="`/quest/estimation/view/${quest.quest.questId}`"
                 class="text-base text-white hover:underline hover:text-teal-300">
-                Details
+                View Estimates
               </NuxtLink>
             </div>
           </div>

@@ -31,7 +31,7 @@ describe("EstimateController", () => {
         {
           username: "username",
           score: 80,
-          days: 5,
+          hours: 5,
           rank: "Iron",
           comment: "Challenging but manageable",
         },
@@ -70,10 +70,11 @@ describe("EstimateController", () => {
 
   describe("createEstimate", () => {
     it("should delegate to postEstimate with correct args", async () => {
+
       const payload: CreateEstimate = {
         questId: "quest456",
         score: 80,
-        days: 5,
+        hours: 5,
         comment: "Some solid reasoning",
       };
 
