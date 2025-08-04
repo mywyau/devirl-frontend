@@ -29,6 +29,14 @@ const result = computed<ProfileData | null>(() => {
   return profileSkillData.value.find((d) => d.devId === safeUserId.value) ?? null;
 });
 
+const progressToNextLevel = (xp: number, nextLevelXp: number): number =>
+  Math.min((xp / nextLevelXp) * 100, 100);
+
+const getProgress = (xp: number, nextXp: number): string => {
+  const percentage = Math.min((xp / nextXp) * 100, 100);
+  return `${percentage.toFixed(1)}%`;
+};
+
 </script>
 
 
@@ -43,14 +51,26 @@ const result = computed<ProfileData | null>(() => {
           <h2 class="text-xl font-bold mb-4 text-center md:text-left">Skills</h2>
 
           <div v-for="data in result?.skillData" :key="data.skill" class="mb-4">
+
             <div class="flex justify-between items-center mb-1">
               <span class="text-rose-400 font-medium">{{ data.skill }}</span>
-              <span class="text-indigo-300 text-sm">{{ data.skillLevel }} / 99</span>
+
+              <div class="flex flex-col items-end">
+                <span class="text-indigo-300 text-sm">{{ data.skillLevel }} / 99</span>
+                <!-- <p class="text-indigo-300 text-sm">Next level: {{ data.nextLevelXp }} XP</p> -->
+              </div>
+
             </div>
+
             <div class="w-full bg-zinc-700 h-3 rounded">
-              <!-- Add progress bar logic if desired -->
+              <div class="bg-rose-500 h-3 rounded" :style="{ width: getProgress(data.skillXp, data.nextLevelXp) }">
+              </div>
             </div>
-            <p class="text-white text-xs mt-1">{{ data.skillXp }} XP</p>
+
+            <div class="flex justify-between text-xs text-white mt-1">
+              <span>{{ data.skillXp }} XP</span>
+              <span class="text-white">Next level: <span class="text-indigo-400">{{ data.nextLevelXp }}</span> XP</span>
+            </div>
           </div>
         </div>
 
@@ -59,17 +79,27 @@ const result = computed<ProfileData | null>(() => {
           <h2 class="text-xl font-bold mb-4 text-center md:text-left">Languages</h2>
 
           <div v-for="data in result?.languageData" :key="data.language" class="mb-4">
+
             <div class="flex justify-between items-center mb-1">
+
               <span class="text-blue-400 font-medium">{{ data.language }}</span>
-              <span class="text-indigo-300 text-sm">{{ data.languageLevel }} / 99</span>
+
+              <div class="flex flex-col items-end">
+                <span class="text-indigo-300 text-sm">{{ data.languageLevel }} / 99</span>
+                <!-- <p class="text-indigo-300 text-sm">Next level: {{ data.nextLevelXp }} XP</p> -->
+              </div>
             </div>
 
-            <!-- XP bar needs the calc for next level tho-->
             <div class="w-full bg-zinc-700 h-3 rounded">
-              <!-- Add progress bar logic if desired -->
+              <div class="bg-blue-500 h-3 rounded" :style="{ width: getProgress(data.languageXp, data.nextLevelXp) }">
+              </div>
             </div>
 
-            <p class="text-white text-xs mt-1">{{ data.languageXp }} XP</p>
+            <div class="flex justify-between text-xs text-white mt-1">
+              <span>{{ data.languageXp }} XP</span>
+              <span class="text-white">Next level: <span class="text-indigo-400">{{ data.nextLevelXp }}</span> XP</span>
+            </div>
+
           </div>
         </div>
       </div>

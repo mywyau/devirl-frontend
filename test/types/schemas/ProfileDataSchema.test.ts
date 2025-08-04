@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-    ProfileDataSchema,
-    ProfileLanguageDataSchema,
-    ProfileSkillDataSchema,
+  ProfileDataSchema,
+  ProfileLanguageDataSchema,
+  ProfileSkillDataSchema,
 } from "../../../types/schema/ProfileDataSchema"; // adjust path as needed
 
 describe("ProfileSkillDataSchema", () => {
@@ -10,6 +10,8 @@ describe("ProfileSkillDataSchema", () => {
     skill: "Questing",
     skillLevel: 2,
     skillXp: 500,
+    nextLevel: 3,
+    nextLevelXp: 1000,
   };
 
   it("validates a valid skill entry", () => {
@@ -35,6 +37,8 @@ describe("ProfileLanguageDataSchema", () => {
     language: "Scala",
     languageLevel: 3,
     languageXp: 1200,
+    nextLevel: 4,
+    nextLevelXp: 1500,
   };
 
   it("validates a valid language entry", () => {
@@ -60,12 +64,36 @@ describe("ProfileDataSchema", () => {
     devId: "dev-123",
     username: "coder_may",
     skillData: [
-      { skill: "Testing", skillLevel: 1, skillXp: 100 },
-      { skill: "Estimating", skillLevel: 2, skillXp: 200 },
+      {
+        skill: "Testing",
+        skillLevel: 1,
+        skillXp: 100,
+        nextLevel: 2,
+        nextLevelXp: 500,
+      },
+      {
+        skill: "Estimating",
+        skillLevel: 2,
+        skillXp: 200,
+        nextLevel: 3,
+        nextLevelXp: 1000,
+      },
     ],
     languageData: [
-      { language: "TypeScript", languageLevel: 3, languageXp: 900 },
-      { language: "Scala", languageLevel: 4, languageXp: 1500 },
+      {
+        language: "TypeScript",
+        languageLevel: 3,
+        languageXp: 900,
+        nextLevel: 4,
+        nextLevelXp: 1500,
+      },
+      {
+        language: "Scala",
+        languageLevel: 4,
+        languageXp: 1500,
+        nextLevel: 5,
+        nextLevelXp: 2000,
+      },
     ],
   };
 
@@ -92,7 +120,9 @@ describe("ProfileDataSchema", () => {
   it("fails if languageData includes an invalid entry", () => {
     const invalidProfile = {
       ...validProfile,
-      languageData: [{ language: "Haskell", languageLevel: 2, languageXp: 300 }],
+      languageData: [
+        { language: "Haskell", languageLevel: 2, languageXp: 300 },
+      ],
     };
     const result = ProfileDataSchema.safeParse(invalidProfile);
     expect(result.success).toBe(false);

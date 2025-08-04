@@ -25,6 +25,8 @@ describe("ProfileController", () => {
             skill: "Questing",
             skillLevel: 40,
             skillXp: 60000,
+            nextLevel: 41,
+            nextLevelXp: 80000,
           },
         ],
         languageData: [
@@ -32,6 +34,8 @@ describe("ProfileController", () => {
             language: "Python",
             languageLevel: 40,
             languageXp: 60000,
+            nextLevel: 41,
+            nextLevelXp: 80000,
           },
         ],
       },

@@ -1,15 +1,12 @@
 <script setup lang="ts">
-import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
-import Input from '@/components/reka/Input.vue';
-import TextArea from '@/components/reka/TextArea.vue';
 import { useAuthUser } from "@/composables/useAuthUser";
-import { createEstimate, getEstimatesRequest } from "@/controllers/EstimateController"; // <- updated import
+import { getEstimatesRequest } from "@/controllers/EstimateController"; // <- updated import
 import { getQuest } from "@/controllers/QuestController";
-import { CreateEstimateSchema, type CalculatedEstimate } from "@/types/schema/EstimateSchema";
+import { type CalculatedEstimate } from "@/types/schema/EstimateSchema";
 import type { QuestPartial } from "@/types/schema/QuestStatusSchema";
 import { formatCountdown } from "@/utils/EstimateUtils";
+import { rankClass } from "@/utils/QuestRankUtil";
 import { useRoute } from "nuxt/app";
-import { Label } from 'reka-ui';
 import { computed, onMounted, onUnmounted, ref } from "vue";
 
 import {
@@ -20,9 +17,10 @@ import {
     AccordionTrigger,
 } from 'reka-ui';
 
-import { fetchEstimationExpiration } from '@/connectors/EstimationExpirationConnector';
-import type { EstimationExpiration } from '@/types/schema/EstimationExpirationSchema';
 import { Icon } from '@iconify/vue';
+
+import { fetchEstimationExpiration } from "@/connectors/EstimationExpirationConnector";
+import type { EstimationExpiration } from '@/types/schema/EstimationExpirationSchema';
 
 
 // 1) Grab the route param
@@ -34,18 +32,6 @@ const { data: user, error: userError } = await useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
 
 const openPanels = ref<string[]>([]) // or [] to have them all closed initially
-
-const score = ref(0);
-const hours = ref(0);
-const comment = ref("");
-
-const isSubmitting = ref(false);
-const submissionSuccess = ref(false);
-const submissionError = ref<string | null>(null);
-
-const scoreError = ref<string | null>(null);
-const hoursError = ref<string | null>(null);
-const commentError = ref<string | null>(null);
 
 const formattedEstimationCloseAt = computed(() => {
     if (!estimationCloseAt.value) return null;
@@ -60,98 +46,6 @@ const formattedEstimationCloseAt = computed(() => {
         timeZoneName: 'short',
     });
 });
-
-async function submitEstimation() {
-
-    // Clear old state
-    submissionError.value = null;
-    submissionSuccess.value = false;
-
-    // Local validations
-    if (score.value == 0) {
-        submissionError.value = "Please enter a score between 1-100";
-        return;
-    }
-
-    if (hours.value == 0) {
-        submissionError.value = "Please enter an estimated number of hours to complete the work";
-        return;
-    }
-
-
-    if (!comment.value.trim()) {
-        submissionError.value = "Please enter a comment.";
-        return;
-    }
-
-    const payload = {
-        questId: questIdFromRoute,
-        score: score.value,
-        hours: hours.value,
-        comment: comment.value.trim(),
-    };
-
-    isSubmitting.value = true;
-
-    const userId = user.value?.sub;
-    if (!userId) {
-        submissionError.value = "User ID not available.";
-        isSubmitting.value = false;
-        return;
-    }
-
-    const parsed = CreateEstimateSchema.safeParse(payload);
-
-    console.log(parsed)
-
-    if (!parsed.success) {
-        // Reset all field errors
-        scoreError.value = null;
-        hoursError.value = null;
-        commentError.value = null;
-
-        parsed.error.issues.forEach(issue => {
-            const path = issue.path.join(".");
-            const message = issue.message;
-
-            switch (path) {
-                case "score":
-                    scoreError.value = message;
-                    break;
-                case "hours":
-                    hoursError.value = message;
-                    break;
-                case "comment":
-                    commentError.value = message;
-                    break;
-            }
-        });
-
-        isSubmitting.value = false;
-        return;
-    }
-
-    try {
-        const result = await createEstimate(userId, parsed.data);
-
-        if (result) {
-            submissionSuccess.value = true;
-            comment.value = "";
-            score.value = 0;
-            hours.value = 0;
-        } else {
-            submissionError.value = "Submission failed. Please try again.";
-        }
-    } catch (err) {
-
-        console.error(err);
-        submissionError.value = "An unexpected error occurred or you have already made an estimate"; // double creation does not work hence error
-
-    } finally {
-        isSubmitting.value = false;
-    }
-}
-
 
 const retrievedEstimationExpiration = ref<EstimationExpiration | null>(null);
 const retrievedQuestData = ref<QuestPartial | null>(null);
@@ -172,9 +66,15 @@ onMounted(async () => {
 
     isLoading.value = true;
     isLoadingEstimates.value = true;
+
     try {
         retrievedQuestData.value = await getQuest(safeUserId.value || "userId not found", questIdFromRoute);
         console.debug(`[Estimation Page][getQuest]${retrievedQuestData.value}`);
+
+        if (retrievedEstimationExpiration.value?.estimationCloseAt) {
+            updateCountdown();
+            countdownInterval.value = window.setInterval(updateCountdown, 1000);
+        }
 
     } catch (e) {
         console.error(e);
@@ -254,26 +154,12 @@ onUnmounted(() => {
         <div class="max-w-3xl mx-auto py-12 px-6 text-white">
 
             <div class="">
-                <h1 class="text-3xl font-bold mb-4">Estimate Difficulty</h1>
-            </div>
-
-            <div v-if="estimationCloseAt && !estimationIsClosed" class="text-white font-sans text-lg mb-4">
-                Estimations close at: <span class="text-blue-300 font-semibold">{{ formattedEstimationCloseAt }}</span>
-                <br />
-                Time remaining: <span class="text-red-300 font-mono">{{ countdown }}</span>
+                <h1 class="text-3xl font-bold mb-4">View Estimates</h1>
             </div>
 
             <div v-if="!isLoadingEstimates">
 
-                <div v-if="!estimationIsClosed">
-
-                    <div v-if="submissionSuccess" class="text-green-400 mb-4">
-                        Estimate submitted successfully!
-                    </div>
-
-                    <div v-if="submissionError" class="text-red-400 mb-4">
-                        {{ submissionError }}
-                    </div>
+                <div v-if="estimationIsClosed">
 
                     <!-- Estimate Details -->
                     <div class="bg-teal-300 p-6 rounded mb-6 space-y-4">
@@ -318,8 +204,7 @@ onUnmounted(() => {
                                 <AccordionContent
                                     class="bg-white text-black text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
                                     <div class="px-4 py-3 whitespace-pre-wrap">
-                                        {{
-                                            retrievedQuestData?.acceptanceCriteria ||
+                                        {{ retrievedQuestData?.acceptanceCriteria ||
                                             "No acceptance criteria were provided"
                                         }}
                                     </div>
@@ -327,59 +212,6 @@ onUnmounted(() => {
                             </AccordionItem>
                         </AccordionRoot>
                     </div>
-
-
-                    <!-- Form -->
-                    <div class="mb-10">
-
-                        <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
-                            for="difficulty">
-                            Difficulty Score
-                        </Label>
-
-                        <div class="mb-3">
-                            <Input id="difficulty-score" type="number" v-model="score" placeholder="0" class="w-1/4" />
-                            <p class="text-sm text-zinc-300 mt-1">1-100 points</p>
-                            <p v-if="scoreError" class="text-sm text-red-400 mt-1">{{ scoreError }}</p>
-                        </div>
-
-                        <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
-                            for="number-of-hours">
-                            Number of Hours
-                        </Label>
-
-                        <div class="mb-3">
-                            <Input id="number-of-day" type="number" v-model="hours" placeholder="0" class="w-1/4" />
-                            <p class="text-sm text-zinc-300 mt-1">1-150 hours</p>
-                            <p v-if="hoursError" class="text-sm text-red-400 mt-1">{{ hoursError }}</p>
-                        </div>
-
-                        <div class="mb-3">
-                            <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
-                                for="comment">
-                                Comments
-                            </Label>
-
-                            <TextArea id="comment" v-model="comment"
-                                placeholder="Thoughts, considerations, or reasoning behind your estimate..." />
-                            <p class="text-sm text-zinc-300 mt-1">
-                                {{ comment.length }}/2000 characters
-                            </p>
-                            <p v-if="commentError" class="text-sm text-red-400 mt-1">{{ commentError }}</p>
-                        </div>
-
-                        <ConfirmDialog title="Confirm Estimate Submission"
-                            description="Are you sure you want to submit this estimate? You can only submit once and it cannot be changed."
-                            triggerText="Submit Estimate" actionText="Yes, submit" :disabled="isSubmitting"
-                            @confirm="submitEstimation"
-                            triggerClass="mt-4 px-4 py-2 bg-green-600 hover:bg-green-500 rounded text-white"
-                            actionClass="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded text-sm font-medium" />
-
-                    </div>
-                </div>
-
-                <div v-else class="text-red-400 text-lg font-semibold mt-6 mb-6">
-                    Estimations are closed for this quest
                 </div>
             </div>
 
@@ -389,33 +221,59 @@ onUnmounted(() => {
                     <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
                     {{ retrievedEstimates?.length === 1 ? 'estimate' : 'estimates' }}.
                 </p>
-                <p v-if="!estimationIsClosed && !estimationCloseAt">
+                <p class="text-white mt-4" v-if="!estimationIsClosed && !estimationCloseAt">
                     Cannot display estimates, there are not enough estimates yet.
                 </p>
             </div>
 
             <div v-if="!estimationIsClosed && estimationCloseAt" class="text-zinc-400 text-base mt-4">
+
+                <div class="text-white font-sans text-lg mb-4">
+                    <p class="mt-6">
+                        Estimations close at:
+                        <span class="text-blue-300 font-semibold">
+                            {{ formattedEstimationCloseAt }}
+                        </span>
+                    </p>
+                    <p>
+                        Time remaining: <span class="text-red-300 font-mono">{{ countdown }}</span>
+                    </p>
+                </div>
+
                 <p>
                     There {{ retrievedEstimates?.length === 1 ? 'is' : 'are' }}
                     <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
                     {{ retrievedEstimates?.length === 1 ? 'estimate' : 'estimates' }}.
                 </p>
-                <p>
-                    Estimates are still open but will close soon!
-                </p>
+                <p class="text-white mt-6"> Estimates are still open but will close soon! </p>
+                <p class="text-white"> Please go to the estimations page to make your contribution.</p>
+                <p class="text-white mt-6"> Estimates will be shown here when the quest has been finalized.</p>
             </div>
 
             <div v-if="estimationIsClosed" class="text-zinc-400 text-base mt-4">
-                <p>
+                <p class="text-white">
                     There were
                     <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
                     {{ retrievedEstimates?.length === 1 ? 'estimate' : 'estimates' }} made.
                 </p>
-                <p>
-                    You can go see the estimates on the view estimates page.
-                </p>
             </div>
 
+            <!-- View all Estimates made section -->
+
+            <div v-if="!isLoadingEstimates && estimationIsClosed" class="mt-6">
+                <ul class="space-y-3">
+                    <li v-for="(est, i) in retrievedEstimates" :key="i" class="bg-zinc-800 p-4 rounded">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-indigo-300 font-bold">{{ est.username }}</span>
+                            <span class="text-sm text-white">
+                                Score: <span class="text-green-400">{{ est.score }}</span> | Est. Hours: <span
+                                    class="text-green-400">{{ est.hours }}</span> | <span
+                                    :class="`text-sm ${rankClass(est.rank)}`">{{ est.rank }}</span>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </NuxtLayout>
 </template>
