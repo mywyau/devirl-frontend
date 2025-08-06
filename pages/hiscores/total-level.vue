@@ -84,7 +84,7 @@ watch(currentPage, async (page) => {
           <h2 class="font-heading text-lg font-semibold mb-2">Skill Hiscores</h2>
           <ul class="space-y-2">
             <li v-for="skill in skillOptions" :key="skill">
-              <NuxtLink :to="`/hiscores/skills/${skill}`"
+              <NuxtLink :id="`${skill.toLowerCase()}-hiscore-side-bar-link`" :to="`/hiscores/skills/${skill.toLowerCase()}`"
                 class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                 {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
               </NuxtLink>
@@ -100,7 +100,8 @@ watch(currentPage, async (page) => {
           <ScrollAreaViewport class="w-full h-full pr-2">
             <ul class="space-y-2">
               <li v-for="lang in languageOptions" :key="lang">
-                <NuxtLink :to="`/hiscores/languages/${encodeURIComponent(lang)}`"
+                <NuxtLink 
+                  :id="`${lang.toLowerCase()}-hiscore-side-bar-link`" :to="`/hiscores/languages/${encodeURIComponent(lang).toLowerCase()}`"
                   class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                   {{ languageFormatter(lang.charAt(0).toUpperCase() + lang.slice(1)) }}
                 </NuxtLink>
@@ -124,16 +125,14 @@ watch(currentPage, async (page) => {
 
         <h1 class="font-heading text-3xl font-semibold mb-6 text-center text-teal-300">Total Level</h1>
 
-        <TotalDevCountMessage :total-items="totalItems" :has-loaded="hasLoaded" />
+        <TotalDevCountMessage id="total-level-number-of-devs" :total-items="totalItems" :has-loaded="hasLoaded" />
 
         <TotalLevelTable :paged-total-level-data="pagedTotalLevelData" :items-per-page="itemsPerPage"
           :current-page="currentPage" />
 
-        <TotalLevelPaginationControls 
-          v-if="!loading && pagedTotalLevelData.length > 0 && totalItems > itemsPerPage"
+        <TotalLevelPaginationControls v-if="!loading && pagedTotalLevelData.length > 0 && totalItems > itemsPerPage"
           :page="currentPage" :total="totalItems" :items-per-page="itemsPerPage"
-          @update:page="(newPage) => currentPage = newPage" 
-        />
+          @update:page="(newPage) => currentPage = newPage" />
 
       </div>
 

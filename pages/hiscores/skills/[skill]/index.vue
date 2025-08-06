@@ -99,7 +99,7 @@ watch(route, () => {
                     <h2 class="text-lg font-bold mb-2">Skill Hiscores</h2>
                     <ul class="space-y-2">
                         <li v-for="skill in skillOptions" :key="skill">
-                            <NuxtLink :to="`/hiscores/skills/${skill}`"
+                            <NuxtLink :id="`${skill.toLowerCase()}-hiscore-side-bar-link`" :to="`/hiscores/skills/${skill.toLowerCase()}`"
                                 class="block px-3 py-2 rounded text-sm text-white/90 hover:text-white" :class="{
                                     'bg-indigo-500/70 text-white font-semibold': skill === skillId,
                                     'hover:bg-teal-400/60': skill !== skillId
@@ -118,7 +118,7 @@ watch(route, () => {
                     <ScrollAreaViewport class="w-full h-full pr-2">
                         <ul class="space-y-2">
                             <li v-for="lang in languageOptions" :key="lang">
-                                <NuxtLink :to="`/hiscores/languages/${encodeURIComponent(lang)}`"
+                                <NuxtLink :id="`${lang.toLowerCase()}-hiscore-side-bar-link`" :to="`/hiscores/languages/${encodeURIComponent(lang).toLowerCase()}`"
                                     class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                                     {{ languageFormatter(lang.charAt(0).toUpperCase() + lang.slice(1)) }}
                                 </NuxtLink>
@@ -142,9 +142,10 @@ watch(route, () => {
 
                 <h1 class="text-3xl text-teal-300 font-bold mb-6 text-center">{{ capitalize(skillId) }}</h1>
 
-                <TotalDevCountMessage :total-items="totalItems" :has-loaded="hasLoaded" />
+                <TotalDevCountMessage id="total-level-number-of-devs" :total-items="totalItems" :has-loaded="hasLoaded" />
 
-                <SkillTable :has-loaded="hasLoaded" :paged-data="pagedSkillData" :items-per-page="itemsPerPage" :current-page="currentPage" />
+                <SkillTable :has-loaded="hasLoaded" :paged-data="pagedSkillData" :items-per-page="itemsPerPage"
+                    :current-page="currentPage" />
 
                 <TotalLevelPaginationControls v-if="!loading && pagedSkillData.length > 0 && totalItems > itemsPerPage"
                     :page="currentPage" :total="totalItems" :items-per-page="itemsPerPage"

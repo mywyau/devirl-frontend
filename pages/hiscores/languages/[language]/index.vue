@@ -102,7 +102,7 @@ watch(route, () => {
           <h2 class="text-lg font-bold mb-2">Skill Hiscores</h2>
           <ul class="space-y-2">
             <li v-for="skill in skillOptions" :key="skill">
-              <NuxtLink :to="`/hiscores/skills/${skill}`"
+              <NuxtLink :id="`${skill.toLowerCase()}-hiscore-side-bar-link`" :to="`/hiscores/skills/${skill.toLowerCase()}`"
                 class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
                 {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
               </NuxtLink>
@@ -118,7 +118,9 @@ watch(route, () => {
           <ScrollAreaViewport class="w-full h-full pr-2">
             <ul class="space-y-2">
               <li v-for="lang in languageOptions" :key="lang">
-                <NuxtLink :to="`/hiscores/languages/${encodeURIComponent(lang)}`"
+                <NuxtLink 
+                  :id="`${lang.toLowerCase()}-hiscore-side-bar-link`"
+                  :to="`/hiscores/languages/${encodeURIComponent(lang).toLowerCase()}`"
                   class="block px-3 py-2 rounded text-sm text-white/90 hover:text-white" :class="{
                     'bg-indigo-500/70 text-white font-semibold': lang === languageId,
                     'hover:bg-teal-400/60': lang !== languageId
@@ -148,7 +150,7 @@ watch(route, () => {
           {{ capitalize(languageFormatter(languageId)) }}
         </h1>
 
-        <TotalDevCountMessage :has-loaded="hasLoaded" :total-items="totalItems" />
+        <TotalDevCountMessage id="total-level-number-of-devs" :has-loaded="hasLoaded" :total-items="totalItems" />
 
         <LanguageTable :paged-data="pagedLanguageData" :items-per-page="itemsPerPage" :current-page="currentPage" />
 

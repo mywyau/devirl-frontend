@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import Input from '@/components/reka/Input.vue';
-import RewardAccordion from '@/components/ui/rewards/add/RewardAccordion.vue';
 import { useAuthUser } from '@/composables/useAuthUser';
 import { loadConfig } from '@/configuration/ConfigLoader';
 import { AddCompletionBonusRewardSchema } from "@/types/schema/AddCompletionBonusRewardForm";
 import { computed, onMounted, ref, type ComputedRef } from 'vue';
 import { useRoute } from 'vue-router';
 
-
-import { accordionItems, roundUpTo2DP } from "@/service/AddRewardService";
+import { roundUpTo2DP } from "@/service/AddRewardService";
 import { type RewardData } from "@/types/schema/RewardSchema";
 
 const route = useRoute();
@@ -53,14 +51,18 @@ onMounted(async () => {
 
   try {
 
-    rewardDataGetResult.value = await $fetch(`${baseUrl}reward/${encodeURIComponent(safeUserId)}/${questIdFromRoute}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    rewardDataGetResult.value =
+      await $fetch(`${baseUrl}reward/${encodeURIComponent(safeUserId)}/${questIdFromRoute}`, {
+        method: "GET",
+        credentials: "include",
+      });
 
     if (rewardDataGetResult.value) {
       completeBonusRewardAmount.value = Math.round((rewardDataGetResult.value.completionRewardValue || 0) / 100);
-      editMode.value = true
+    }
+
+    if (rewardDataGetResult.value?.completionRewardValue === 0) {
+      editMode.value = false
     }
 
   } catch (e) {
@@ -155,13 +157,12 @@ async function submitCompletionReward() {
           class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">
           Update Bonus
         </button>
-        <button v-else="" @click="submitCompletionReward"
+        <button v-else @click="submitCompletionReward"
           class="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded">
           Add Bonus
         </button>
       </div>
 
-      <!-- <RewardAccordion :items="accordionItems" /> -->
     </div>
 
 

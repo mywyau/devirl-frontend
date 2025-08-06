@@ -337,6 +337,8 @@ onUnmounted(() => {
                             Difficulty Score
                         </Label>
 
+                        <p class="text-sm text-zinc-300 mb-2">Hint: This will be displayed publicly when the estimation is closed</p>
+
                         <div class="mb-3">
                             <Input id="difficulty-score" type="number" v-model="score" placeholder="0" class="w-1/4" />
                             <p class="text-sm text-zinc-300 mt-1">1-100 points</p>
@@ -348,6 +350,8 @@ onUnmounted(() => {
                             Number of Hours
                         </Label>
 
+                        <p class="text-sm text-zinc-300 mb-2">Hint: This will be displayed publicly when the estimation is closed</p>
+
                         <div class="mb-3">
                             <Input id="number-of-day" type="number" v-model="hours" placeholder="0" class="w-1/4" />
                             <p class="text-sm text-zinc-300 mt-1">1-150 hours</p>
@@ -355,13 +359,16 @@ onUnmounted(() => {
                         </div>
 
                         <div class="mb-3">
+
                             <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
                                 for="comment">
                                 Comments
                             </Label>
 
+                            <p class="text-sm text-zinc-300 mb-2">Hint: This will be shown privately to the client</p>
+
                             <TextArea id="comment" v-model="comment"
-                                placeholder="Thoughts, considerations, or reasoning behind your estimate..." />
+                                placeholder="Your proposal, thoughts, considerations, or reasoning behind your estimate... " />
                             <p class="text-sm text-zinc-300 mt-1">
                                 {{ comment.length }}/2000 characters
                             </p>

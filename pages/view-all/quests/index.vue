@@ -184,7 +184,7 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
               <span v-if="quest.reward?.timeRewardValue != null" class="text-green-400">
                 ${{ (quest.reward.timeRewardValue! / 100).toFixed(2) }}
               </span>
-              <span v-else class="text-zinc-300">No reward yet set</span>
+              <span v-else class="text-zinc-300">No reward set yet</span>
             </p>
 
             <div class="flex gap-4">
@@ -212,7 +212,7 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
             <span v-if="quest.reward?.completionRewardValue != null" class="text-green-400">
               ${{ (quest.reward.completionRewardValue! / 100).toFixed(2) }}
             </span>
-            <span v-else class="text-zinc-300">No reward yet set</span>
+            <span v-else class="text-zinc-300">No reward set yet</span>
           </p>
 
         </div>
