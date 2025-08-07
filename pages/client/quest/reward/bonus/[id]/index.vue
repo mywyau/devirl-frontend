@@ -116,12 +116,12 @@ async function submitCompletionReward() {
 <template>
   <NuxtLayout>
 
-    <div class="max-w-xl mx-auto py-10 px-6 text-white">
+    <div class="max-w-xl mx-auto py-10 px-6 text-black dark:text-white">
 
       <div class="mb-6">
-        <h1 class="text-3xl font-bold mb-6 text-green-300">Completion Bonus</h1>
+        <h1 class="text-3xl font-bold mb-6 dark:text-green-300">Completion Bonus</h1>
 
-        <p v-if="completeBonusSuccess" class="mt-4 text-green-400 font-semibold">
+        <p v-if="completeBonusSuccess" class="mt-4 text-green-500 dark:text-green-400 font-semibold">
           ${{ completeBonusRewardAmount.toFixed(2) }} Completion Bonus Saved!
         </p>
 
@@ -132,23 +132,23 @@ async function submitCompletionReward() {
             <p v-if="editMode"class="mb-6">Please update the completion bonus.</p>
             <p v-else class="mb-6">Please add a completion bonus.</p>
 
-            <label for="complete-bonus-reward-amount" class="block text-base text-green-400 mb-2">
+            <label for="complete-bonus-reward-amount" class="block text-base text-green-500 dark:text-green-400 mb-2">
               Completion Bonus ($)
             </label>
-            <p class="text-sm mb-2">Hint: You can come back and update the reward amount if the quest staus is
-              <span class="text-zinc-400 font-medium">Not Estimated</span> or <span
+            <p class="text-sm mb-2 text-zinc-600 dark:text-zinc-400">Hint: You can come back and update the reward amount if the quest staus is
+              <span class="text-zinc-600 dark:text-zinc-300 font-medium">Not Estimated</span> or <span
                 class="text-orange-400 font-medium">Estimated</span>
             </p>
             <Input id="complete-bonus-reward-amount" type="number" v-model="completeBonusRewardAmount"
               placeholder="For example 20.00" class="w-1/3" />
-            <p v-if="completeBonusError" class="mt-4 text-red-400">{{ completeBonusError }}</p>
+            <p v-if="completeBonusError" class="mt-4 text-red-500 dark:text-red-400">{{ completeBonusError }}</p>
           </div>
         </div>
 
-        <div v-if="completeBonusRewardAmount > 0" class="mt-4 mb-6 text-base text-zinc-300 space-y-2">
+        <div v-if="completeBonusRewardAmount > 0" class="mt-4 mb-6 text-base text-black dark:text-white space-y-2">
           <p><strong>Developer Reward:</strong> ${{ completeBonusRewardAmount.toFixed(2) }}</p>
           <p><strong>Platform Fee ({{ platformFeePercent }}%):</strong> ${{ completeBonusOnlyFee.toFixed(2) }}</p>
-          <p class="text-green-300 font-semibold">
+          <p class="text-green-500 dark:text-green-300 font-semibold">
             <strong>Total:</strong> ${{ totalToPay.toFixed(2) }}
           </p>
         </div>

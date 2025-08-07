@@ -70,8 +70,8 @@ function refreshPage() {
     <div class="p-6 max-w-4xl mx-auto">
 
       <div class="mt-6 flex justify-between items-center">
-        <h1 class="text-3xl font-bold mb-6 text-teal-300">My Quests</h1>
-        <button @click="refreshPage" class="text-white underline text-sm">
+        <h1 class="text-3xl font-bold mb-6 text-black dark:text-teal-300">My Quests</h1>
+        <button @click="refreshPage" class="text-black dark:text-white underline text-sm">
           Refresh
         </button>
       </div>
@@ -87,10 +87,10 @@ function refreshPage() {
         </div>
 
         <div class="grid gap-6">
-          <div v-for="quest in rawQuestsWithReward" :key="quest.quest.questId" class="p-4 rounded-xl bg-white/10">
+          <div v-for="quest in rawQuestsWithReward" :key="quest.quest.questId" class="p-4 rounded-xl bg-white dark:bg-white/10 border border-black">
 
             <div class="flex justify-between items-center">
-              <h2 class="text-xl text-indigo-300 font-semibold">{{ quest.quest.title }}</h2>
+              <h2 class="text-xl text-black dark:text-indigo-300 font-semibold">{{ quest.quest.title }}</h2>
               <span :class="`text-base font-semibold ${rankClass(quest.quest.rank)}`">
                 {{ quest.quest.rank }}
               </span>
@@ -113,33 +113,33 @@ function refreshPage() {
 
             <div class="mt-4 flex justify-between items-center">
 
-              <p class="text-base text-white">
+              <p class="text-base text:black dark:text-white">
                 Time Reward:
-                <span v-if="quest.reward?.timeRewardValue != null" class="text-base text-green-400">
+                <span v-if="quest.reward?.timeRewardValue != null" class="text-base text-green-500 dark:text-green-400">
                   ${{ (quest.reward.timeRewardValue! / 100).toFixed(2) }}
                 </span>
 
-                <span v-else class="font-sans text-sm text-zinc-300">
+                <span v-else class="font-sans text-sm text-zinc-600 dark:text-zinc-300">
                   No reward set
                 </span>
               </p>
 
               <div class="flex space-x-4 ml-auto">
                 <a :href="`/client/quest/${quest.quest.questId}`" rel="external"
-                  class="text-white hover:underline hover:text-teal-300">
+                  class="text:black dark:text-white hover:underline hover:text-teal-300">
                   Details
                 </a>
               </div>
 
             </div>
 
-            <p class="text-base text-white mt-4">
+            <p class="text-base text:black dark:text-white mt-4">
               Completion Reward:
-              <span v-if="quest.reward?.completionRewardValue != null" class="text-base text-green-400">
+              <span v-if="quest.reward?.completionRewardValue != null" class="text-base text-green-500 dark:text-green-400">
                 ${{ (quest.reward.completionRewardValue! / 100).toFixed(2) }}
               </span>
 
-              <span v-else class="font-sans text-sm text-zinc-300">
+              <span v-else class="font-sans text-sm text-zinc-600 dark:text-zinc-300">
                 No reward set
               </span>
             </p>

@@ -28,9 +28,6 @@ const result = computed<ProfileData | null>(() => {
   return profileSkillData.value.find((d) => d.devId === safeUserId.value) ?? null;
 });
 
-const progressToNextLevel = (xp: number, nextLevelXp: number): number =>
-  Math.min((xp / nextLevelXp) * 100, 100);
-
 const getProgress = (xp: number, nextXp: number): string => {
   const percentage = Math.min((xp / nextXp) * 100, 100);
   return `${percentage.toFixed(1)}%`;

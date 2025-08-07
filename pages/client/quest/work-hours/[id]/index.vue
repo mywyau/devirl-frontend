@@ -106,10 +106,10 @@ async function submitWorkHours() {
 <template>
   <NuxtLayout>
 
-    <div class="max-w-xl mx-auto py-10 px-6 text-white">
+    <div class="max-w-xl mx-auto py-10 px-6 text-black dark:text-white">
 
       <div class="mb-6">
-        <h1 class="text-3xl font-bold mb-6 text-green-300">Work Hours</h1>
+        <h1 class="text-3xl font-bold mb-6 text-black dark:text-green-300 ">Work Hours</h1>
 
         <p v-if="hoursOfWorkSuccess" class="mt-4 text-green-400 font-semibold">
           {{ totalWorkHours.toFixed(2) }} hours of work Saved!
@@ -121,9 +121,9 @@ async function submitWorkHours() {
             <p v-if="editMode" class="mb-6">Please update the expected number of hours the developer will work.</p>
             <p v-else class="mb-6">Please add an expected number of hours the developer will work.</p>
 
-            <label for="time-reward-amount" class="block text-base text-green-400 mb-2">Number of work hours</label>
+            <label for="time-reward-amount" class="block text-base text-green-500 dark:text-green-400 mb-2">Number of expected work hours</label>
 
-            <p class="text-sm text-zinc-300 mb-2">Hint: You can come back and change the expected number of working hours if the quest status is 
+            <p class="text-sm text-zinc-600 dark:text-zinc-300 mb-2">Hint: You can come back and change the expected number of working hours if the quest status is 
               <span class="text-zinc-400 font-medium">Not Estimated</span>
             </p>
 

@@ -105,8 +105,9 @@ onMounted(() => {
   <NuxtLayout>
     <div class="max-w-5xl mx-auto mt-16 mb-16 p-6">
       <div class="flex flex-col md:flex-row gap-8">
-        <div class="bg-zinc-800 flex-1 rounded-3xl p-10">
-          <h1 class="text-2xl text-white font-bold mb-6 text-center">
+
+        <div class="bg-white dark:bg-zinc-800 flex-1 rounded-lg p-10 border border-black dark:border-black">
+          <h1 class="text-2xl text-black dark:text-white font-bold mb-6 text-center">
             Your Profile
           </h1>
 
@@ -115,11 +116,11 @@ onMounted(() => {
             <div v-if="userProfile">
 
               <div class="space-y-4 mb-6">
-                <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white" textColor="text-teal-300" />
-                <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-teal-300" />
-                <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white" textColor="text-teal-300" />
-                <ProfileItem label="First Name" labelColor="text-white" textColor="text-teal-300" :value="userProfile.firstName" />
-                <ProfileItem label="Last Name" labelColor="text-white" textColor="text-teal-300" :value="userProfile.lastName" />
+                <ProfileItem label="Username" :value="userProfile.username" labelColor="text-black dark:text-white" textColor="text-black dark:text-black dark:text-teal-300" />
+                <ProfileItem label="Email" :value="userProfile.email" labelColor="text-black dark:text-white" textColor="text-black dark:text-teal-300" />
+                <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-black dark:text-white" textColor="text-black dark:text-teal-300" />
+                <ProfileItem label="First Name" labelColor="text-black dark:text-white" textColor="text-black dark:text-teal-300" :value="userProfile.firstName" />
+                <ProfileItem label="Last Name" labelColor="text-black dark:text-white" textColor="text-black dark:text-teal-300" :value="userProfile.lastName" />
               </div>
 
 

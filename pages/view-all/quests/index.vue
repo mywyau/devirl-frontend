@@ -93,12 +93,12 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
 
     <div class="p-6 max-w-4xl mx-auto">
 
-      <h1 class="text-3xl font-bold mb-6 text-teal-300">
+      <h1 class="text-3xl font-bold mb-6 text-black dark:text-teal-300">
         All Available Quests
       </h1>
 
       <!-- Delayed loading message -->
-      <div v-if="showFeedback && (authPending || loading)" class="text-zinc-500">
+      <div v-if="showFeedback && (authPending || loading)" class=" text-zinc-500 dark:text-zinc-500">
         Loading quests...
       </div>
 
@@ -110,7 +110,7 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
       <div v-if="error" class="text-red-500">{{ error }}</div>
 
       <!-- Pagination Controls -->
-      <div class="sticky top-6 z-20 bg-zinc-900/80 backdrop-blur-md py-4">
+      <div class="sticky top-6 z-20 bg-zinc-100 dark:bg-zinc-900/80 py-4">
         <template v-if="hasLoaded && questsWithReward.length > 0 && totalQuests > itemsPerPage">
           <PaginationRoot v-model:page="currentPage" :total="totalQuests" :items-per-page="itemsPerPage"
             :sibling-count="1" show-edges class="mt-8 flex justify-center">
@@ -150,17 +150,17 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
 
       <div class="grid gap-6 mt-6" v-if="questsWithReward.length > 0">
         <div v-for="(quest, index) in questsWithReward" :key="quest.quest.questId"
-          class="p-4 rounded-xl shadow bg-white/10 flex flex-col gap-4 sm:gap-6">
+          class="p-4 rounded-xl bg-white/90 dark:bg-white/10 shadow flex flex-col gap-4 sm:gap-6">
 
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-            <h2 :id="`quest-title-${index}`" class="text-lg sm:text-xl font-semibold text-indigo-300">
+            <h2 :id="`quest-title-${index}`" class="text-lg sm:text-xl font-semibold text-black dark:text-indigo-300">
               {{ quest.quest.title }}
             </h2>
             <span v-if="quest.quest.estimated"
               :class="`text-sm sm:text-base font-semibold ${rankClass(quest.quest.rank)}`">
               {{ quest.quest.rank }}
             </span>
-            <span v-else class="text-sm sm:text-base font-semibold text-white">
+            <span v-else class="text-sm sm:text-base font-semibold text-black dark:text-white">
               Not Estimated
             </span>
           </div>
@@ -179,40 +179,40 @@ watch([currentPage, safeUserId], async ([page, uid]) => {
 
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mt-4">
 
-            <p class="text-sm sm:text-base text-white">
+            <p class="text-sm sm:text-base text-black dark:text-white">
               Time Reward:
               <span v-if="quest.reward?.timeRewardValue != null" class="text-green-400">
                 ${{ (quest.reward.timeRewardValue! / 100).toFixed(2) }}
               </span>
-              <span v-else class="text-zinc-300">No reward set yet</span>
+              <span v-else class="text-zinc-700 dark:text-zinc-300">No reward set yet</span>
             </p>
 
             <div class="flex gap-4">
               <NuxtLink v-if="userType == 'Dev'" :to="`/bids/${quest.quest.questId}`"
-                class="text-base text-white hover:underline hover:text-teal-300">
+                class="text-base text-black hover:text-teal-500 dark:text-white dark:hover:text-teal-300 hover:underline">
                 Bids
               </NuxtLink>
               <NuxtLink :to="`/quest/${quest.quest.questId}`"
-                class="text-base text-white hover:underline hover:text-teal-300">
+                class="text-base text-black hover:text-teal-500 dark:text-white dark:hover:text-teal-300 hover:underline">
                 Details
               </NuxtLink>
               <NuxtLink v-if="userType == 'Dev'" :to="`/quest/estimation/${quest.quest.questId}`"
-                class="text-base text-white hover:underline hover:text-teal-300">
+                class="text-base text-black hover:text-teal-500 dark:text-white dark:hover:text-teal-300 hover:underline">
                 Estimations
               </NuxtLink>
               <NuxtLink v-if="userType == 'Dev' || userType == 'Client'" :to="`/quest/estimation/view/${quest.quest.questId}`"
-                class="text-base text-white hover:underline hover:text-teal-300">
+                class="text-base text-black hover:text-teal-500 dark:text-white dark:hover:text-teal-300 hover:underline">
                 View Estimates
               </NuxtLink>
             </div>
           </div>
 
-          <p class="text-sm sm:text-base text-white">
+          <p class="text-sm sm:text-base text-black dark:text-white">
             Completion Bonus:
             <span v-if="quest.reward?.completionRewardValue != null" class="text-green-400">
               ${{ (quest.reward.completionRewardValue! / 100).toFixed(2) }}
             </span>
-            <span v-else class="text-zinc-300">No reward set yet</span>
+            <span v-else class="text-zinc-700 dark:text-zinc-300">No reward set yet</span>
           </p>
 
         </div>

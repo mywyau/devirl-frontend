@@ -3,19 +3,19 @@ export const getStatusTextColour = (
 ): string => {
   switch (status) {
     case "Completed":
-      return "text-green-300";
+      return "text-green-500 dark:text-green-300";
     case "Failed":
-      return "text-red-300";
+      return "text-red-500 dark:text-red-300";
     case "Review":
-      return "text-blue-300";
+      return "text-blue-500 dark:text-blue-300";
     case "InProgress":
-      return "text-yellow-300";
+      return "text-yellow-500 dark:text-yellow-300";
     case "NotStarted":
-      return "text-zinc-400";
+      return "text-zinc-500 dark:text-zinc-400";
     case "Open":
-      return "text-teal-300";
+      return "text-teal-500 dark:text-teal-300";
     default:
-      return "text-indigo-300";
+      return "text-indigo-500 dark:text-indigo-300";
   }
 };
 

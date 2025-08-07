@@ -2,8 +2,8 @@
 
 import defaultTheme from 'tailwindcss/defaultTheme'
 
-
 export default {
+  darkMode: 'class',
   safelist: [
     {
       pattern: /bg-(red|blue|green|yellow|gray|teal)-(300|400|500)/,

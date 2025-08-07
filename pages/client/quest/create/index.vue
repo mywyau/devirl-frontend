@@ -107,21 +107,21 @@ const onSubmit = handleSubmit(async (values) => {
 <template>
   <NuxtLayout>
 
-    <div class="p-6 max-w-4xl mx-auto">
+    <div class="p-6 max-w-4xl mx-auto text-black dark:text-white">
 
-      <h1 class="text-3xl text-green-300 font-bold mb-6">Create a New Quest</h1>
+      <h1 class="text-3xl text-black dark:text-green-300 font-bold mb-6">Create a New Quest</h1>
 
       <form @submit.prevent="onSubmit">
 
-        <p v-if="submissionSuccess" class="mb-10 text-green-400">
+        <p v-if="submissionSuccess" class="mb-10 text-green-500 dark:text-green-400">
           Quest created successfully!
         </p>
 
-        <p v-if="submissionError" class="mb-10 text-red-400">{{ submissionError }}</p>
+        <p v-if="submissionError" class="mb-10 text-red-500 dark:text-red-400">{{ submissionError }}</p>
 
         <div class="flex flex-col mb-6 w-1/3">
 
-          <label for="rank" class="text-sm font-medium text-white mb-2">Quest Tier</label>
+          <label for="rank" class="text-sm font-medium mb-2">Quest Tier</label>
 
           <SelectRoot v-model="rank">
             <SelectTrigger id="rank"
@@ -160,14 +160,14 @@ const onSubmit = handleSubmit(async (values) => {
             </SelectPortal>
           </SelectRoot>
 
-          <p v-if="errors.rank" class="text-red-400 text-sm mt-1">{{ errors.rank }}</p>
+          <p v-if="errors.rank" class="text-red-500 dark:text-red-400 text-sm mt-1">{{ errors.rank }}</p>
         </div>
 
         <div class="mb-10">
 
-          <label class="text-sm text-white font-medium mb-2 block">Add Programming Languages</label>
+          <label class="text-sm font-medium mb-2 block">Add Programming Languages</label>
 
-          <p class="text-zinc-200 text-sm mb-2">Hint: You can type to search for tag options</p>
+          <p class="text-zinc-600 dark:text-zinc-200 text-sm mb-2">Hint: You can type to search for tag options</p>
 
           <ComboboxRoot v-model="tags" multiple ignore-filter class="relative" @select="() => query = ''">
             <ComboboxAnchor
@@ -219,8 +219,8 @@ const onSubmit = handleSubmit(async (values) => {
             </ComboboxContent>
           </ComboboxRoot>
 
-          <p class="mt-1 text-sm text-zinc-400">
-            <span :class="(tags?.length || 0) > 5 ? 'text-red-500' : 'text-zinc-400'">
+          <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <span :class="(tags?.length || 0) > 5 ? 'text-red-500' : 'text-zinc-600 dark:text-zinc-400'">
               {{ tags?.length || 0 }}
             </span>/5 language tags
           </p>
@@ -232,14 +232,14 @@ const onSubmit = handleSubmit(async (values) => {
 
         <div class="mt-10 mb-6">
 
-          <label for="quest-title" class="block mb-1 text-sm font-medium text-white">
+          <label for="quest-title" class="block mb-1 text-sm font-medium">
             Quest Title
           </label>
 
           <Input id="quest-title" v-model="title" v-bind="titleAttrs" class="w-full"
             placeholder="Add a title to your quest" />
-          <p class="mt-1 text-sm text-zinc-400">
-            <span :class="(title?.length || 0) > 100 ? 'text-red-500' : 'text-zinc-400'">
+          <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <span :class="(title?.length || 0) > 100 ? 'text-red-500' : 'text-zinc-600 dark:text-zinc-400'">
               {{ title?.length || 0 }}
             </span>/100 characters
           </p>
@@ -248,7 +248,7 @@ const onSubmit = handleSubmit(async (values) => {
 
         <div class="mb-6">
 
-          <label for="quest-description" class="block mb-1 text-sm font-medium text-white">
+          <label for="quest-description" class="block mb-1 text-sm font-medium">
             Description - This is optional
           </label>
 
@@ -256,8 +256,8 @@ const onSubmit = handleSubmit(async (values) => {
             placeholder="What needs to be done? Be as clear and helpful as possible."
           />
 
-          <p class="mt-1 text-sm text-zinc-400">
-            <span :class="(description?.length || 0) > 5000 ? 'text-red-500' : 'text-zinc-400'">
+          <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <span :class="(description?.length || 0) > 5000 ? 'text-red-500' : 'text-zinc-600 dark:text-zinc-400'">
               {{ description?.length || 0 }}
             </span>/5000 characters
           </p>
@@ -266,7 +266,7 @@ const onSubmit = handleSubmit(async (values) => {
 
         <div class="mb-6">
 
-          <label for="acceptance-criteria" class="block mb-1 text-sm font-medium text-white">
+          <label for="acceptance-criteria" class="block mb-1 text-sm font-medium">
             Acceptance Criteria
           </label>
 
@@ -274,8 +274,8 @@ const onSubmit = handleSubmit(async (values) => {
             placeholder="Add acceptance criteria to help guide devs to achieve the goal." 
           />
 
-          <p class="mt-1 text-sm text-zinc-400">
-            <span :class="(acceptanceCriteria?.length || 0) > 5000 ? 'text-red-500' : 'text-zinc-400'">
+          <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <span :class="(acceptanceCriteria?.length || 0) > 5000 ? 'text-red-500' : 'text-zinc-600 dark:text-zinc-400'">
               {{ acceptanceCriteria?.length || 0 }}
             </span>/5000 characters
           </p>
