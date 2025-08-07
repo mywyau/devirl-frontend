@@ -6,7 +6,6 @@ import { type ProfileData } from '@/types/schema/ProfileDataSchema';
 import { useAsyncData } from 'nuxt/app';
 import { computed } from 'vue';
 
-
 // 2) Resolve the logged-in user (top-level await)
 const { data: user, error: userError } = await useAuthUser();
 const safeUserId = computed(() => user.value?.sub ?? null);
@@ -57,7 +56,6 @@ const getProgress = (xp: number, nextXp: number): string => {
 
               <div class="flex flex-col items-end">
                 <span class="text-indigo-300 text-sm">{{ data.skillLevel }} / 99</span>
-                <!-- <p class="text-indigo-300 text-sm">Next level: {{ data.nextLevelXp }} XP</p> -->
               </div>
 
             </div>
@@ -86,7 +84,6 @@ const getProgress = (xp: number, nextXp: number): string => {
 
               <div class="flex flex-col items-end">
                 <span class="text-indigo-300 text-sm">{{ data.languageLevel }} / 99</span>
-                <!-- <p class="text-indigo-300 text-sm">Next level: {{ data.nextLevelXp }} XP</p> -->
               </div>
             </div>
 
