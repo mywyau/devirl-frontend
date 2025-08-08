@@ -151,7 +151,7 @@ onUnmounted(() => {
 <template>
     <NuxtLayout>
 
-        <div class="max-w-3xl mx-auto py-12 px-6 text-white">
+        <div class="max-w-3xl mx-auto py-12 px-6 text-black dark:text-white">
 
             <div class="">
                 <h1 class="text-3xl font-bold mb-4">View Estimates</h1>
@@ -163,7 +163,8 @@ onUnmounted(() => {
 
                     <!-- Estimate Details -->
                     <div class="bg-teal-300 p-6 rounded mb-6 space-y-4">
-                        <h2 class="text-black text-2xl font-semibold">{{ retrievedQuestData?.title }}</h2>
+                        <h2 class="text-white dark:text-black text-2xl font-semibold">{{ retrievedQuestData?.title }}
+                        </h2>
                     </div>
 
                     <div>
@@ -215,20 +216,21 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div v-if="!estimationIsClosed && !estimationCloseAt" class="text-zinc-400 text-base mt-4">
+            <div v-if="!estimationIsClosed && !estimationCloseAt"
+                class="text-zinc-500 dark:text-zinc-400 text-base mt-4">
                 <p>
                     There {{ retrievedEstimates?.length === 1 ? 'is' : 'are' }}
-                    <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
+                    <span class="text-green-500 dark:text-green-400">{{ retrievedEstimates?.length }}</span>
                     {{ retrievedEstimates?.length === 1 ? 'estimate' : 'estimates' }}.
                 </p>
-                <p class="text-white mt-4" v-if="!estimationIsClosed && !estimationCloseAt">
+                <p class="text-black dark:text-white mt-4" v-if="!estimationIsClosed && !estimationCloseAt">
                     Cannot display estimates, there are not enough estimates yet.
                 </p>
             </div>
 
             <div v-if="!estimationIsClosed && estimationCloseAt" class="text-zinc-400 text-base mt-4">
 
-                <div class="text-white font-sans text-lg mb-4">
+                <div class="text-black dark:text-white font-sans text-lg mb-4">
                     <p class="mt-6">
                         Estimations close at:
                         <span class="text-blue-300 font-semibold">
@@ -240,18 +242,19 @@ onUnmounted(() => {
                     </p>
                 </div>
 
-                <p>
+                <p class="text-zinc-600 dark:text-zinc-300">
                     There {{ retrievedEstimates?.length === 1 ? 'is' : 'are' }}
-                    <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
+                    <span class="text-green-500 dark:text-green-400">{{ retrievedEstimates?.length }}</span>
                     {{ retrievedEstimates?.length === 1 ? 'estimate' : 'estimates' }}.
                 </p>
-                <p class="text-white mt-6"> Estimates are still open but will close soon! </p>
-                <p class="text-white"> Please go to the estimations page to make your contribution.</p>
-                <p class="text-white mt-6"> Estimates will be shown here when the quest has been finalized.</p>
+                <p class="text-black dark:text-white mt-6"> Estimates are still open but will close soon! </p>
+                <p class="text-black dark:text-white"> Please go to the estimations page to make your contribution.</p>
+                <p class="text-black dark:text-white mt-6"> Estimates will be shown here when the quest has been
+                    finalized.</p>
             </div>
 
             <div v-if="estimationIsClosed" class="text-zinc-400 text-base mt-4">
-                <p class="text-white">
+                <p class="text-black dark:text-white">
                     There were
                     <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
                     {{ retrievedEstimates?.length === 1 ? 'estimate' : 'estimates' }} made.
@@ -265,7 +268,7 @@ onUnmounted(() => {
                     <li v-for="(est, i) in retrievedEstimates" :key="i" class="bg-zinc-800 p-4 rounded">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-indigo-300 font-bold">{{ est.username }}</span>
-                            <span class="text-sm text-white">
+                            <span class="text-sm text-black dark:text-white">
                                 Score: <span class="text-green-400">{{ est.score }}</span> | Est. Hours: <span
                                     class="text-green-400">{{ est.hours }}</span> | <span
                                     :class="`text-sm ${rankClass(est.rank)}`">{{ est.rank }}</span>

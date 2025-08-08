@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import Input from '@/components/reka/Input.vue';
-import RewardAccordion from '@/components/ui/rewards/add/RewardAccordion.vue';
 import { useAuthUser } from '@/composables/useAuthUser';
 import { loadConfig } from '@/configuration/ConfigLoader';
 import { AddTimeRewardSchema } from "@/types/schema/AddTimeRewardForm";
 import { computed, onMounted, ref, type ComputedRef } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { accordionItems, roundUpTo2DP } from "@/service/AddRewardService";
+import { roundUpTo2DP } from "@/service/AddRewardService";
 import type { RewardData } from '@/types/schema/RewardSchema';
 
 const route = useRoute();
@@ -118,12 +117,12 @@ async function submitTimeReward() {
 <template>
   <NuxtLayout>
 
-    <div class="max-w-xl mx-auto py-10 px-6 text-white">
+    <div class="max-w-xl mx-auto py-10 px-6 text-black dark:text-white">
 
       <div class="mb-6">
-        <h1 class="text-3xl font-bold mb-6 text-green-300">Time Reward</h1>
+        <h1 class="text-3xl font-bold mb-6 dark:text-green-300">Time Reward</h1>
 
-        <p v-if="timeSuccess" class="mt-4 text-green-400 font-semibold">
+        <p v-if="timeSuccess" class="mt-4 text-green-500 dark:text-green-400 font-semibold">
           ${{ timeRewardAmount.toFixed(2) }} Time Reward Saved!
         </p>
 
@@ -133,10 +132,12 @@ async function submitTimeReward() {
             <p v-if="editMode === true" class="mb-6">Please update the time reward.</p>
             <p v-else class="mb-6">Please add a time reward.</p>
 
-            <label for="time-reward-amount" class="block text-base text-green-400 mb-2">Time Reward ($)</label>
-            <p class="text-sm mb-2">Hint: You can come back and update the reward amount if the quest status is <span
-                class="text-zinc-400 font-medium">Not Estimated</span> or <span
-                class="text-orange-400 font-medium">Estimated</span></p>
+            <label for="time-reward-amount" class="block text-base text-green-500 dark:text-green-400 mb-2">
+              Time Reward ($)
+            </label>
+            <p class="text-sm mb-2 text-zinc-600 dark:text-zinc-400">Hint: You can come back and update the reward
+              amount if the quest status is <span class="text-zinc-600 dark:text-zinc-400 font-medium">Not
+                Estimated</span> or <span class="text-orange-500 dark:text-orange-400 font-medium">Estimated</span></p>
             <Input id="time-reward-amount" type="number" v-model="timeRewardAmount" placeholder="For example 20.00"
               class="w-1/3" />
             <p v-if="timeError" class="mt-4 text-red-400">{{ timeError }}</p>
@@ -144,10 +145,10 @@ async function submitTimeReward() {
           </div>
         </div>
 
-        <div v-if="timeRewardAmount > 0" class="mt-4 mb-6 text-base text-zinc-300 space-y-2">
+        <div v-if="timeRewardAmount > 0" class="mt-4 mb-6 text-base text-black dark:text-white space-y-2">
           <p><strong>Developer Reward:</strong> ${{ timeRewardAmount.toFixed(2) }}</p>
           <p><strong>Platform Fee ({{ platformFeePercent }}%):</strong> ${{ timeOnlyFee.toFixed(2) }}</p>
-          <p class="text-green-300 font-semibold">
+          <p class="text-green-500 dark:text-green-300 font-semibold">
             <strong>Total:</strong> ${{ totalToPay.toFixed(2) }}
           </p>
         </div>
@@ -161,10 +162,6 @@ async function submitTimeReward() {
           Add Monetary Reward
         </button>
       </div>
-
-      <!-- <RewardAccordion :items="accordionItems" /> -->
     </div>
-
-
   </NuxtLayout>
 </template>

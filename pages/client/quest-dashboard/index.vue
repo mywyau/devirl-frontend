@@ -60,9 +60,10 @@ function goToStatusPage(key: string) {
 
           <div class="cursor-default">
 
-            <Card class="bg-white/5 text-white hover:bg-white/10 transition">
+            <Card
+              class="bg-white text-black hover:bg-black/10 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 transition shadow">
               <CardContent class="p-6 space-y-6">
-                
+
                 <div class="flex items-center justify-between mb-4">
                   <h1 class="font-heading text-4xl font-extrabold tracking-tight">
                     Quest Dashboard
@@ -71,58 +72,58 @@ function goToStatusPage(key: string) {
 
                 <!--  DESKTOP HINT -->
 
-                <div class="hidden md:block text-base text-green-400 mt-2">
+                <div class="hidden md:block text-base text-black dark:text-white mt-2">
                   Right-click anywhere on the card for more actions
                 </div>
 
-                <div class="mt-10 border-t border-zinc-700 pt-6">
-                  <h2 class="text-xl text-teal-300 font-semibold mb-4 text-center">
+                <div class="mt-10 border-t border-zinc-800 dark:border-zinc-400 pt-6">
+                  <h2 class="text-xl text-black dark:text-white font-semibold mb-4 text-center">
                     Stats
                   </h2>
 
-                  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-white text-center">
-                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
-                      <p class="text-sm text-white mb-2">Quests Failed</p>
-                      <p class="text-xl font-bold text-red-400">
+                  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-black dark:text-white text-center">
+                    <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border border-zinc-800 dark:border-zinc-400">
+                      <p class="text-sm mb-2">Quests Failed</p>
+                      <p class="text-xl font-bold text-red-500 dark:text-red-400">
                         {{ percent(clientStats.questsFailed, clientStats.totalQuests) }}
                       </p>
                       <Separator class="bg-zinc-600 my-2 h-px w-full" />
-                      <p class="text-sm text-white">
+                      <p class="text-sm">
                         {{ clientStats.questsFailed }} / {{ clientStats.totalQuests }}
                       </p>
                     </div>
 
-                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
-                      <p class="text-sm text-white mb-2">Quests Completed</p>
-                      <p class="text-xl font-bold text-green-400">
+                    <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border border-zinc-800 dark:border-zinc-400">
+                      <p class="text-sm mb-2">Quests Completed</p>
+                      <p class="text-xl font-bold text-green-500 dark:text-green-400">
                         {{ percent(clientStats.questsCompleted, clientStats.totalQuests) }}
                       </p>
                       <Separator class="bg-zinc-600 my-2 h-px w-full" />
-                      <p class="text-sm text-white">
+                      <p class="text-sm">
                         {{ clientStats.questsCompleted }} / {{ clientStats.totalQuests }}
                       </p>
                     </div>
 
-                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
-                      <p class="text-sm text-white mb-2">Quests Paid Out</p>
-                      <p class="text-xl font-bold text-blue-400">
+                    <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border border-zinc-800 dark:border-zinc-400">
+                      <p class="text-sm mb-2">Quests Paid Out</p>
+                      <p class="text-xl font-bold text-blue-500 dark:text-blue-400">
                         {{ percent(clientStats.questsRewarded, clientStats.totalQuests) }}
 
                       </p>
                       <Separator class="bg-zinc-600 my-2 h-px w-full" />
-                      <p class="text-sm text-white">
+                      <p class="text-sm">
                         {{ clientStats.questsRewarded }} / {{ clientStats.totalQuests }}
                       </p>
                     </div>
 
-                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
-                      <p class="text-sm text-white mb-2">Completion Rewards Paid</p>
-                      <p class="text-xl font-bold text-indigo-400">
+                    <div class="bg-zinc-100 dark:bg-zinc-900 p-4 rounded-xl border border-zinc-800 dark:border-zinc-400">
+                      <p class="text-sm mb-2">Completion Rewards Paid</p>
+                      <p class="text-xl font-bold text-indigo-500 dark:text-indigo-400">
                         {{ percent(clientStats.completionRewardPaid, clientStats.totalQuests) }}
 
                       </p>
                       <Separator class="bg-zinc-600 my-2 h-px w-full" />
-                      <p class="text-sm text-white">
+                      <p class="text-sm">
                         {{ clientStats.completionRewardPaid }} / {{ clientStats.totalQuests }}
                       </p>
                     </div>
@@ -170,9 +171,9 @@ function goToStatusPage(key: string) {
         <!-- 🖱️ DESKTOP CONTEXT MENU -->
 
         <ContextMenuPortal>
-          
+
           <ContextMenuContent
-            class="min-w-[220px] z-50 bg-white rounded-lg p-1 shadow-xl border border-teal-200 text-sm text-teal-900">
+            class="min-w-[220px] z-50 rounded-lg p-1 shadow-xl text-sm border border-black bg-white text-black dark:border-black dark:bg-white dark:text-black">
             <ContextMenuItem @click="goToViewAll"
               class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition">
               View My Quests
@@ -190,8 +191,6 @@ function goToStatusPage(key: string) {
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenuPortal>
-
-
 
       </ContextMenuRoot>
     </div>

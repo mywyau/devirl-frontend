@@ -79,7 +79,7 @@ watch(route, () => {
 <template>
     <NuxtLayout>
 
-        <div class="w-full max-w-screen-2xl mx-auto px-4 pt-10 flex flex-col md:flex-row gap-6 text-white min-h-screen">
+        <div class="w-full max-w-screen-2xl mx-auto px-4 pt-10 flex flex-col md:flex-row gap-6 text-black dark:text-white min-h-screen">
             <!-- Left Sidebar -->
             <aside class="hidden lg:block w-full md:w-64 shrink-0 mb-6 md:mb-0">
 
@@ -88,7 +88,7 @@ watch(route, () => {
                     <ul class="space-y-2">
                         <li>
                             <NuxtLink :to="`/hiscores/total-level`"
-                                class="font-sans block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
+                                class="text-sm font-sans block px-3 py-2 rounded hover:bg-teal-500/60 text-black/90 hover:text-black dark:hover:bg-teal-400/60 dark:text-white/90 dark:hover:text-white">
                                 Total Level
                             </NuxtLink>
                         </li>
@@ -100,9 +100,8 @@ watch(route, () => {
                     <ul class="space-y-2">
                         <li v-for="skill in skillOptions" :key="skill">
                             <NuxtLink :id="`${skill.toLowerCase()}-hiscore-side-bar-link`" :to="`/hiscores/skills/${skill.toLowerCase()}`"
-                                class="block px-3 py-2 rounded text-sm text-white/90 hover:text-white" :class="{
-                                    'bg-indigo-500/70 text-white font-semibold': skill === skillId,
-                                    'hover:bg-teal-400/60': skill !== skillId
+                                class="text-sm block px-3 py-2 rounded text-black/90 hover:text-black dark:text-white/90 dark:hover:text-white" :class="{
+                                    'bg-indigo-500/70 text-black dark:bg-indigo-500/70 dark:text-white font-semibold': skill === skillId,
                                 }">
                                 {{ skill.charAt(0).toUpperCase() + skill.slice(1) }}
                             </NuxtLink>
@@ -119,7 +118,7 @@ watch(route, () => {
                         <ul class="space-y-2">
                             <li v-for="lang in languageOptions" :key="lang">
                                 <NuxtLink :id="`${lang.toLowerCase()}-hiscore-side-bar-link`" :to="`/hiscores/languages/${encodeURIComponent(lang).toLowerCase()}`"
-                                    class="block px-3 py-2 rounded hover:bg-teal-400/60 text-sm text-white/90 hover:text-white">
+                                    class="text-sm block px-3 py-2 rounded hover:bg-teal-500/60 text-black/90 hover:text-black dark:hover:bg-teal-400/60 dark:text-white/90 dark:hover:text-white">
                                     {{ languageFormatter(lang.charAt(0).toUpperCase() + lang.slice(1)) }}
                                 </NuxtLink>
                             </li>
@@ -127,10 +126,10 @@ watch(route, () => {
                     </ScrollAreaViewport>
 
                     <ScrollAreaScrollbar
-                        class="flex select-none touch-none p-0.5 bg-white/10 hover:bg-white/20 transition-colors duration-[160ms] ease-out data-[orientation=vertical]:w-2.5"
+                        class="flex select-none touch-none p-0.5 bg-black/10 hover:bg-black/20 dark:bg-white/10 dark:hover:bg-white/20 transition-colors duration-[160ms] ease-out data-[orientation=vertical]:w-2.5"
                         orientation="vertical">
                         <ScrollAreaThumb
-                            class="flex-1 bg-white/60 hover:bg-white rounded-[10px] relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-full before:h-full before:min-w-[44px] before:min-h-[44px]" />
+                            class="flex-1 bg-black/60 hover:bg-black dark:bg-white/60 dark:hover:bg-white rounded-[10px] relative before:content-[''] before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-full before:h-full before:min-w-[44px] before:min-h-[44px]" />
                     </ScrollAreaScrollbar>
                 </ScrollAreaRoot>
             </aside>
@@ -140,7 +139,7 @@ watch(route, () => {
 
                 <HiscoreMobileSelect v-model="mobileView" />
 
-                <h1 class="text-3xl text-teal-300 font-bold mb-6 text-center">{{ capitalize(skillId) }}</h1>
+                <h1 class="text-3xl text-black dark:text-teal-300 font-bold mb-6 text-center">{{ capitalize(skillId) }}</h1>
 
                 <TotalDevCountMessage id="total-level-number-of-devs" :total-items="totalItems" :has-loaded="hasLoaded" />
 

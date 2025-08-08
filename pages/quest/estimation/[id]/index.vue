@@ -257,26 +257,26 @@ onUnmounted(() => {
                 <h1 class="text-3xl font-bold mb-4">Estimate Difficulty</h1>
             </div>
 
-            <div v-if="estimationCloseAt && !estimationIsClosed" class="text-white font-sans text-lg mb-4">
+            <div v-if="estimationCloseAt && !estimationIsClosed" class="text-black dark:text-white font-sans text-lg mb-4">
                 Estimations close at: <span class="text-blue-300 font-semibold">{{ formattedEstimationCloseAt }}</span>
                 <br />
-                Time remaining: <span class="text-red-300 font-mono">{{ countdown }}</span>
+                Time remaining: <span class="text-red-500 dark:text-red-300 font-mono">{{ countdown }}</span>
             </div>
 
             <div v-if="!isLoadingEstimates">
 
                 <div v-if="!estimationIsClosed">
 
-                    <div v-if="submissionSuccess" class="text-green-400 mb-4">
+                    <div v-if="submissionSuccess" class="text-green-500 dark:text-green-400 mb-4">
                         Estimate submitted successfully!
                     </div>
 
-                    <div v-if="submissionError" class="text-red-400 mb-4">
+                    <div v-if="submissionError" class="text-green-500 dark:text-green-400 mb-4">
                         {{ submissionError }}
                     </div>
 
                     <!-- Estimate Details -->
-                    <div class="bg-teal-300 p-6 rounded mb-6 space-y-4">
+                    <div class="bg-teal-400 dark:bg-teal-300 p-6 rounded mb-6 space-y-4">
                         <h2 class="text-black text-2xl font-semibold">{{ retrievedQuestData?.title }}</h2>
                     </div>
 

@@ -20,12 +20,12 @@ const shouldShowLogout = computed(() => isLoggedIn.value);
   <transition name="fade">
     <nav
       v-if="mobileOpen"
-      class="absolute top-full left-0 right-0 bg-zinc-800 border-t-2 border-b-2 border-white flex flex-col px-6 py-4 space-y-4 md:hidden z-50"
+      class="absolute top-full left-0 right-0 dark:bg-zinc-800 border-t-2 border-b-2 border-white flex flex-col px-6 py-4 space-y-4 md:hidden z-50"
     >
       <NuxtLink
         to="/hiscores/total-level"
         @click="$emit('update:mobileOpen', false)"
-        class="text-white hover:text-indigo-400"
+        class="text-black dark:text-white hover:text-indigo-400"
       >
         Hiscores
       </NuxtLink>
@@ -34,7 +34,7 @@ const shouldShowLogout = computed(() => isLoggedIn.value);
         <NuxtLink
           to="/view-all/quests"
           @click="$emit('update:mobileOpen', false)"
-          class="text-white hover:text-green-400"
+          class="text-black dark:text-white hover:text-green-400"
         >
           View all quests
         </NuxtLink>
@@ -43,7 +43,7 @@ const shouldShowLogout = computed(() => isLoggedIn.value);
           v-if="userType === 'Dev'"
           to="/dev/skills"
           @click="$emit('update:mobileOpen', false)"
-          class="text-white hover:text-indigo-400"
+          class="text-black dark:text-white hover:text-indigo-400"
         >
           Skills
         </NuxtLink>
@@ -52,7 +52,7 @@ const shouldShowLogout = computed(() => isLoggedIn.value);
           v-if="userType === 'Client'"
           to="/client/quest-dashboard"
           @click="$emit('update:mobileOpen', false)"
-          class="text-white hover:text-blue-400"
+          class="text-black dark:text-white hover:text-blue-400"
         >
           Dashboard
         </NuxtLink>
@@ -61,7 +61,7 @@ const shouldShowLogout = computed(() => isLoggedIn.value);
           v-if="userType === 'Dev'"
           to="/dev/quest-dashboard"
           @click="$emit('update:mobileOpen', false)"
-          class="text-white hover:text-blue-400"
+          class="text-black dark:text-white hover:text-blue-400"
         >
           Dashboard
         </NuxtLink>
@@ -70,7 +70,7 @@ const shouldShowLogout = computed(() => isLoggedIn.value);
           v-if="userType === 'Dev'"
           to="/dev/profile"
           @click="$emit('update:mobileOpen', false)"
-          class="text-white hover:text-blue-400"
+          class="text-black dark:text-white hover:text-blue-400"
         >
           Profile
         </NuxtLink>
@@ -79,7 +79,7 @@ const shouldShowLogout = computed(() => isLoggedIn.value);
           v-if="userType === 'Client'"
           to="/client/profile"
           @click="$emit('update:mobileOpen', false)"
-          class="text-white hover:text-blue-400"
+          class="text-black dark:text-white hover:text-blue-400"
         >
           Profile
         </NuxtLink>
@@ -89,7 +89,7 @@ const shouldShowLogout = computed(() => isLoggedIn.value);
         v-if="shouldShowLogout"
         @click="$emit('update:mobileOpen', false)"
         :href="logoutUrl()"
-        class="text-white hover:text-red-400"
+        class="text-black dark:text-white hover:text-red-400"
       >
         Logout
       </a>
@@ -98,7 +98,7 @@ const shouldShowLogout = computed(() => isLoggedIn.value);
         v-else-if="shouldShowLogin"
         @click="$emit('update:mobileOpen', false)"
         :href="loginUrl()"
-        class="text-white hover:text-green-400"
+        class="text-black dark:text-white hover:text-green-400"
       >
         Login
       </a>

@@ -32,34 +32,34 @@ const faqItems = [
 
 <template>
   <NuxtLayout>
-    <div class="mx-auto max-w-3xl px-6 py-12 text-white">
-      <h1 class="text-3xl font-bold mb-8 text-green-300">Frequently Asked Questions</h1>
+    <div class="mx-auto max-w-3xl px-6 py-12 text-black dark:text-white">
+      <h1 class="text-3xl font-bold mb-8 text-black dark:text-green-300">Frequently Asked Questions</h1>
 
       <AccordionRoot
-        class="rounded-lg border border-zinc-700 bg-zinc-900"
+        class="rounded-lg border border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900"
         default-value="about"
         type="single"
         :collapsible="true"
       >
         <template v-for="item in faqItems" :key="item.value">
           <AccordionItem
-            class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg border-b border-zinc-700 focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-emerald-500"
+            class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg border-b border-zinc-700 focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-emerald-500"
             :value="item.value"
           >
             <AccordionHeader class="flex">
               <AccordionTrigger
-                class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-emerald-300 bg-zinc-800 hover:bg-zinc-700 transition-colors duration-200 group"
+                class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-black bg-zinc-200 hover:bg-zinc-100 dark:text-white dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors duration-200 group"
               >
                 <span>{{ item.title }}</span>
                 <Icon
                   icon="radix-icons:chevron-down"
-                  class="text-emerald-300 transition-transform duration-300 group-data-[state=open]:rotate-180"
+                  class="text-black dark:text-emerald-300 transition-transform duration-300 group-data-[state=open]:rotate-180"
                   aria-label="Expand/Collapse"
                 />
               </AccordionTrigger>
             </AccordionHeader>
             <AccordionContent
-              class="bg-zinc-800 text-zinc-300 text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden"
+              class="text-sm text-black bg-zinc-200 dark:text-zinc-300 dark:bg-zinc-800 data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden"
             >
               <div class="px-4 py-3">
                 {{ item.content }}

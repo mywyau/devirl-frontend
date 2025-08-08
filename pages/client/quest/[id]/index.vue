@@ -178,9 +178,9 @@ async function loadEstimates() {
 
   <NuxtLayout>
 
-    <div class="p-6 max-w-4xl mx-auto text-white">
+    <div class="p-6 max-w-4xl mx-auto text-black dark:text-white">
 
-      <h1 class="text-3xl font-bold mb-6 text-teal-300">Quest Details</h1>
+      <h1 class="text-3xl font-bold mb-6 text-black dark:text-teal-300">Quest Details</h1>
 
       <div v-if="isLoading" class="text-zinc-400">Loading quest…</div>
 
@@ -197,7 +197,7 @@ async function loadEstimates() {
         <ContextMenuTrigger as-child>
 
           <div
-            class="mt-6 bg-zinc-800 backdrop-blur p-6 rounded-xl shadow cursor-context-menu mb-6 hover:bg-white/10 transition"
+            class="mt-6 backdrop-blur p-6 rounded-lg cursor-context-menu mb-6 transition bg-white hover:bg-black/10 dark:bg-zinc-800 dark:hover:bg-white/10 border border-black"
             :data-testid="`quest-card-${normalizeTestId(result?.title || '')}`">
 
             <h2 :id="`quest-title`" data-testid="quest-title"
@@ -206,14 +206,14 @@ async function loadEstimates() {
             </h2>
 
             <div>
-              <span class="text-white font-semibold">Status: </span>
+              <span class="text-black dark:text-white font-semibold">Status: </span>
 
               <span :class="`capitalize ${getStatusTextColour(result?.status?.toString())}`">
                 {{ statusFormatter(result?.status.toString()) }}
               </span>
             </div>
 
-            <div class="hidden md:block text-base text-green-400 mt-2">
+            <div class="hidden md:block text-base text-black dark:text-white mt-2">
               Right-click anywhere on this card for more actions
             </div>
 
@@ -230,22 +230,22 @@ async function loadEstimates() {
           </div>
 
           <div>
-            <AccordionRoot class="rounded-lg border border-zinc-700 bg-zinc-900 mb-6" :default-value="['description']"
-              v-model="openPanels" type="multiple" :collapsible="true">
+            <AccordionRoot class="rounded-lg border bg-white border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900 mb-6"
+              :default-value="['description']" v-model="openPanels" type="multiple" :collapsible="true">
               <AccordionItem
-                class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg border-b border-zinc-700 focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-emerald-500"
+                class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg border-b border-zinc-300 dark:border-zinc-700 focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-emerald-500"
                 value="description">
                 <AccordionHeader class="flex">
                   <AccordionTrigger
-                    class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-teal-300 bg-zinc-800 hover:bg-zinc-700 transition-colors duration-200 group">
+                    class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-black bg-white hover:bg-zinc-100 dark:text-teal-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 transition-colors duration-200 group">
                     <span>Description</span>
                     <Icon icon="radix-icons:chevron-down"
-                      class="text-white transition-transform duration-300 group-data-[state=open]:rotate-180"
+                      class="text-black dark:text-white transition-transform duration-300 group-data-[state=open]:rotate-180"
                       aria-label="Expand/Collapse" />
                   </AccordionTrigger>
                 </AccordionHeader>
                 <AccordionContent
-                  class="bg-zinc-800 text-white text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+                  class="bg-zinc-300 text-black dark:bg-zinc-800 dark:text-white text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
                   <div class="px-4 py-3 whitespace-pre-wrap">
                     {{ result?.description || "No description was given" }}
                   </div>
@@ -253,19 +253,19 @@ async function loadEstimates() {
               </AccordionItem>
 
               <AccordionItem
-                class="mt-px overflow-hidden last:rounded-b-lg border-b border-zinc-700 focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-emerald-500"
+                class="mt-px overflow-hidden last:rounded-b-lg border-b border-zinc-300 dark:border-zinc-700 focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-emerald-500"
                 value="acceptance">
                 <AccordionHeader class="flex">
                   <AccordionTrigger
-                    class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-teal-300 bg-zinc-800 hover:bg-zinc-700 transition-colors duration-200 group">
+                    class="flex h-[48px] flex-1 items-center justify-between px-4 text-sm font-semibold text-black bg-white hover:bg-zinc-100 dark:text-teal-300 dark:bg-zinc-800 transition-colors duration-200 group">
                     <span>Acceptance Criteria</span>
                     <Icon icon="radix-icons:chevron-down"
-                      class="text-white transition-transform duration-300 group-data-[state=open]:rotate-180"
+                      class="text-black dark:text-white transition-transform duration-300 group-data-[state=open]:rotate-180"
                       aria-label="Expand/Collapse" />
                   </AccordionTrigger>
                 </AccordionHeader>
                 <AccordionContent
-                  class="bg-zinc-800 text-white text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
+                  class="bg-zinc-300 text-black dark:bg-zinc-800 dark:text-white text-sm data-[state=open]:animate-slideDown data-[state=closed]:animate-slideUp overflow-hidden">
                   <div class="px-4 py-3 whitespace-pre-wrap">
                     {{ result?.acceptanceCriteria || "No acceptance criteria were provided" }}
                   </div>
@@ -277,7 +277,7 @@ async function loadEstimates() {
 
         <ContextMenuPortal>
           <ContextMenuContent
-            class="min-w-[220px] z-50 bg-white rounded-lg p-1 shadow-xl border border-teal-200 text-sm text-teal-900">
+            class="min-w-[220px] z-50 bg-white rounded-lg p-1 shadow-xl border border-black text-sm text-black">
 
             <ContextMenuItem
               class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition"
@@ -322,8 +322,7 @@ async function loadEstimates() {
             <div v-if="result?.status.toString() == 'Open' || result?.status.toString() == 'Estimated'"
               class="border-t my-2 border-teal-200" />
 
-            <ContextMenuItem 
-              v-if="result?.status.toString() == 'Open' || result?.status.toString() == 'Estimated'"
+            <ContextMenuItem v-if="result?.status.toString() == 'Open' || result?.status.toString() == 'Estimated'"
               @click="router.push(`/assign/quest/${questId}`)"
               class="px-3 py-2 rounded-md cursor-pointer hover:bg-teal-100 focus:bg-teal-100 outline-none transition">
               Assign Dev
