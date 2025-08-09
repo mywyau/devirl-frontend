@@ -102,10 +102,7 @@ async function handleUpdateQuestStatus(questId: string) {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-blue-400">Review</h1>
-      <p class="text-lg mb-6 text-blue-400/80">
-        Below are all the quests that are in review.
-      </p>
+      <h1 class="text-3xl font-bold mb-4 text-black dark:text-blue-400">Review</h1>
 
       <!-- Show quests immediately when available -->
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -151,7 +148,7 @@ async function handleUpdateQuestStatus(questId: string) {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-zinc-400">You have no quests in review.</div>
+      <div v-else class="text-zinc-500 dark:text-zinc-400">You have no quests in progress.</div>
     </div>
   </NuxtLayout>
 </template>

@@ -103,41 +103,42 @@ async function submitDevBid() {
 <template>
     <NuxtLayout>
 
-        <div class="max-w-xl mx-auto py-10 px-6 text-white">
+        <div class="max-w-xl mx-auto py-10 px-6 text-black dark:text-white">
 
             <div class="mb-6">
-                <h1 class="text-3xl font-bold mb-6 text-green-300">Bid</h1>
+                <h1 class="text-3xl font-bold mb-6 text-black dark:text-green-300">Bid</h1>
 
-                <p v-if="devBidSuccess" class="mt-4 text-green-400 font-semibold">
+                <p v-if="devBidSuccess" class="mt-4 text-green-500 dark:text-green-400 font-semibold">
                     ${{ devBidAmount.toFixed(2) }} Bid Saved!
                 </p>
 
                 <div>
                     <div class="mt-6 mb-6">
 
-                        <p v-if="editMode === true" class="mb-6">Please update the Bid for the total time spent working on the task.</p>
+                        <p v-if="editMode === true" class="mb-6">Please update the Bid for the total time spent working
+                            on the task.</p>
                         <p v-else class="mb-6">Please add a Bid for the total time spent working on the task.</p>
 
-                        <label for="time-reward-amount" class="block text-base text-green-400 mb-2">Bid ($)</label>
-                        <p class="text-sm mb-1">
+                        <label for="time-reward-amount"
+                            class="block text-base text-green-500 dark:text-green-400 mb-2">Bid ($)</label>
+                        <p class="text-zinc-600 dark:text-zinc-300 text-sm mb-1">
                             Hint: You can come back and update the bid if the quest status is
                         </p>
                         <p class="text-sm mb-4">
-                            <span class="text-zinc-400 font-medium">Not Estimated</span> or
-                            <span class="text-orange-400 font-medium">Estimated</span>.
+                            <span class="text-zinc-500 dark:text-zinc-400 font-medium">Not Estimated</span> or
+                            <span class="text-orange-500 dark:text-orange-400 font-medium">Estimated</span>.
                         </p>
                         <Input id="time-reward-amount" type="number" v-model="devBidAmount"
-                            placeholder="Example: 100.00" class="w-1/3" 
-                        />
+                            placeholder="Example: 100.00" class="w-1/3" />
                         <p v-if="devBidError" class="mt-4 text-red-400">{{ devBidError }}</p>
 
                     </div>
                 </div>
 
-                <div v-if="devBidAmount > 0" class="mt-4 mb-6 text-base text-zinc-300 space-y-2">
+                <div v-if="devBidAmount > 0" class="mt-4 mb-6 text-base text-zinc-600 dark:text-zinc-300 space-y-2">
                     <p>
                         <strong>Bid:</strong>
-                        <span class="text-green-300 font-sans">
+                        <span class="text-green-500 dark:text-green-300 font-sans">
                             ${{ devBidAmount.toFixed(2) }}
                         </span>
                     </p>
@@ -153,7 +154,6 @@ async function submitDevBid() {
                 </button>
             </div>
 
-            <!-- <RewardAccordion :items="accordionItems" /> -->
         </div>
 
 

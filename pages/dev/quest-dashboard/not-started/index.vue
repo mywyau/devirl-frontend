@@ -101,12 +101,8 @@ async function handleupdateQuestStatus(questId: string) {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-zinc-200">Not Started</h1>
-      <p class="text-lg mb-6 text-zinc-300/80">
-        Below are all the quests that are not started.
-      </p>
+      <h1 class="text-3xl font-bold mb-4 text-black dark:text-zinc-200">Not Started</h1>
 
-      <!-- ← New: Feedback messages go here, outside of the quests‐list logic -->
       <div v-if="inProgressSuccess" class="mb-4 p-3 bg-green-600 text-white rounded">
         Successfully moved quest to In Progress!
       </div>
@@ -149,7 +145,7 @@ async function handleupdateQuestStatus(questId: string) {
 
       <div v-else-if="error" class="text-red-500">{{ error }}</div>
 
-      <div v-else class="text-zinc-400">You have no not started quests.</div>
+      <div v-else class="text-zinc-500 dark:text-zinc-400">You have no not started quests.</div>
 
     </div>
   </NuxtLayout>

@@ -251,13 +251,14 @@ onUnmounted(() => {
 <template>
     <NuxtLayout>
 
-        <div class="max-w-3xl mx-auto py-12 px-6 text-white">
+        <div class="max-w-3xl mx-auto py-12 px-6 text:black dark:text-white">
 
             <div class="">
                 <h1 class="text-3xl font-bold mb-4">Estimate Difficulty</h1>
             </div>
 
-            <div v-if="estimationCloseAt && !estimationIsClosed" class="text-black dark:text-white font-sans text-lg mb-4">
+            <div v-if="estimationCloseAt && !estimationIsClosed"
+                class="text-black dark:text-white font-sans text-lg mb-4">
                 Estimations close at: <span class="text-blue-300 font-semibold">{{ formattedEstimationCloseAt }}</span>
                 <br />
                 Time remaining: <span class="text-red-500 dark:text-red-300 font-mono">{{ countdown }}</span>
@@ -284,7 +285,7 @@ onUnmounted(() => {
                         <AccordionRoot class="rounded-lg mb-6" :default-value="['description']" v-model="openPanels"
                             type="multiple" :collapsible="true">
                             <AccordionItem
-                                class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-white"
+                                class="mt-px overflow-hidden first:mt-0 first:rounded-t-lg last:rounded-b-lg focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-white"
                                 value="description">
                                 <AccordionHeader class="flex">
                                     <AccordionTrigger
@@ -304,7 +305,7 @@ onUnmounted(() => {
                             </AccordionItem>
 
                             <AccordionItem
-                                class="mt-px overflow-hidden last:rounded-b-lg focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-white"
+                                class="mt-px overflow-hidden last:rounded-b-lg focus-within:relative focus-within:z-10 focus-within:ring-2 focus-within:ring-black dark:focus-within:ring-white"
                                 value="acceptance">
                                 <AccordionHeader class="flex">
                                     <AccordionTrigger
@@ -337,12 +338,14 @@ onUnmounted(() => {
                             Difficulty Score
                         </Label>
 
-                        <p class="text-sm text-zinc-300 mb-2">Hint: This will be displayed publicly when the estimation is closed</p>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-300 mb-2">Hint: This will be displayed publicly
+                            when the estimation is closed</p>
 
                         <div class="mb-3">
                             <Input id="difficulty-score" type="number" v-model="score" placeholder="0" class="w-1/4" />
-                            <p class="text-sm text-zinc-300 mt-1">1-100 points</p>
-                            <p v-if="scoreError" class="text-sm text-red-400 mt-1">{{ scoreError }}</p>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-300 mt-1">1-100 points</p>
+                            <p v-if="scoreError" class="text-sm text-red-500 dark:text-red-400 mt-1">{{ scoreError }}
+                            </p>
                         </div>
 
                         <Label class="text-sm font-semibold leading-[35px] text-stone-700 dark:text-white"
@@ -350,12 +353,14 @@ onUnmounted(() => {
                             Number of Hours
                         </Label>
 
-                        <p class="text-sm text-zinc-300 mb-2">Hint: This will be displayed publicly when the estimation is closed</p>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-300 mb-2">Hint: This will be displayed publicly
+                            when the estimation is closed</p>
 
                         <div class="mb-3">
                             <Input id="number-of-day" type="number" v-model="hours" placeholder="0" class="w-1/4" />
-                            <p class="text-sm text-zinc-300 mt-1">1-150 hours</p>
-                            <p v-if="hoursError" class="text-sm text-red-400 mt-1">{{ hoursError }}</p>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-300 mt-1">1-150 hours</p>
+                            <p v-if="hoursError" class="text-sm text-red-500 dark:text-red-400 mt-1">{{ hoursError }}
+                            </p>
                         </div>
 
                         <div class="mb-3">
@@ -365,14 +370,16 @@ onUnmounted(() => {
                                 Comments
                             </Label>
 
-                            <p class="text-sm text-zinc-300 mb-2">Hint: This will be shown privately to the client</p>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-300 mb-2">Hint: This will be shown privately
+                                to the client</p>
 
                             <TextArea id="comment" v-model="comment"
                                 placeholder="Your proposal, thoughts, considerations, or reasoning behind your estimate... " />
-                            <p class="text-sm text-zinc-300 mt-1">
+                            <p class="text-sm text-zinc-600 dark:text-zinc-300 mt-1">
                                 {{ comment.length }}/2000 characters
                             </p>
-                            <p v-if="commentError" class="text-sm text-red-400 mt-1">{{ commentError }}</p>
+                            <p v-if="commentError" class="text-sm text-red-500 dark:text-red-400 mt-1">{{ commentError
+                                }}</p>
                         </div>
 
                         <ConfirmDialog title="Confirm Estimate Submission"
@@ -385,15 +392,15 @@ onUnmounted(() => {
                     </div>
                 </div>
 
-                <div v-else class="text-red-400 text-lg font-semibold mt-6 mb-6">
+                <div v-else class="text-red-500 dark:text-red-400 text-lg font-semibold mt-6 mb-6">
                     Estimations are closed for this quest
                 </div>
             </div>
 
-            <div v-if="!estimationIsClosed && !estimationCloseAt" class="text-zinc-400 text-base mt-4">
+            <div v-if="!estimationIsClosed && !estimationCloseAt" class="text-zinc-600 dark:text-zinc-400 text-base mt-4">
                 <p>
                     There {{ retrievedEstimates?.length === 1 ? 'is' : 'are' }}
-                    <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
+                    <span class="text-green-500 dark:text-green-400">{{ retrievedEstimates?.length }}</span>
                     {{ retrievedEstimates?.length === 1 ? 'estimate' : 'estimates' }}.
                 </p>
                 <p v-if="!estimationIsClosed && !estimationCloseAt">
@@ -404,7 +411,7 @@ onUnmounted(() => {
             <div v-if="!estimationIsClosed && estimationCloseAt" class="text-zinc-400 text-base mt-4">
                 <p>
                     There {{ retrievedEstimates?.length === 1 ? 'is' : 'are' }}
-                    <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
+                    <span class="text-green-500 dark:text-green-400">{{ retrievedEstimates?.length }}</span>
                     {{ retrievedEstimates?.length === 1 ? 'estimate' : 'estimates' }}.
                 </p>
                 <p>
@@ -415,7 +422,7 @@ onUnmounted(() => {
             <div v-if="estimationIsClosed" class="text-zinc-400 text-base mt-4">
                 <p>
                     There were
-                    <span class="text-green-400">{{ retrievedEstimates?.length }}</span>
+                    <span class="text-green-500 dark:text-green-400">{{ retrievedEstimates?.length }}</span>
                     {{ retrievedEstimates?.length === 1 ? 'estimate' : 'estimates' }} made.
                 </p>
                 <p>

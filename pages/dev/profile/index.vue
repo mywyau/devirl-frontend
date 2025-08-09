@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 import { Button } from "@/components/old/button/variants";
 import ProfileItem from "@/components/old/profile/ProfileItem";
+import ConfirmDialog from '@/components/reka/ConfirmDialog.vue';
 import { loadConfig } from '@/configuration/ConfigLoader';
 import { deleteUser, getUser } from "@/controllers/UserDataController";
 import type { AuthUser } from "@/types/AuthUser";
@@ -102,31 +102,34 @@ async function startStripeOnboarding() {
       <div class="font-sans grid grid-cols-1 md:grid-cols-2 gap-8">
 
         <!-- Profile Info Card -->
-        <div class="p-6 rounded-2xl border border-zinc-700 shadow-lg">
-          <h2 class="font-heading text-3xl font-bold text-white mb-6 text-center">Your Profile</h2>
+        <div class="bg-white dark:bg-zinc-800 p-6 rounded-lg border border-black dark:border-white">
+          <h2 class="font-heading text-3xl font-bold text-black dark:text-white mb-6 text-center">Your Profile</h2>
 
-          <div v-if="isLoading" class="text-white text-center">Loading...</div>
+          <div v-if="isLoading" class="text-black dark:text-white text-center">Loading...</div>
 
           <div v-else-if="userProfile">
+
             <div class="space-y-4">
 
-              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-white" textColor="text-teal-300" />
-              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-white" textColor="text-teal-300" />
-              <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-white" textColor="text-teal-300" />
-              <ProfileItem label="First Name" labelColor="text-white" textColor="text-teal-300" :value="userProfile.firstName" />
-              <ProfileItem label="Last Name" labelColor="text-white" textColor="text-teal-300" :value="userProfile.lastName" />
+              <ProfileItem label="Username" :value="userProfile.username" labelColor="text-black dark:text-white"
+                textColor="text-black dark:text-white" />
+              <ProfileItem label="Email" :value="userProfile.email" labelColor="text-black dark:text-white"
+                textColor="text-black dark:text-white" />
+              <ProfileItem label="Role" :value="userProfile.userType ?? '—'" labelColor="text-black dark:text-white"
+                textColor="text-black dark:text-white" />
+              <ProfileItem label="First Name" labelColor="text-black dark:text-white"
+                textColor="text-black dark:text-white" :value="userProfile.firstName" />
+              <ProfileItem label="Last Name" labelColor="text-black dark:text-white"
+                textColor="text-black dark:text-white" :value="userProfile.lastName" />
 
-              <ConfirmDialog 
-                actionConfirmId="delete-profile-confirm-button"
-                :data-testid="`delete-user-profile`" 
+              <ConfirmDialog actionConfirmId="delete-profile-confirm-button" :data-testid="`delete-user-profile`"
                 title="Are you sure you want to delete your profile?"
                 description="Please confirm if you wish to delete your profile. This action cannot be undone and all your data will be removed."
                 triggerText="Delete profile"
-                triggerClass="px-4 py-2 bg-red-500 hover:bg-red-400 rounded text-white"
+                triggerClass="px-4 py-2 bg-red-500 hover:bg-red-600 dark:bg-red-500 dark:hover:bg-red-600 rounded text-white"
                 actionText="Yes, delete my profile"
-                actionClass="bg-red-500 hover:bg-red-400 text-white px-4 py-2 rounded text-sm font-sans"
-                @confirm="handleDeleteUser" 
-              />
+                actionClass="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm font-sans"
+                @confirm="handleDeleteUser" />
 
               <p v-if="deleteError" class="text-red-500 mt-4 text-center text-sm">{{ deleteError }}</p>
               <p v-if="deleteSuccess" class="text-green-500 mt-4 text-center text-sm">{{ deleteSuccess }}</p>
@@ -138,14 +141,22 @@ async function startStripeOnboarding() {
         </div>
 
         <!-- Quick Links -->
-        <div class="bg-zinc-900/30 p-6 rounded-2xl border border-zinc-700 shadow-lg">
-          <h2 class="text-3xl font-bold text-white mb-6 text-center">Quick Links</h2>
+        <div class="bg-white dark:bg-zinc-700/30 p-6 rounded-lg border border-black dark:border-white">
+          <h2 class="text-3xl font-bold text-black dark:text-white mb-6 text-center">Quick Links</h2>
 
-          <div v-if="userProfile">
-            <Button variant="secondary" class="w-full mt-4 bg-indigo-600 text-white hover:bg-indigo-500"
-              @click="startStripeOnboarding">
-              Connect with Stripe
-            </Button>
+          <div class="grid grid-cols-1 md:grid-cols-2 space-x-4">
+            <div class="pr-2 pl-2" v-if="userProfile">
+              <Button variant="secondary" class="w-full mt-4 bg-indigo-600 text-white hover:bg-indigo-500"
+                @click="startStripeOnboarding">
+                Connect with Stripe
+              </Button>
+            </div>
+            <!-- <div class="pr-2 pl-2" v-if="userProfile">
+              <Button variant="secondary" class="w-full mt-4 bg-indigo-600 text-white hover:bg-indigo-500"
+                @click="startStripeOnboarding">
+                Connect with Stripe
+              </Button>
+            </div> -->
           </div>
         </div>
 

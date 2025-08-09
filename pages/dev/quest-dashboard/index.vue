@@ -9,12 +9,12 @@ import {
   ContextMenuRoot,
   ContextMenuTrigger,
 } from "reka-ui";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 
 const statuses = [
-  // { key: "estimated", label: "Estimated", color: "gray" },
   { key: "not-started", label: "Not Started", color: "gray" },
   { key: "in-progress", label: "In Progress", color: "yellow" },
   { key: "review", label: "Review", color: "blue" },
@@ -22,13 +22,14 @@ const statuses = [
   { key: "failed", label: "Failed", color: "red" },
 ];
 
-const devStats = ref({
-  totalQuests: 12,
-  questsFailed: 3,
-  questsCompleted: 7,
-  questsRewarded: 6,
-  completionRewardPaid: 6,
-})
+const devStats =
+  ref({
+    totalQuests: 12,
+    questsFailed: 3,
+    questsCompleted: 7,
+    questsRewarded: 6,
+    completionRewardPaid: 6,
+  })
 
 // Helper for percentages
 function percent(part: number, total: number): string {
@@ -43,12 +44,13 @@ function goToStatusPage(key: string) {
 
 <template>
   <NuxtLayout>
-    <div class="p-6 max-w-5xl mx-auto text-white">
+    <div class="p-6 max-w-5xl mx-auto text-black dark:text-white">
 
       <ContextMenuRoot>
         <ContextMenuTrigger as-child>
           <div>
-            <Card class="bg-white/10 text-white hover:bg-white/20 transition">
+            <Card class="text-black text-black bg-white text-white hover:bg-zinc-300 dark:text-white dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-black transition">
+              
               <CardContent class="p-6 space-y-6">
                 <div class="flex items-center justify-between mb-4">
                   <h1 class="text-4xl font-extrabold tracking-tight">
@@ -56,47 +58,49 @@ function goToStatusPage(key: string) {
                   </h1>
                 </div>
 
-                <div class="hidden md:block text-base text-green-400 mt-2">
+                <div class="hidden md:block text-base text-black dark:text-green-400 mt-2">
                   Right-click anywhere on the card to open the menu
                 </div>
 
                 <div class="mt-10 border-t border-zinc-700 pt-6">
-                  <h2 class="text-xl text-emerald-400 font-semibold mb-4 text-center">
+                  <h2 class="text-xl text-black dark:text-emerald-400 font-semibold mb-4 text-center">
                     Stats
                   </h2>
 
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-white text-center">
 
-                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
-                      <p class="text-sm text-white mb-2">Quests Completed</p>
+                    <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-700">
+                      <p class="text-sm text-black dark:text-white mb-2">Quests Completed</p>
                       <p class="text-xl font-bold text-green-400">
                         {{ percent(devStats.questsCompleted, devStats.totalQuests) }}
                       </p>
+
                       <Separator class="bg-zinc-600 my-2 h-px w-full" />
-                      <p class="text-sm text-white">
+                      
+                      <p class="text-sm text-black dark:text-white">
                         {{ devStats.questsCompleted }} / {{ devStats.totalQuests }}
                       </p>
                     </div>
 
-                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
-                      <p class="text-sm text-white mb-2">Quests Failed</p>
+                    <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-700">
+                      <p class="text-sm text-black dark:text-white mb-2">Quests Failed</p>
                       <p class="text-xl font-bold text-red-400">
                         {{ percent(devStats.questsFailed, devStats.totalQuests) }}
                       </p>
                       <Separator class="bg-zinc-600 my-2 h-px w-full" />
-                      <p class="text-sm text-white">
+                      <p class="text-sm text-black dark:text-white">
                         {{ devStats.questsFailed }} / {{ devStats.totalQuests }}
                       </p>
                     </div>
 
-                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-700">
-                      <p class="text-sm text-white mb-2">Completion Bonuses</p>
+                    <div class="bg-white dark:bg-zinc-900 p-4 rounded-xl border border-zinc-700">
+                      <p class="text-sm text-black dark:text-white mb-2">Completion Bonuses</p>
                       <p class="text-xl font-bold text-indigo-400">
                         {{ percent(devStats.completionRewardPaid, devStats.totalQuests) }}
 
                       </p>
                       <Separator class="bg-zinc-600 my-2 h-px w-full" />
-                      <p class="text-sm text-white">
+                      <p class="text-sm text-black dark:text-white">
                         {{ devStats.completionRewardPaid }} / {{ devStats.totalQuests }}
                       </p>
                     </div>
