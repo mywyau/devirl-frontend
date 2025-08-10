@@ -49,7 +49,7 @@ function goToStatusPage(key: string) {
       <ContextMenuRoot>
         <ContextMenuTrigger as-child>
           <div>
-            <Card class="text-black text-black bg-white text-white hover:bg-zinc-300 dark:text-white dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-black transition">
+            <Card class="text-black dark:text-white bg-white hover:bg-zinc-300 dark:text-white dark:bg-zinc-800 dark:hover:bg-zinc-700 border border-black transition">
               
               <CardContent class="p-6 space-y-6">
                 <div class="flex items-center justify-between mb-4">
