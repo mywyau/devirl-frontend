@@ -74,18 +74,12 @@ onMounted(() => {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-red-300">Failed</h1>
-      <p class="text-lg mb-6 text-red-400/80">
-        Below are all the quests that are failed.
-      </p>
+      <h1 class="text-3xl font-bold mb-4 text-black dark:text-red-300">Failed</h1>
 
       <!-- Show quests immediately when available -->
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div
-          v-for="quest in quests"
-          :key="quest.questId"
-          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full"
-        >
+        <div v-for="quest in quests" :key="quest.questId"
+          class="p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur shadow flex flex-col justify-between h-full">
           <h2 id="quest-title" class="text-xl font-semibold text-red-300">
             {{ quest.title }}
           </h2>
@@ -93,14 +87,9 @@ onMounted(() => {
             {{ quest.description }}
           </p>
           <div class="mt-auto flex justify-end">
-            <NuxtLink
-              :to="`/dev/quest/${quest.questId}`"
-              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline"
-            >
-              <Button
-                variant="default"
-                class="bg-red-500 text-white rounded hover:bg-red-400"
-              >
+            <NuxtLink :to="`/dev/quest/${quest.questId}`"
+              class="inline-block text-sm text-sky-300 hover:text-sky-200 hover:underline">
+              <Button variant="default" class="bg-red-500 text-white rounded hover:bg-red-400">
                 View Details
               </Button>
             </NuxtLink>
@@ -119,7 +108,7 @@ onMounted(() => {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-zinc-400">You have no failed quests.</div>
+      <div v-else class="text-zinc-500 dark:text-zinc-400">You have no failed quests.</div>
     </div>
   </NuxtLayout>
 </template>

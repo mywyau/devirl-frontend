@@ -127,10 +127,7 @@ async function handleChangeQuestStatusNotStarted(questId: string) {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-yellow-300">In Progress</h1>
-      <p class="text-lg mb-6 text-yellow-400/80">
-        Below are all the quests that are in progress.
-      </p>
+      <h1 class="text-3xl font-bold mb-4 text-black dark:text-yellow-300">In Progress</h1>
 
       <div v-if="inReviewSuccess" class="mb-4 p-3 bg-green-600 text-white rounded">
         Successfully moved quest to Review!
@@ -202,7 +199,7 @@ async function handleChangeQuestStatusNotStarted(questId: string) {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-zinc-400">You have no quests in progress.</div>
+      <div v-else class="text-zinc-500 dark:text-zinc-400">You have no quests in progress.</div>
     </div>
   </NuxtLayout>
 </template>

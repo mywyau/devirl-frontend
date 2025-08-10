@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div class="mt-6 text-center text-xs text-zinc-600">
+        <div class="mt-6 text-center text-xs text-zinc-600 dark:text-zinc-300">
             © {{ new Date().getFullYear() }} Dev IRL. All rights reserved.
         </div>
     </footer>

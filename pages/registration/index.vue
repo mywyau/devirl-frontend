@@ -100,10 +100,10 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <NuxtLayout>
-    <div class="min-h-screen flex items-center justify-center px-4">
-      <div class="max-w-md w-full bg-white/20 rounded-2xl shadow-lg p-8 space-y-6">
+    <div class="min-h-screen flex items-center justify-center px-4 text-black dark:text-white">
+      <div class="max-w-md w-full bg-white dark:bg-white/20 rounded-2xl border border-black p-8 space-y-6">
 
-        <h1 class="text-3xl font-semibold text-center text-teal-300">
+        <h1 class="text-3xl font-semibold text-center dark:text-teal-300">
           Complete Your Signup
         </h1>
 
@@ -118,25 +118,25 @@ const onSubmit = handleSubmit(async (values) => {
         <form @submit.prevent="onSubmit" class="space-y-6">
 
           <div class="space-y-2">
-            <label for="username" class="block text-sm font-medium text-white">Username</label>
+            <label for="username" class="block text-sm font-medium">Username</label>
             <Input id="username" v-model="username" v-bind="usernameAttrs" class="w-full" />
-            <p class="text-sm text-zinc-300">Max 20 characters</p>
+            <p class="text-sm text-zinc-600 dark:text-zinc-300">Max 20 characters</p>
             <p v-if="errors.username" class="text-sm text-red-500">{{ errors.username }}</p>
 
-            <label for="firstname" class="block text-sm font-medium text-white">First Name</label>
+            <label for="firstname" class="block text-sm font-medium">First Name</label>
             <Input id="firstname" v-model="firstName" v-bind="firstNameAttrs" class="w-full" />
-            <p class="text-sm text-zinc-300">Max 50 characters</p>
+            <p class="text-sm text-zinc-600 dark:text-zinc-300">Max 50 characters</p>
             <p v-if="errors.firstName" class="text-sm text-red-500">{{ errors.firstName }}</p>
 
-            <label for="lastname" class="block text-sm font-medium text-white">Last Name</label>
+            <label for="lastname" class="block text-sm font-medium">Last Name</label>
             <Input id="lastname" v-model="lastName" v-bind="lastNameAttrs" class="w-full" />
-            <p class="text-sm text-zinc-300">Max 50 characters</p>
+            <p class="text-sm text-zinc-600 dark:text-zinc-300">Max 50 characters</p>
             <p v-if="errors.lastName" class="text-sm text-red-500">{{ errors.lastName }}</p>
           </div>
 
           <div class="flex flex-col space-y-2">
 
-            <label for="role-select" class="text-sm font-medium text-white">Select Your Role</label>
+            <label for="role-select" class="text-sm font-medium">Select Your Role</label>
 
             <SelectRoot v-model="userType">
               <SelectTrigger id="role-select"

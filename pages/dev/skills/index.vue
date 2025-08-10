@@ -39,7 +39,7 @@ const getProgress = (xp: number, nextXp: number): string => {
 <template>
   <NuxtLayout>
 
-    <div class="max-w-4xl mx-auto p-6 rounded-xl text-white">
+    <div class="max-w-4xl mx-auto p-6 rounded-xl text-black dark:text-white">
 
       <div class="flex flex-col md:flex-row gap-20">
         <!-- Skills Column -->
@@ -62,9 +62,9 @@ const getProgress = (xp: number, nextXp: number): string => {
               </div>
             </div>
 
-            <div class="flex justify-between text-xs text-white mt-1">
+            <div class="flex justify-between text-xs text-black dark:text-white mt-1">
               <span>{{ data.skillXp }} XP</span>
-              <span class="text-white">Next level: <span class="text-indigo-400">{{ data.nextLevelXp }}</span> XP</span>
+              <span class="text-black dark:text-white">Next level: <span class="text-indigo-500 dark:text-indigo-400">{{ data.nextLevelXp }}</span> XP</span>
             </div>
           </div>
         </div>
@@ -77,10 +77,10 @@ const getProgress = (xp: number, nextXp: number): string => {
 
             <div class="flex justify-between items-center mb-1">
 
-              <span class="text-blue-400 font-medium">{{ data.language }}</span>
+              <span class="text-blue-500 dark:text-blue-400 font-medium">{{ data.language }}</span>
 
               <div class="flex flex-col items-end">
-                <span class="text-indigo-300 text-sm">{{ data.languageLevel }} / 99</span>
+                <span class="text-indigo-500 dark:text-indigo-300 text-sm">{{ data.languageLevel }} / 99</span>
               </div>
             </div>
 

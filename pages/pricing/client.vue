@@ -1,61 +1,76 @@
 <script setup lang="ts">
-
 import PricingPlanCard from "@/components/reka/ClientPricingPlanCard.vue";
 
-const plans = [
+type Tier = 'free' | 'starter' | 'growth' | 'scale'
+
+type Plan = {
+  name: string
+  tier: Tier
+  price: string
+  description: string
+  maxActiveQuests: string
+  devPool: string
+  estimations: boolean
+  ctaLabel?: string,
+  canCustomizeLevelThresholds: boolean
+  boostQuests: boolean
+}
+
+const plans: Plan[] = [
   {
-    name: "Free Trial",
-    rank: "free",
+    name: "Free",
+    tier: "free",
     price: "$0",
-    description: "14-day free trial for new clients",
+    description: "Get started and try the platform.",
     maxActiveQuests: "2",
-    devPool: "Random Dev",
+    devPool: "Auto‑match only",
     estimations: true,
-    silverHighlight: false,
-    goldHighlight: false
+    ctaLabel: "Get started",
+    canCustomizeLevelThresholds: false,
+    boostQuests: false
   },
   {
-    name: "Mithril",
-    rank: "mithril",
+    name: "Starter",
+    tier: "starter",
     price: "$20/mo",
-    description: "Starter plan for small teams",
-    maxActiveQuests: "10",
-    devPool: "Random Dev",
+    description: "For occasional hiring and smaller projects.",
+    maxActiveQuests: "5",
+    devPool: "Invite and assign specific developers",
     estimations: true,
-    silverHighlight: false,
-    goldHighlight: false
+    canCustomizeLevelThresholds: false,
+    boostQuests: false,
   },
   {
-    name: "Adamantite",
-    rank: "adamantite",
+    name: "Growth",
+    tier: "growth",
     price: "$50/mo",
-    description: "Growth plan for scaling teams",
+    description: "For teams scaling delivery with more control.",
     maxActiveQuests: "20",
-    devPool: "Choose Dev Level",
+    devPool: "Invite and assign specific developers",
     estimations: true,
-    silverHighlight: true,
-    goldHighlight: false
+    canCustomizeLevelThresholds: true,
+    boostQuests: true,
   },
   {
-    name: "Runic",
-    rank: "runic",
+    name: "Scale",
+    tier: "scale",
     price: "$100/mo",
-    description: "For high-volume teams needing premium support",
+    description: "High‑volume hiring, advanced controls & support.",
     maxActiveQuests: "Unlimited",
-    devPool: "Set Dev Level and Request Developers",
+    devPool: "Invite and assign specific developers",
     estimations: true,
-    silverHighlight: true,
-    goldHighlight: false
+    canCustomizeLevelThresholds: true,
+    boostQuests: true,
   }
 ];
 </script>
 
-
 <template>
   <NuxtLayout>
     <section class="max-w-7xl mx-auto px-4 py-16">
-      <h1 class="text-4xl font-bold text-center mb-4 text-white">Pricing Plans</h1>
-      <p class="text-center text-gray-500 mb-12 text-white">Choose the plan that fits your workflow and growth stage.
+      <h1 class="text-4xl font-bold text-center mb-4 text-black dark:text-white">Pricing</h1>
+      <p class="text-center text-black dark:text-white mb-12">
+        Choose the plan that fits your workflow and growth stage.
       </p>
 
       <div class="grid md:grid-cols-4 gap-6">
