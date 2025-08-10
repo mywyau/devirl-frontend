@@ -88,6 +88,8 @@ const onSubmit = handleSubmit(async (values) => {
     return;
   }
 
+  console.log(values)
+
   try {
     const result = await createQuest(userId, values);
 

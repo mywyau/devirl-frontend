@@ -52,7 +52,7 @@ const getProgress = (xp: number, nextXp: number): string => {
               <span class="text-rose-400 font-medium">{{ data.skill }}</span>
 
               <div class="flex flex-col items-end">
-                <span class="text-indigo-300 text-sm">{{ data.skillLevel }} / 99</span>
+                <span class="text-indigo-500 dark:text-indigo-300 text-sm">{{ data.skillLevel }} / 99</span>
               </div>
 
             </div>
@@ -64,7 +64,7 @@ const getProgress = (xp: number, nextXp: number): string => {
 
             <div class="flex justify-between text-xs text-black dark:text-white mt-1">
               <span>{{ data.skillXp }} XP</span>
-              <span class="text-black dark:text-white">Next level: <span class="text-indigo-500 dark:text-indigo-400">{{ data.nextLevelXp }}</span> XP</span>
+              <span class="text-black dark:text-white">Next level: <span class="text-indigo-600 dark:text-indigo-400">{{ data.nextLevelXp }}</span> XP</span>
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ const getProgress = (xp: number, nextXp: number): string => {
 
             <div class="flex justify-between text-xs text-white mt-1">
               <span>{{ data.languageXp }} XP</span>
-              <span class="text-white">Next level: <span class="text-indigo-400">{{ data.nextLevelXp }}</span> XP</span>
+              <span class="text-black dark:text-white">Next level: <span class="text-indigo-600 dark:text-indigo-400">{{ data.nextLevelXp }}</span> XP</span>
             </div>
 
           </div>

@@ -10,11 +10,11 @@ export const rankClass = (rank: string): string => {
       return "text-blue-500 dark:text-blue-300";
     case "adamantite":
       return "text-green-500 dark:text-green-300";
-    case "runic":
+    case "rune":
       return "text-teal-500 dark:text-teal-300";
-    case "demon":
+    case "demonic":
       return "text-red-500 dark:text-red-400";
-    case "ruinous":
+    case "ruin":
       return "text-purple-500 dark:text-purple-400";
     case "aether":
       return "text-pink-500 dark:text-pink-400";
@@ -29,8 +29,8 @@ export const rankOptions = [
   { value: "Steel", label: "Steel" },
   { value: "Mithril", label: "Mithril" },
   { value: "Adamantite", label: "Adamantite" },
-  { value: "Runic", label: "Runic" },
-  { value: "Ruinous", label: "Ruinous" },
-  { value: "Demon", label: "Demon" },
+  { value: "Rune", label: "Rune" },
+  { value: "Ruin", label: "Ruin" },
+  { value: "Demonic", label: "Demonic" },
   { value: "Aether", label: "Aether" },
 ];

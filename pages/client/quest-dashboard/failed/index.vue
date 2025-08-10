@@ -73,11 +73,9 @@ onMounted(() => {
 <template>
   <NuxtLayout>
     <div class="p-6 max-w-5xl mx-auto">
-      <h1 class="text-3xl font-bold mb-4 text-red-400">Failed</h1>
-      <p class="text-lg mb-6 text-red-300">
-        Below are all the quests that are failed.
-      </p>
 
+      <h1 class="text-3xl font-bold mb-4 text-red-500 dark:text-red-400">Failed</h1>
+      
       <!-- Show quests immediately when available -->
       <div v-if="quests.length" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div v-for="quest in quests" :key="quest.questId"
@@ -105,7 +103,7 @@ onMounted(() => {
       </div>
 
       <!-- No data after loading -->
-      <div v-else class="text-zinc-400">You have no failed quests.</div>
+      <div v-else class="text-zince-600 dark:text-zinc-400">You have no failed quests.</div>
     </div>
   </NuxtLayout>
 </template>
