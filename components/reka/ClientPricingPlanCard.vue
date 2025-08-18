@@ -24,10 +24,10 @@ defineProps<{
   <section :class="[
     'rounded-lg p-6 shadow-sm flex flex-col border text-black',
     // Light, neutral backgrounds with solid contrast
-    plan.tier === 'free' ? 'bg-white border-gray-400 dark:border-gray-100' : '',
-    plan.tier === 'starter' ? 'bg-slate-100 border-slate-400 dark:border-slate-100' : '',
-    plan.tier === 'growth' ? 'bg-indigo-100 border-indigo-400 dark:border-indigo-100' : '',
-    plan.tier === 'scale' ? 'bg-violet-100 border-violet-400 dark:border-violet-100' : ''
+    plan.tier === 'free' ? 'bg-white dark:border-gray-100' : '',
+    plan.tier === 'starter' ? 'bg-slate-100 dark:border-slate-100' : '',
+    plan.tier === 'growth' ? 'bg-indigo-100 dark:border-indigo-100' : '',
+    plan.tier === 'scale' ? 'bg-violet-100 dark:border-violet-100' : ''
   ]" role="region" :aria-labelledby="`${plan.tier}-title`">
 
     <h2 :id="`${plan.tier}-title`" class="text-black text-2xl font-semibold mb-1">
@@ -88,7 +88,7 @@ defineProps<{
       </li>
     </ul>
 
-    <button
+    <!-- <button
       class="mt-6 w-full py-2 px-4 rounded-lg transition font-medium focus:outline-none focus:ring-2 focus:ring-offset-2"
       :class="[
         plan.tier === 'free' ? 'bg-slate-900 text-white hover:bg-black focus:ring-slate-900' : '',
@@ -97,6 +97,6 @@ defineProps<{
         plan.tier === 'scale' ? 'bg-violet-600 text-white hover:bg-violet-700 focus:ring-violet-600' : ''
       ]">
       {{ plan.ctaLabel ?? (plan.tier === 'free' ? 'Get started' : 'Choose plan') }}
-    </button>
+    </button> -->
   </section>
 </template>

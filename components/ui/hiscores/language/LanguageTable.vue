@@ -23,7 +23,7 @@ const props = defineProps<{
                 'min-w-[300px]': true,
                 'md:min-w-[500px]': true
             }">
-                <thead class="border-b border-black/10 text-black dark:border-white/10 dark:text-white">
+                <thead class="border-b border-black/10 dark:border-white/10 text-black dark:text-white">
                     <tr class="text-base md:text-lg"> <!-- bump font-size on mobile -->
                         <th class="py-2">Rank</th>
                         <th class="py-2">Username</th>
@@ -33,7 +33,7 @@ const props = defineProps<{
                 </thead>
                 <tbody>
                     <tr v-for="(dev, i) in pagedData" :key="`${dev.devId}-${dev.language}`"
-                        class="border-b border-black/5 dark:border-white/5 text-white">
+                        class="border-b border-black/5 dark:border-white/5 text-black dark:text-white">
                         <td class="py-2">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
                         <td class="py-2 text-indigo-500 dark:text-indigo-300">{{ dev.username }}</td>
                         <td class="py-2">{{ dev.level }}</td>

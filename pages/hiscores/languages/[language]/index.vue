@@ -148,7 +148,7 @@ watch(route, () => {
 
         <HiscoreMobileSelect v-model="mobileView" />
 
-        <h1 class="font-heading text-3xl text-teal-500 dark:text-teal-300 font-bold mb-6 text-center">
+        <h1 class="font-heading text-3xl text-black dark:text-teal-300 font-bold mb-6 text-center">
           {{ capitalize(languageFormatter(languageId)) }}
         </h1>
 

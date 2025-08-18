@@ -10,7 +10,7 @@ import { DeleteResponseSchema, type DeleteResponse } from "@/types/schema/ApiRes
 import { GetUserDataSchema, type GetUserData } from "@/types/schema/UserDataSchema";
 import { useAsyncData, useFetch, useRequestHeaders } from "nuxt/app";
 import { computed, ref } from "vue";
-
+import { useRouter } from 'vue-router';
 
 const config = loadConfig()
 const baseUrl = `${config.devQuestBackend.baseUrl}/`
@@ -94,6 +94,9 @@ async function startStripeOnboarding() {
   }
 }
 
+const router = useRouter()
+const goToDevPricing = () => router.push('/pricing/dev')
+
 </script>
 
 <template>
@@ -151,12 +154,14 @@ async function startStripeOnboarding() {
                 Connect with Stripe
               </Button>
             </div>
-            <!-- <div class="pr-2 pl-2" v-if="userProfile">
+
+            <div class="pr-2 pl-2" v-if="userProfile">
               <Button variant="secondary" class="w-full mt-4 bg-indigo-600 text-white hover:bg-indigo-500"
-                @click="startStripeOnboarding">
-                Connect with Stripe
+                @click="goToDevPricing">
+                View Plan
               </Button>
-            </div> -->
+            </div>
+
           </div>
         </div>
 
