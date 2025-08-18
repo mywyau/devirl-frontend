@@ -3,7 +3,7 @@
 
 <template>
   <NuxtLayout>
-    <div class="font-sans text-black bg-white dark:text-white dark:bg-zinc-900 min-h-screen">
+    <div class="font-sans text-black bg-zinc-100 dark:text-white dark:bg-zinc-900 min-h-screen">
       <div class="py-20 px-6 max-w-4xl mx-auto space-y-12">
         <h1 class="text-5xl font-heading font-bold text-blackdark:text-teal-400 text-center">
           About Dev IRL
@@ -73,7 +73,7 @@
         </section>
 
         <section class="space-y-6 text-black dark:text-gray-300 text-lg leading-relaxed">
-          <h2 class="text-3xl font-heading font-semibold text-white">Why It Matters</h2>
+          <h2 class="text-3xl font-heading font-semibold text-black dark:text-white">Why It Matters</h2>
           <p>
             We believe good software should be built in a way that’s transparent, respectful and in small iterative
             steps. Along the way it should be rewarding for everyone involved.
