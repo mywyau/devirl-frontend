@@ -5,6 +5,7 @@ type Tier = 'free' | 'starter' | 'growth' | 'scale'
 
 defineProps<{
   plan: {
+    planId: string
     name: string
     price: string            // e.g. "£0", "£79/mo"
     description: string
@@ -18,6 +19,7 @@ defineProps<{
     boostQuests: boolean
   }
 }>()
+
 </script>
 
 <template>
@@ -87,16 +89,5 @@ defineProps<{
         </span>
       </li>
     </ul>
-
-    <!-- <button
-      class="mt-6 w-full py-2 px-4 rounded-lg transition font-medium focus:outline-none focus:ring-2 focus:ring-offset-2"
-      :class="[
-        plan.tier === 'free' ? 'bg-slate-900 text-white hover:bg-black focus:ring-slate-900' : '',
-        plan.tier === 'starter' ? 'bg-slate-900 text-white hover:bg-black focus:ring-slate-900' : '',
-        plan.tier === 'growth' ? 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-600' : '',
-        plan.tier === 'scale' ? 'bg-violet-600 text-white hover:bg-violet-700 focus:ring-violet-600' : ''
-      ]">
-      {{ plan.ctaLabel ?? (plan.tier === 'free' ? 'Get started' : 'Choose plan') }}
-    </button> -->
   </section>
 </template>
