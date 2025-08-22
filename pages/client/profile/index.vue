@@ -107,7 +107,7 @@ onMounted(() => {
 
 
 const router = useRouter()
-const goToClientPricing = () => router.push('/pricing/client')
+const goToClientPricing = () => router.push('/billing/select-plan/client')
 
 </script>
 
