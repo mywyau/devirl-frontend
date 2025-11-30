@@ -93,10 +93,10 @@ watch(switchState, (enabled) => {
             </SwitchRoot>
           </div>
 
-          <NuxtLink to="/hiscores/total-level"
+          <!-- <NuxtLink to="/hiscores/total-level"
             class="font-heading text-black dark:text-white hover:text-indigo-500 dark:hover:text-indigo-400">
             Hiscores
-          </NuxtLink>
+          </NuxtLink> -->
 
           <template v-if="authResolved && isLoggedIn">
 
@@ -110,16 +110,19 @@ watch(switchState, (enabled) => {
               Registration
             </NuxtLink>
 
-            <NuxtLink v-if="userType === 'Dev'" to="/dev/skills"
+            <!-- <NuxtLink v-if="userType === 'Dev'" to="/dev/skills"
               class="font-heading text-black dark:text-white hover:text-indigo-500 dark:hover:text-indigo-400">
-              Skills</NuxtLink>
+              Skills
+            </NuxtLink> -->
 
             <NuxtLink v-if="userType === 'Client'" to="/client/quest-dashboard"
-              class="font-heading text-black dark:text-white hover:text-blue-500 dark:hover:text-blue-400">Dashboard
+              class="font-heading text-black dark:text-white hover:text-blue-500 dark:hover:text-blue-400">
+              Dashboard
             </NuxtLink>
 
             <NuxtLink v-if="userType === 'Dev'" to="/dev/quest-dashboard"
-              class="font-heading text-black dark:text-white hover:text-blue-500 dark:hover:text-blue-400">Dashboard
+              class="font-heading text-black dark:text-white hover:text-blue-500 dark:hover:text-blue-400">
+              Dashboard
             </NuxtLink>
 
             <NuxtLink v-if="userType === 'Dev'" to="/dev/profile"
@@ -128,7 +131,8 @@ watch(switchState, (enabled) => {
             </NuxtLink>
 
             <NuxtLink v-if="userType === 'Client'" to="/client/profile"
-              class="font-heading text-black dark:text-white hover:text-blue-500 dark:hover:text-blue-400">Profile
+              class="font-heading text-black dark:text-white hover:text-blue-500 dark:hover:text-blue-400">
+              Profile
             </NuxtLink>
           </template>
 
