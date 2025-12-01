@@ -43,6 +43,9 @@ export default defineNuxtConfig({
       apiBase:
         process.env.NUXT_PUBLIC_API_BASE ||
         "http://localhost:8080/dev-quest-service",
+      authApiBase:
+        process.env.NUXT_PUBLIC_AUTH_BACKEND_API_BASE ||
+        "http://localhost:8081/devirl-auth-service",
       auth0Domain:
         process.env.NUXT_PUBLIC_AUTH0_DOMAIN ||
         "[nuxt.config.ts][auth0Domain] config undefined, please define it",

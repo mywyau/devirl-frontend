@@ -10,7 +10,7 @@ export class DevQuestBackendAuthConnector {
   private readonly baseUrl: string;
 
   constructor(config = loadConfig(), private readonly apiBasePath = "/") {
-    this.baseUrl = `${config.devQuestBackend.baseUrl}${apiBasePath}`;
+    this.baseUrl = `${config.devirlAuthBackend.baseUrl}${apiBasePath}`;
   }
 
   private storeSessionUrl(userId: string): string {

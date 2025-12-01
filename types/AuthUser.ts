@@ -1,4 +1,5 @@
 export interface AuthUser {
+  id: string;    // MUST exist
   email: string;
   given_name: string;
   family_name: string;

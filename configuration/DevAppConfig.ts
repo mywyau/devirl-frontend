@@ -1,5 +1,5 @@
 // configuration/DevAppConfig.ts
-import { z } from 'zod'
+import { z } from "zod";
 
 const DevAppConfigSchema = z.object({
   featuresSwitches: z.object({
@@ -16,7 +16,12 @@ const DevAppConfigSchema = z.object({
     port: z.string(),
     baseUrl: z.string(),
   }),
-})
+  devirlAuthBackend: z.object({
+    host: z.string(),
+    port: z.string(),
+    baseUrl: z.string(),
+  }),
+});
 
 export const DevAppConfig = DevAppConfigSchema.parse({
   featuresSwitches: {
@@ -24,15 +29,20 @@ export const DevAppConfig = DevAppConfigSchema.parse({
     auth: true,
   },
   devIrlFrontend: {
-    host: 'localhost',
-    port: '3000',
-    baseUrl: 'http://localhost:3000',
+    host: "localhost",
+    port: "3000",
+    baseUrl: "http://localhost:3000",
   },
   devQuestBackend: {
-    host: 'localhost',
-    port: '8080',
-    baseUrl: 'http://localhost:8080/dev-quest-service',
+    host: "localhost",
+    port: "8080",
+    baseUrl: "http://localhost:8080/dev-quest-service",
   },
-})
+  devirlAuthBackend: {
+    host: "localhost",
+    port: "8081",
+    baseUrl: "http://localhost:8090/devirl-auth-service",
+  },
+});
 
-export type DevAppConfig = z.infer<typeof DevAppConfigSchema>
+export type DevAppConfig = z.infer<typeof DevAppConfigSchema>;

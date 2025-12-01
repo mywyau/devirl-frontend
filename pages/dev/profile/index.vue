@@ -95,7 +95,7 @@ async function startStripeOnboarding() {
 }
 
 const router = useRouter()
-const goToDevPricing = () => router.push('/billing//select-plan/dev')
+const goToDevPricing = () => router.push('/billing/select-plan/dev')
 
 </script>
 
