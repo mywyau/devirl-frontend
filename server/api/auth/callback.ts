@@ -55,6 +55,9 @@ export default defineEventHandler(async (event) => {
   };
   await session.save();
 
+  console.log("Session user saved:", session.user);
+
+
   // Extract session cookie
   const rawSetCookieHeader = event.node.res.getHeader("Set-Cookie") ?? "";
   const cookieHeader = Array.isArray(rawSetCookieHeader)

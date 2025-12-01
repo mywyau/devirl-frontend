@@ -18,6 +18,7 @@ export default eventHandler(async (event) => {
   }
 
   return {
-    user: session.user as AuthUser,
+    user: session.user,   // MUST be { user: ... }
+    // user: session.user as AuthUser,
   };
 });

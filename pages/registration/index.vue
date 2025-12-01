@@ -32,6 +32,8 @@ import { Icon } from '@iconify/vue';
 const router = useRouter();
 const { data: user } = useAuthUser();
 
+console.log("hello", user.value?.id)
+
 const {
   handleSubmit,
   defineField,
@@ -69,7 +71,7 @@ const onSubmit = handleSubmit(async (values) => {
   registrationError.value = '';
   registrationSuccess.value = false;
 
-  const result = await submitRegisterUser(user.value?.sub, values);
+  const result = await submitRegisterUser(user.value?.id, values);
 
   if (result.success) {
     registrationSuccess.value = true;
@@ -101,7 +103,7 @@ const onSubmit = handleSubmit(async (values) => {
 <template>
   <NuxtLayout>
     <div class="min-h-screen flex items-center justify-center px-4 text-black dark:text-white">
-      <div class="max-w-md w-full bg-white dark:bg-white/20 rounded-2xl border border-black p-8 space-y-6">
+      <div class="max-w-md w-full dark:bg-white/20 rounded-2xl p-8 space-y-6">
 
         <h1 class="text-3xl font-semibold text-center dark:text-teal-300">
           Complete Your Signup
@@ -120,17 +122,14 @@ const onSubmit = handleSubmit(async (values) => {
           <div class="space-y-2">
             <label for="username" class="block text-sm font-medium">Username</label>
             <Input id="username" v-model="username" v-bind="usernameAttrs" class="w-full" />
-            <p class="text-sm text-zinc-600 dark:text-zinc-300">Max 20 characters</p>
             <p v-if="errors.username" class="text-sm text-red-500">{{ errors.username }}</p>
 
             <label for="firstname" class="block text-sm font-medium">First Name</label>
             <Input id="firstname" v-model="firstName" v-bind="firstNameAttrs" class="w-full" />
-            <p class="text-sm text-zinc-600 dark:text-zinc-300">Max 50 characters</p>
             <p v-if="errors.firstName" class="text-sm text-red-500">{{ errors.firstName }}</p>
 
             <label for="lastname" class="block text-sm font-medium">Last Name</label>
             <Input id="lastname" v-model="lastName" v-bind="lastNameAttrs" class="w-full" />
-            <p class="text-sm text-zinc-600 dark:text-zinc-300">Max 50 characters</p>
             <p v-if="errors.lastName" class="text-sm text-red-500">{{ errors.lastName }}</p>
           </div>
 
