@@ -1,5 +1,5 @@
 // configuration/ProdAppConfig.ts
-import { z } from 'zod'
+import { z } from "zod";
 
 const ProdAppConfigSchema = z.object({
   featuresSwitches: z.object({
@@ -16,7 +16,12 @@ const ProdAppConfigSchema = z.object({
     port: z.string(),
     baseUrl: z.string(),
   }),
-})
+  devirlAuthBackend: z.object({
+    host: z.string(),
+    port: z.string(),
+    baseUrl: z.string(),
+  }),
+});
 
 export const ProdAppConfig = ProdAppConfigSchema.parse({
   featuresSwitches: {
@@ -24,15 +29,20 @@ export const ProdAppConfig = ProdAppConfigSchema.parse({
     auth: true,
   },
   devIrlFrontend: {
-    host: '',
-    port: '',
-    baseUrl: 'https://devirl.com',
+    host: "",
+    port: "",
+    baseUrl: "https://devirl.com",
   },
   devQuestBackend: {
-    host: '',
-    port: '',
-    baseUrl: 'https://devirl.com/dev-quest-service',
+    host: "",
+    port: "",
+    baseUrl: "https://devirl.com/dev-quest-service",
   },
-})
+  devirlAuthBackend: {
+    host: "",
+    port: "",
+    baseUrl: "https://devirl.com/devirl-auth-service",
+  },
+});
 
-export type ProdAppConfig = z.infer<typeof ProdAppConfigSchema>
+export type ProdAppConfig = z.infer<typeof ProdAppConfigSchema>;

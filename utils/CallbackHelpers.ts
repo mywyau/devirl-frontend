@@ -45,9 +45,7 @@ export async function getAccessToken(code: string): Promise<string> {
   return access_token;
 }
 
-export async function authenticateUser(
-  access_token: string
-): Promise<{ user: any; userId: string }> {
+export async function authenticateUser(access_token: string): Promise<{ user: any; userId: string }> {
   const user = await getUserInfo(access_token);
   const userId = user?.sub;
   if (!userId)
@@ -67,22 +65,22 @@ export async function storeSession(event: any, user: any): Promise<string> {
   return getSessionCookieHeader(event.node.res.getHeader("Set-Cookie"));
 }
 
-export async function syncUserToBackend(
-  user: any,
-  userId: string,
-  cookieHeader: string
-) {
-  const parsed: LoginUserData = LoginUserDataSchema.parse({
-    email: user.email,
-  });
+// export async function syncUserToBackend(
+//   user: any,
+//   userId: string,
+//   cookieHeader: string
+// ) {
+//   const parsed: LoginUserData = LoginUserDataSchema.parse({
+//     email: user.email,
+//   });
 
-  const backendController = new DevQuestBackendAuthController();
-  await backendController.storeCookieSessionInRedisServerToServer(
-    userId,
-    cookieHeader
-  );
-  await createUserNuxtServerToScalaServer(userId, cookieHeader, parsed);
-}
+//   const backendController = new DevQuestBackendAuthController();
+//   await backendController.storeCookieSessionInRedisServerToServer(
+//     userId,
+//     cookieHeader
+//   );
+//   await createUserNuxtServerToScalaServer(userId, cookieHeader, parsed);
+// }
 
 export async function fetchUserType(
   userId: string,

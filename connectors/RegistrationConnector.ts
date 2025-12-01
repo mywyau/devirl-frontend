@@ -8,7 +8,7 @@ import {
 import { $fetch } from "ofetch";
 
 const config = loadConfig();
-const baseUrl = config.devQuestBackend.baseUrl;
+const baseUrl = config.devirlAuthBackend.baseUrl;
 
 const registrationUrl = (path: string, userId: string) =>
   `${baseUrl}/registration/${path}/${encodeURIComponent(userId)}`;
@@ -18,7 +18,7 @@ export async function createUserNuxtServerToScalaServer(
   cookieHeader: string,
   payload: LoginUserData
 ) {
-  const url = registrationUrl("data/create", userId);
+  const url = registrationUrl("account/data/create", userId);
   return await $fetch(url, {
     method: "POST",
     headers: {
@@ -30,7 +30,7 @@ export async function createUserNuxtServerToScalaServer(
 
 export async function registerUserRequest(userId: string,payload: RegistrationPayload) {
 
-  const url = registrationUrl("update/user/type", userId);
+  const url = registrationUrl("account/update/user/type", userId);
 
   return await $fetch(url, {
     method: "PUT",
